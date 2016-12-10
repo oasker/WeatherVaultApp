@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Skywarn Weather Database</string>
+    <string name="login_text">Login</string>
+    <string name="settings_icon_title">Settings</string>
+    <string name="action_settings">Action Settings</string>
+    <string name="username">Username</string>
+    <string name="or">Or</string>
+    <string name="date">Date</string>
+    <string name="weather_event_type">Weather Event Type</string>
+    <string name="severe_weather">Severe Weather</string>
+    <string name="rainfall_flooding">Rainfall/Flooding</string>
+    <string name="coastal_flooding">Coastal Flooding</string>
+    <string name="winter">Winter</string>
+    <string name="next">Next</string>
+    <string name="street">Street</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="zip">Zip</string>
+    <string name="comments">Comments</string>
+    <string name="current_temperature">Current Temperature</string>
+    <string name="weather_event">Weather Event</string>
+    <string name="longitude">Longitude</string>
+    <string name="lattitude">Lattitude</string>
+    <string name="app_title">Skywarn Weather Database</string>
+    <string name="submit_report_button_title">Submit Report</string>
+    <string name="riverFlood">River Flood</string>
+    <string name="precipRateLabel">Precipitation Rate</string>
+    <string name="creekStreamFloodingLabel">Creek/Stream FLooding</string>
+    <string name="streetFLoodingLabel">Street Flooding</string>
+    <string name="largeRiverFloodLabel">Large River Flood</string>
+    <string name="iceJamFloodLabel">Ice Jam Flood</string>
+    <string name="submit_button_label">Submit</string>
+    <string name="upload_photo_icon">Photo Icon</string>
+    <string name="upload_photo_label">Upload Photo</string>
+</resources>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id = "@+id/winter_submit_fragment">
+
+    <TextView
+        android:text="Winter Features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/winter_fragment_title_label"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textColor="@color/textColor"
+        android:background="@color/backgroundColor"/>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/winter_fragment_tablelayout">
+
+
+        <!-- SNOWFALL -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/snowfall_label_tv"
+                android:layout_column="1"
+                android:text="@string/snowfall"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/snowfall_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!-- SNOWFALL RATE-->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/snowfall_rate_label_tv"
+            android:layout_column="1"
+            android:text="@string/snowfall_rate"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            android:layout_margin="5dp"
+            android:textColor="@android:color/background_dark" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/snowfall_rate_field_tv"
+            android:layout_column="2"
+            android:textSize="18sp"
+            android:layout_margin="5dp"
+            android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--SNOW DEPTH -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/snow_depth_label_tv"
+            android:layout_column="1"
+            android:text="@string/snowfall_depth"
+            android:textAlignment="viewStart"
+            android:textSize="18sp"
+            android:layout_margin="5dp"
+            android:textColor="@android:color/background_dark" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/snow_depth_field_tv"
+            android:layout_column="2"
+            android:textSize="18sp"
+            android:layout_margin="5dp"
+            android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+        <!--WATER EQUIVALENT -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/water_equiv_label_tv"
+                android:layout_column="1"
+                android:text="Water Equivalent"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/water_equiv_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--FREEZING RAIN -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/freezing_rain_label_tv"
+                android:layout_column="1"
+                android:text="@string/freezing_rain"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/freezing_rain_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--SLEET -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sleet_label_tv"
+                android:layout_column="1"
+                android:text="@string/sleet"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sleet_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+        <!--BlowDrift -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/blowdrift_label_tv"
+                android:layout_column="1"
+                android:text="@string/blowdrift"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/blowdrift_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--WHITEOUT -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/whiteout_label_tv"
+                android:layout_column="1"
+                android:text="@string/whiteout"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/whiteout_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--THUNDERSNOW -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/thundersnow_label_tv"
+                android:layout_column="1"
+                android:text="@string/thundersnow"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/thundersnow_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

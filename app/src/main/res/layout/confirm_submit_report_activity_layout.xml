@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/toolBarColor"
+        android:elevation="4dp"
+        android:theme="@style/ToolbarStyle"
+        app:title="@string/app_title" />
+
+    <TextView
+        android:text="Submission Confirmed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/confirm_submit_report_label"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_dark"
+        android:layout_margin="10dp"
+        android:layout_marginTop="15dp" />
+
+    <Button
+        android:text="Return Home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/return_home_button_label"
+        android:textAlignment="center"
+        android:onClick="launchUserHome"/>
+
+</LinearLayout>

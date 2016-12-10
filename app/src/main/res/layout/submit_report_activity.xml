@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar_rev2"></include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:text="Submit a Report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/submit_activity_title_text"
+                android:layout_marginTop="55dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                android:textColor="@android:color/background_dark"
+                android:textSize="30sp"
+                android:textAlignment="center" />
+
+            <TextView
+                android:text="Location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/submit_activity_location_label"
+                android:textSize="24sp"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_dark" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:ems="10"
+                android:id="@+id/submit_activity_street_text_field"
+                android:layout_marginTop="42dp"
+                android:hint="Address"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_below="@+id/submit_activity_title_text"
+                android:layout_alignStart="@+id/submit_activity_title_text"
+                android:layout_margin="5dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/submit_activity_town_text_field"
+                android:layout_marginTop="14dp"
+                android:hint="Town"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_below="@+id/submit_activity_street_text_field"
+                android:layout_alignStart="@+id/submit_activity_street_text_field"
+                android:layout_margin="5dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/submit_activity_state_text_field"
+                android:hint="State" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress"
+                android:ems="10"
+                android:id="@+id/submit_activity_zip_text_field"
+                android:hint="Zip"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_below="@+id/submit_activity_town_text_field"
+                android:layout_alignStart="@+id/submit_activity_town_text_field"
+                android:layout_marginTop="21dp"
+                android:layout_margin="5dp" />
+
+            <TextView
+                android:text="@string/or"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView6"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textColor="@android:color/background_dark"
+                android:layout_margin="5dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPostalAddress|numberDecimal"
+                android:ems="10"
+                android:id="@+id/submit_activity_longitude"
+                android:hint="Longitude " />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/submit_activity_lattitude"
+                android:hint="Lattitude" />
+
+            <TextView
+                android:text="Date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/submit_activity_date_label"
+                android:textSize="24sp"
+                android:layout_below="@+id/submit_activity_zip_text_field"
+                android:layout_alignStart="@+id/submit_activity_zip_text_field"
+                android:textColor="@android:color/black"
+                android:textAlignment="center"
+                android:layout_margin="5dp"
+                android:layout_weight="1" />
+
+            <DatePicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/submit_activity_title_text"
+                android:id="@+id/submit_report_date_picker"
+                android:layout_below="@+id/submit_activity_date_label"
+                android:layout_alignEnd="@+id/submit_activity_title_text"
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:foregroundGravity="center_vertical" />
+
+            <TextView
+                android:text="Time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/time_text_label"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textColor="@android:color/background_dark"
+                android:layout_margin="5dp" />
+
+            <TimePicker
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/timePicker"
+                android:background="@android:color/transparent" />
+
+            <TextView
+                android:text="@string/weather_event_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/submit_activity_weather_event_label"
+                android:textSize="24sp"
+                android:textAlignment="center"
+                android:textColor="@android:color/background_dark"
+                android:layout_margin="5dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:text="@string/severe_weather"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/submit_activity_severe_weather_checkbox"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp"
+                   />
+
+                <CheckBox
+                    android:text="@string/rainfall_flooding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/submit_activity_rainfall_flooding_checkbox"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:textSize="18sp"
+                   />
+
+                <CheckBox
+                    android:text="@string/coastal_flooding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/submit_activity_coastal_flooding_checkbox"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:textSize="18sp"
+                    />
+
+                <CheckBox
+                    android:text="@string/winter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/submit_activity_winter_checkbox"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:textSize="18sp"
+                    />
+            </LinearLayout>
+
+            <Button
+                android:text="@string/next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/submit_activity_button_to_next_screen"
+                android:onClick="LaunchSubmitReportDetails"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

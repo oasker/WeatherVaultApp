@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="50dp"
+            app:srcCompat="@drawable/cloud"
+            android:src="@drawable/cloud"
+            android:id="@+id/image_view"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
+            android:layout_alignTop="@+id/location_row_text" />
+
+        <TextView
+            android:id="@+id/location_row_text"
+            android:layout_weight="0.41"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/image_view"
+            android:layout_margin="5dp"
+            android:layout_width="80dp" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:id="@+id/event_type_row_label"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignStart="@+id/location_row_text"
+            android:layout_alignEnd="@+id/reporter_row_text"
+            android:layout_below="@+id/location_row_text" />
+
+        <TextView
+            android:layout_weight="0.23"
+            android:id="@+id/reporter_row_text"
+            android:layout_height="25dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignBaseline="@+id/date_row_text"
+            android:layout_alignBottom="@+id/date_row_text"
+            android:layout_toEndOf="@+id/date_row_text"
+            android:layout_width="110dp" />
+
+        <TextView
+            android:id="@+id/date_row_text"
+            android:textSize="14sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="25dp"
+            android:layout_width="75dp"
+            android:layout_alignBaseline="@+id/location_row_text"
+            android:layout_alignBottom="@+id/location_row_text"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+</LinearLayout>

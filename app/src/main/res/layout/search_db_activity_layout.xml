@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/first_frame_view">
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/second_frame_view">
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/third_frame_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fourth_frame_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
+
+
+
+    <Button
+        android:text="Next"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:id="@+id/button2" />
+
+</LinearLayout>

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:id="@+id/search_db_linear_layout">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:text="@string/submit_report"
+                android:layout_width="match_parent"
+                android:id="@+id/submit_report_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+                android:layout_weight="0.01"
+                android:layout_height="50dp"
+                android:typeface="sans"
+                android:layout_gravity="center_vertical|center_horizontal"
+                tools:layout_gravity="fill_vertical|center_horizontal"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/background_gradient"
+                android:textSize="26sp" />
+
+            <CheckBox
+                android:text="@string/use_current_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/use_current_location_cb"
+                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:layout_margin="10dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/street_input_text"
+                android:hint="@string/address" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:id="@+id/town_input_text"
+                android:hint="@string/town" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"
+                    android:ems="10"
+                    android:id="@+id/state_input_text"
+                    android:layout_weight="1"
+                    android:hint="@string/date" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPostalAddress"
+                    android:ems="10"
+                    android:id="@+id/editText4"
+                    android:hint="Zip" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.01"
+                android:weightSum="1">
+
+                <TextView
+                    android:text="Search Radius"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/search_radius_label"
+                    android:layout_weight="0.07"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/background_dark" />
+
+                <EditText
+                    android:layout_width="84dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/search_radius_input" />
+
+                <TextView
+                    android:text="Miles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView16"
+                    android:layout_weight="0.07"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/background_dark" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.00">
+
+                <SeekBar
+                    style="@android:style/Widget.Material.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:max="10"
+                    android:progress="1"
+                    android:id="@+id/seekBar"
+                    android:thumb="?android:attr/listChoiceIndicatorSingle"
+                    android:layout_height="40dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text="@string/date"
+                android:ems="10"
+                android:id="@+id/date_label"
+                android:background="@drawable/background_gradient"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_height="40dp"
+                android:textColor="@android:color/background_light"
+                android:includeFontPadding="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="22dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp" />
+
+            <Switch
+                android:text="@string/single_day"
+                android:layout_width="153dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/switch1"
+                android:layout_margin="10dp"
+                android:textSize="18sp"
+                android:switchTextAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:padding="0dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start_date"
+                    android:ems="10"
+                    android:id="@+id/start_date_label"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/textColor"
+                    android:layout_margin="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/end_date"
+                    android:ems="10"
+                    android:id="@+id/end_date_label"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:textAlignment="center"
+                    android:textColor="@color/textColor"
+                    android:layout_margin="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1">
+
+                <DatePicker
+                    android:layout_height="wrap_content"
+                    android:id="@+id/start_datepicker"
+                    style="@android:style/Widget.DatePicker"
+                    android:layout_margin="10dp"
+                    android:layout_width="170dp"
+                    android:scaleX="1"
+                    android:scaleY=".9" />
+
+                <DatePicker
+                    android:layout_height="wrap_content"
+                    android:id="@+id/end_datepicker"
+                    style="@android:style/Widget.DatePicker"
+                    android:layout_margin="10dp"
+                    android:layout_weight="0.09"
+                    android:layout_width="170dp"
+                    android:scaleY=".9"
+                    android:scaleX="1" />
+
+            </LinearLayout>
+
+            <TextView
+                android:text="@string/weather_type"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/weather_type_title"
+                android:background="@drawable/background_gradient"
+                android:gravity="center_vertical|fill_horizontal"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textColor="@android:color/background_light"
+                android:textAlignment="center"
+                android:layout_marginTop="15dp"
+                android:layout_weight="0.00"
+                android:layout_marginBottom="15dp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.01">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <CheckBox
+                        android:text="@string/severe_weather"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/severe_weather_cb"
+                        android:textAlignment="textStart"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:text="@string/i_e_tornado_hurricane_hail_lightning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/severe_weather_explanation"
+                        android:textStyle="normal|italic"
+                        android:textSize="14sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <CheckBox
+                        android:text="@string/rainfall_flooding"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rain_flood_ch"
+                        android:textAlignment="textStart"
+                        android:textSize="18sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <CheckBox
+                        android:text="@string/winter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/winter_cb"
+                        android:textAlignment="textStart"
+                        android:textSize="18sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <CheckBox
+                        android:text="@string/coastal_flooding"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/coastal_flooding_cb"
+                        android:textAlignment="textStart"
+                        android:textSize="18sp" />
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

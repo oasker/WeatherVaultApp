@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="ToolbarStyle" parent = "ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name = "android:textColorSecondary">@color/backgroundColor</item>
+        <item name="android:colorBackground">@color/toolBarColor</item>    <!-- Menu popup Color -->
+        <item name="android:textColor">@color/textColor</item>
+
+    </style>
+
+    <!-- http://stackoverflow.com/questions/33655908/setting-android-toolbar-background-and-text-colors-in-android-studio-1-4-1 -->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/colorAccent</item>       <!-- Title Color -->
+        <item name="android:textColorSecondary">@color/subtitleBarColor</item>     <!-- Subtitle Color -->
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:colorBackground">@color/backgroundColor</item>    <!-- Menu popup Color -->
+        <item name="android:textColor">@color/textColor</item>          <!-- Menupop up item color Color -->
+    </style>
+</resources>
