@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:background="@color/common_google_signin_btn_text_dark_disabled"
+        android:layout_height="35dp">
+
+        <TextView
+            android:text="@string/switch_to_map_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView25"
+            android:textSize="14sp"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_weight="1"
+            android:textAlignment="center"
+            android:textColor="@color/cast_expanded_controller_background_color" />
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/toggle_map_list_view"
+            android:layout_weight="1"
+            android:background="@color/common_google_signin_btn_text_dark_disabled" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/weather_list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp">
+    </ListView>
+
+</LinearLayout>

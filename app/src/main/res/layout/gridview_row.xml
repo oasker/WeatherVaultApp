@@ -103,7 +103,7 @@
         android:layout_alignEnd="@+id/event_type_row_text" />
 
     <TextView
-        android:text="TextView"
+        android:text="@string/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/reporter_username_row_text"
@@ -111,6 +111,6 @@
         android:scrollHorizontally="false"
         android:layout_below="@+id/image_view"
         android:layout_alignStart="@+id/location_row_text"
-        android:layout_marginStart="33dp" />
+        android:layout_marginStart="0dp" />
 
 </RelativeLayout>

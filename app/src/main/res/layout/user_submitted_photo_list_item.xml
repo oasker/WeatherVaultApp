@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:layout_margin="5dp"
+    android:padding="5dp">
+
+    <ImageView
+        app:srcCompat="@drawable/coastal"
+        android:id="@+id/user_submitted_photo_IV"
+        android:layout_width="98dp"
+        android:layout_height="78dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_submitted_tv"
+            android:textSize="13sp"
+            android:textColor="@android:color/black"
+            android:text="@string/date_submitted"
+            android:padding="3dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/photolistItem2"
+            android:textSize="13sp"
+            android:text="@string/event"
+            android:textColor="@android:color/black"
+            android:padding="3dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

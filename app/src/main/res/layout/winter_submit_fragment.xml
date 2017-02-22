@@ -41,7 +41,8 @@
                 android:layout_column="2"
                 android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:inputType="number|numberDecimal" />
         </TableRow>
 
 
@@ -66,7 +67,8 @@
             android:layout_column="2"
             android:textSize="18sp"
             android:layout_margin="5dp"
-            android:textColor="@android:color/background_dark" />
+            android:textColor="@android:color/background_dark"
+            android:inputType="number|numberDecimal" />
         </TableRow>
 
 
@@ -92,7 +94,8 @@
             android:layout_column="2"
             android:textSize="18sp"
             android:layout_margin="5dp"
-            android:textColor="@android:color/background_dark" />
+            android:textColor="@android:color/background_dark"
+            android:inputType="number|numberDecimal" />
         </TableRow>
 
         <!--WATER EQUIVALENT -->
@@ -116,7 +119,8 @@
                 android:layout_column="2"
                 android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:inputType="number|numberDecimal" />
         </TableRow>
 
 
@@ -166,7 +170,8 @@
                 android:layout_column="2"
                 android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:inputType="number|numberDecimal" />
         </TableRow>
 
         <!--BlowDrift -->

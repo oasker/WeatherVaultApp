@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="@string/coastal_flooding_features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/coastal_flood_title_tv"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textColor="@color/textColor"
+        android:backgroundTint="@color/backgroundColor"
+        android:background="@color/toolBarColor" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/storm_surge_label_tv"
+                android:layout_column="1"
+                android:text="@string/storm_surge"
+                android:textAlignment="viewStart"
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/storm_surge_field_tv"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="5dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/coastal_area_label_tv"
+                android:layout_column="1"
+                android:text="@string/comments"
+                android:textAlignment="viewStart"
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/coastal_commentsTV"
+                android:layout_margin="5dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:text="@string/injuries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/coastal_injuries"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="5dp"
+                android:layout_column="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/coast_injuries_field_tv"
+                android:layout_margin="5dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:text="@string/fatalities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView30"
+                android:layout_margin="5dp"
+                android:layout_column="1"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/coastal_fatalities_field_tv_"
+                android:layout_margin="5dp"
+                android:textSize="16sp"
+                android:textColor="@android:color/black" />
+
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

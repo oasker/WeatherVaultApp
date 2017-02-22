@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Skywarn Weather Database</string>
+    <string name="refreshing">refreshing</string>
+    <string name="please_wait">Please Wait</string>
     <string name="login_text">Login</string>
     <string name="settings_icon_title">Settings</string>
     <string name="action_settings">Action Settings</string>
@@ -100,4 +102,94 @@
     <string name="location">Location</string>
     <string name="weatherevent">WeatherEvent</string>
     <string name="search_reports">Search Reports</string>
+    <string name="onSubmitScanClick">onSubmitScanClick</string>
+    <string name="onClickTagMessage">onClick() os submitButton</string>
+    <string name="take_new_photo">Take New Photo</string>
+    <string name="open_existing">Open Existing</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="add_photos_to_report">Add Photos to Report</string>
+    <string name="return_home">Return Home</string>
+    <string name="submission_confirmed">Submission Confirmed</string>
+    <string name="email">Email</string>
+    <string name="signup">SignUp</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="create_new_profile">Create New Profile</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="confirm_user">Confirm User</string>
+    <string name="a_confirmation_code_has_been_sent_to_the_email_provided_at_sign_up_please_enter_it_below">A confirmation code has been sent to the email provided at sign up. Please enter it below.</string>
+    <string name="enter_verification_code">Enter verification code</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="weather_spotter_credentials">Weather Spotter Credentials</string>
+    <string name="affiliation">Affiliation</string>
+    <string name="weather_spotter">Weather Spotter</string>
+    <string name="spotter_id">Spotter ID</string>
+    <string name="call_sign">Call Sign</string>
+    <string name="enter_below_fields_if_you_are_a_certified_weather_spotter">*Enter below fields if you are a certified weather spotter</string>
+    <string name="the_fields_below_are_required">*The fields below are required.</string>
+    <string name="title_activity_tabbed_user_home">TabbedUserHomeActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="last_active">Last Active</string>
+    <string name="relevant_reports">Relevant Reports</string>
+    <string name="report_statistics">Report Statistics</string>
+    <string name="user_information">User Information</string>
+    <string name="filter">Filter</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="a_confirmation_code_has_been_sent_to_your_email_please_enter_it_below">A confirmation code has been sent to your email. Please enter it below.</string>
+    <string name="a_confirmation_code_has_been_sent_to_your_email_please_enter_it_and_the_new_password_below">A confirmation code has been sent to your email. Please enter it and the new password below.</string>
+    <string name="confirmation_code">Confirmation Code</string>
+    <string name="new_password">New Password</string>
+    <string name="reset">Reset</string>
+    <string name="enter_username_associated_with_account">Enter username associated with account</string>
+    <string name="request_confirmation_code">Request Confirmation Code</string>
+    <string name="reset_password_enter_username">Reset Password: Enter username</string>
+    <string name="enter_username_associated_with_account_a_confirmation_code_will_be_sent_to_the_accounts_email_address">Enter username associated with account. A confirmation code will be sent to the accounts email address.</string>
+    <string name="reset_password_dialog_title">Reset Password: Enter username</string>
+    <string name="enter_username_associated_with_account_this_is_where_the_confirmation_code_will_be_sent">Enter username associated with account. This is where the confirmation code will be sent.</string>
+    <string name="enter_reset_code_and_new_password_below">Enter reset code and new password below.</string>
+    <string name="title_activity_tabbed_user_home2">TabbedUserHomeActivity2</string>
+    <string name="certification_information">Certification Information</string>
+    <string name="joined">Joined:</string>
+    <string name="reports_submitted">Reports Submitted:</string>
+    <string name="last_active_">Last Active:</string>
+    <string name="misc">Misc</string>
+    <string name="view_on_map">View On Map</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="map_activity_layout">Map Activity Layout</string>
+    <string name="switch_to_map_view">Switch to Map View</string>
+    <string name="submit_a_report">Submit a Report</string>
+    <string name="time">Time</string>
+    <string name="report_rating">Report Rating</string>
+    <string name="logout">Logout</string>
+    <string name="settings">Settings</string>
+    <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
+    <string name="photos">Photos</string>
+    <string name="freezing_rain_accumulation">Freezing Rain Accumulation</string>
+    <string name="fatalities">Fatalities</string>
+    <string name="injuries">Injuries</string>
+    <string name="user_details">User Details</string>
+    <string name="username2">Username:</string>
+    <string name="call_sign1">Call Sign:</string>
+    <string name="spotter_id3">Spotter ID:</string>
+    <string name="affiliation1">Affiliation:</string>
+    <string name="reports_submitted_by_user">Reports Submitted by User</string>
+    <string name="date_submitted">Date Submitted:</string>
+    <string name="event">Event:</string>
+    <string name="severe_weather_features">Severe Weather Features</string>
+
+
+    <string-array name="ItemsArray">
+        <item name="Item1" />
+        <item name="Item2" />
+        <item name="Item3" />
+    </string-array>
+
+    <string-array name="reportFields">
+        <item name ="DateSubmittedEpoch"/>
+
+    </string-array>
 </resources>

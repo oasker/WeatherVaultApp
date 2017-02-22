@@ -1,5 +1,7 @@
 package com.example.oliverasker.skywarnmarkii;
 
+import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
+
 import java.util.ArrayList;
 
 /**

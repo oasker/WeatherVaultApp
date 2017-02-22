@@ -1,0 +1,195 @@
+package com.example.oliverasker.skywarnmarkii.Activites;
+
+import android.location.Geocoder;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+
+import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
+import com.example.oliverasker.skywarnmarkii.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private static final String TAG = "MapsActivity";
+
+    private GoogleMap mMap;
+
+    //  Variables for controlling camera bounds, view
+    LatLngBounds.Builder builder;
+    CameraUpdate cameraUpdate;
+
+    //  Holds values passed into it from QueryLauncherActivity class
+    private SkywarnWSDBMapper[] receivedData;
+    //  Holds value for a single report from ViewReportActivity class
+    private SkywarnWSDBMapper report;
+
+
+    //  For multiple reports
+         // Resource: http://stackoverflow.com/questions/13855049/how-to-show-multiple-markers-on-mapfragment-in-google-map-api-v2
+    private List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
+
+    //For Single report
+    private LatLng pos;
+    MarkerOptions markerOptions;
+    private boolean singleReport;
+
+
+    //For getting curernt location
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+
+        //Convert report list into LtLng then into MarkerOptions
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            ///////////////////////////////////////////////////
+            //          Multiple Items from queryList       //
+            //////////////////////////////////////////////////
+            //  Checks if maps activity is being called from QueryLauncherActivity which will show all reports on map
+            if (bundle.getSerializable("reportList") != null) {
+                Log.d(TAG, "reportList!=null");
+
+                singleReport = false;
+                receivedData = (SkywarnWSDBMapper[]) bundle.getSerializable("reportList");
+                Log.d(TAG, "data.length:  " + receivedData.length);
+
+                for (int i = 0; i < receivedData.length; i++) {
+                    String title = createMarkerTitle(receivedData[i]);
+                    LatLng ll = getLocationFromAddress(title);
+                    if (ll != null) {
+                        Log.d(TAG, "ll: " + ll.toString());
+                        // Read more: http://www.androidhub4you.com/2015/06/android-maximum-zoom-in-google-map.html#ixzz4WXzS6wh6
+                        markerOptions = new MarkerOptions()
+                                .position(ll)
+                                .title(createMarkerTitle(receivedData[i]));
+                        markerOptionsList.add(markerOptions);
+                    }
+                }
+            }
+
+
+            ///////////////////////////////////////////////////
+            //       Single Item from ViewReportActivity    //
+            //////////////////////////////////////////////////
+            //  Checks if maps activity is being called from ViewReportActivity which
+            //  will show single selected report on map
+            if (bundle.getSerializable("report") != null) {
+                Log.d(TAG, "report!=null");
+                report = (SkywarnWSDBMapper) bundle.getSerializable("report");
+               singleReport = true;
+
+                String title = createMarkerTitle(report);
+                Log.d(TAG, "title: " + title);
+                LatLng ll = getLocationFromAddress(title);
+                if (ll != null) {
+                    markerOptions = new MarkerOptions()
+                            .title(createMarkerTitle(report))
+                            .position(ll);
+                    markerOptionsList.add(markerOptions);
+                }
+            }
+        }
+    }
+
+    private String createMarkerTitle(SkywarnWSDBMapper report) {
+        StringBuilder title = new StringBuilder("");
+
+        if (report.getStreet() != "")
+            title.append(report.getStreet() + ", ");
+        if (report.getEventCity() != "")
+            title.append(report.getEventCity() + ", ");
+        if (report.getEventState() != "")
+            title.append(report.getEventState());
+        return title.toString();
+    }
+
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    //Resource for finding location
+    // http://stackoverflow.com/questions/2227292/how-to-get-latitude-and-longitude-of-the-mobile-device-in-android
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        // Adds zoom buttons to map
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        // Adds compas to map
+        mMap.getUiSettings().setCompassEnabled(true);
+
+        //  Draw markers on map
+        for(MarkerOptions m : markerOptionsList){
+            drawMarker(m);
+        }
+        Log.d(TAG, "markerOptionsList size(): " + markerOptionsList.size());
+    }
+
+
+    //Draws marker on map using latLng
+    private void drawMarker(LatLng latLng){
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        mMap.addMarker(markerOptions);
+    }
+
+
+//      Overloaded method that Draws marker on map using MarkerOptions
+//      Prefer this method bc you can customize MarkerOptions with report details
+//      prior to sending to this method that does not have acce
+    private void drawMarker(MarkerOptions m){
+        mMap.addMarker(m);
+        if(singleReport)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(), 14.0f));
+        else
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(), 8.0f));
+    }
+
+
+
+    // get latlng from address
+    public LatLng getLocationFromAddress(String strAddress) {
+        Geocoder coder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        List<android.location.Address> address;
+        LatLng p1 = null;
+        try {
+            // first string is address, second is number of locations the address matches
+            address = coder.getFromLocationName(strAddress, 2);
+            if (address == null | address.size() == 0) {
+                return null;
+            }
+            android.location.Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+            if(p1==null)
+                Log.d(TAG,"p1 == null");
+            Log.d(TAG,p1.toString());
+            return p1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, " getLocationFromAddress() --> Lat: " + p1.latitude + " Long: " + p1.longitude);
+        return p1;
+    }
+}

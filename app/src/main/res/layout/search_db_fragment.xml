@@ -18,7 +18,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:text="@string/submit_report"
+                android:text="@string/search_reports"
                 android:layout_width="match_parent"
                 android:id="@+id/submit_report_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
@@ -28,7 +28,7 @@
                 android:layout_gravity="center_vertical|center_horizontal"
                 tools:layout_gravity="fill_vertical|center_horizontal"
                 android:gravity="center_vertical|center_horizontal"
-                android:background="@drawable/background_gradient"
+                android:background="@color/backgroundColor"
                 android:textSize="26sp" />
 
             <CheckBox
@@ -36,8 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/use_current_location_cb"
-                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
-                android:textAppearance="@style/TextAppearance.AppCompat"
+
                 android:layout_margin="10dp" />
 
             <EditText
@@ -53,8 +52,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:ems="10"
-                android:id="@+id/town_input_text"
-                android:hint="@string/town" />
+                android:id="@+id/city_input_text"
+                android:hint="@string/city" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -68,16 +67,15 @@
                     android:ems="10"
                     android:id="@+id/state_input_text"
                     android:layout_weight="1"
-                    android:hint="@string/date" />
+                    android:hint="@string/state" />
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:inputType="textPostalAddress"
                     android:ems="10"
-                    android:id="@+id/editText4"
-                    android:hint="Zip" />
-
+                    android:id="@+id/zip_input_field"
+                    android:hint="@string/zip" />
             </LinearLayout>
 
             <LinearLayout
@@ -88,7 +86,7 @@
                 android:weightSum="1">
 
                 <TextView
-                    android:text="Search Radius"
+                    android:text="@string/search_radius"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/search_radius_label"
@@ -104,7 +102,7 @@
                     android:id="@+id/search_radius_input" />
 
                 <TextView
-                    android:text="Miles"
+                    android:text="@string/miles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView16"
@@ -131,19 +129,12 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </LinearLayout>
-
             <TextView
                 android:layout_width="match_parent"
                 android:text="@string/date"
                 android:ems="10"
                 android:id="@+id/date_label"
-                android:background="@drawable/background_gradient"
+                android:background="@color/backgroundColor"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                 android:layout_height="40dp"
                 android:textColor="@android:color/background_light"
@@ -157,7 +148,7 @@
                 android:text="@string/single_day"
                 android:layout_width="153dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/switch1"
+                android:id="@+id/single_or_ranged_date"
                 android:layout_margin="10dp"
                 android:textSize="18sp"
                 android:switchTextAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -225,7 +216,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:id="@+id/weather_type_title"
-                android:background="@drawable/background_gradient"
+                android:background="@color/backgroundColor"
                 android:gravity="center_vertical|fill_horizontal"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
                 android:textColor="@android:color/background_light"
@@ -297,10 +288,20 @@
                         android:id="@+id/coastal_flooding_cb"
                         android:textAlignment="textStart"
                         android:textSize="18sp" />
+
                 </TableRow>
 
             </TableLayout>
 
+            <Button
+                android:text="@string/submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/submitQueryButton"
+                android:layout_weight="0.01"
+                style="@style/Widget.AppCompat.Button" />
+
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
+    <include layout = "@layout/toolbar_rev2"/>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,11 +33,12 @@
     </FrameLayout>
 
 
-
     <Button
         android:text="Next"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:id="@+id/button2" />
+        android:layout_height="wrap_content"
+        android:id="@+id/button2"
+        style="@android:style/Widget.Material.Button"
+        tools:ignore="NewApi" />
 
 </LinearLayout>

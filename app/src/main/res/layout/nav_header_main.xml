@@ -23,7 +23,7 @@
             android:layout_width="110dp"
             android:layout_height="106dp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:background="@drawable/ryan_is_super_gay"
+            android:background="@drawable/sunny"
             android:layout_margin="10dp"
             android:contentDescription="" />
 

@@ -1,21 +1,15 @@
 <android.support.v7.widget.Toolbar android:id="@+id/my_toolbars"
     android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
+    android:layout_height="wrap_content"
     android:background="@color/toolBarColor"
-    android:elevation="4dp"
+    android:elevation="10dp"
     app:title="@string/app_title"
     app:titleTextColor="@color/textColor"
     android:weightSum="1"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/app_name"
-        android:gravity = "center"
-        android:id="@+id/toolbar_title"
-        android:textSize="24sp"
-        android:textColor="@color/textColor"
-        android:textStyle="normal|bold"
-        android:layout_weight="0.84" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:gravity="center_horizontal"
+    android:layout_gravity="fill_horizontal">
+
 </android.support.v7.widget.Toolbar>

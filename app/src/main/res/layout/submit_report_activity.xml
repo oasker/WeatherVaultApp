@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <include layout="@layout/toolbar_rev2"></include>
@@ -18,7 +18,7 @@
             android:gravity="center_horizontal">
 
             <TextView
-                android:text="Submit a Report"
+                android:text="@string/submit_a_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/submit_activity_title_text"
@@ -31,7 +31,7 @@
                 android:textAlignment="center" />
 
             <TextView
-                android:text="Location"
+                android:text="@string/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/submit_activity_location_label"
@@ -46,7 +46,7 @@
                 android:ems="10"
                 android:id="@+id/submit_activity_street_text_field"
                 android:layout_marginTop="42dp"
-                android:hint="Address"
+                android:hint="@string/address"
                 style="@style/Widget.AppCompat.AutoCompleteTextView"
                 android:layout_below="@+id/submit_activity_title_text"
                 android:layout_alignStart="@+id/submit_activity_title_text"
@@ -79,7 +79,7 @@
                 android:inputType="textPostalAddress"
                 android:ems="10"
                 android:id="@+id/submit_activity_zip_text_field"
-                android:hint="Zip"
+                android:hint="@string/zip"
                 style="@style/Widget.AppCompat.AutoCompleteTextView"
                 android:layout_below="@+id/submit_activity_town_text_field"
                 android:layout_alignStart="@+id/submit_activity_town_text_field"
@@ -102,7 +102,7 @@
                 android:inputType="textPostalAddress|numberDecimal"
                 android:ems="10"
                 android:id="@+id/submit_activity_longitude"
-                android:hint="Longitude " />
+                android:hint="@string/longitude" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -110,10 +110,10 @@
                 android:inputType="numberDecimal"
                 android:ems="10"
                 android:id="@+id/submit_activity_lattitude"
-                android:hint="Lattitude" />
+                android:hint="@string/lattitude" />
 
             <TextView
-                android:text="Date"
+                android:text="@string/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/submit_activity_date_label"
@@ -139,7 +139,7 @@
                 android:foregroundGravity="center_vertical" />
 
             <TextView
-                android:text="Time"
+                android:text="@string/time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/time_text_label"
@@ -216,7 +216,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/submit_activity_button_to_next_screen"
-                android:onClick="LaunchSubmitReportDetails"
                 />
 
         </LinearLayout>

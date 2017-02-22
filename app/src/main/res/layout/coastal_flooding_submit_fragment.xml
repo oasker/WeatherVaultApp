@@ -38,51 +38,6 @@
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/first_floor_flood_label_tv"
-                android:layout_column="1"
-                android:text="First Floor Flood"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/first_floor_flood_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rain_label_tv"
-                android:layout_column="1"
-                android:text="Rain"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rain_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
@@ -106,6 +61,55 @@
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/first_floor_flood_label_tv"
+                android:layout_column="1"
+                android:text="Injuries"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/injuries_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rain_label_tv"
+                android:layout_column="1"
+                android:text="Fatalities"
+                android:textAlignment="viewStart"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fatalities_field_tv"
+                android:layout_column="2"
+                android:textSize="18sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
     </TableLayout>
 
 </LinearLayout>

@@ -1,33 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.oliverasker.skywarnmarkii">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- PERMISSIONS -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+
     <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Google Map API key -->
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        >
-        <activity android:name=".MainActivity"
-            >
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.oliverasker.skywarnmarkii"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <activity android:name=".Activites.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".queryLauncher">
-        </activity>
-        <activity android:name=".UserHomeActivity"></activity>
-        <activity android:name=".loginActivity"></activity>
-        <activity android:name=".SubmitReportActivity"></activity>
-        <activity android:name=".SubmitReportDetails"></activity>
-        <activity android:name=".ViewReportActivity"></activity>
-        <activity android:name=".ConfirmSubmitReportActivity"></activity>
-        <activity android:name=".SearchDBActivity"></activity>
+        <activity android:name=".Activites.QueryLauncherActivity" />
+        <activity android:name=".Activites.LoginActivity" />
+        <activity android:name=".Activites.SubmitReportActivity" />
+        <activity android:name=".Activites.SubmitReportDetailsActivity" />
+        <activity android:name=".Activites.ViewReportActivity" />
+        <activity android:name=".Activites.ConfirmSubmitReportActivity" />
+        <activity android:name=".Activites.SearchDBActivity" />
+        <activity android:name=".Activites.DownloadSelectionActivity" />
+        <activity android:name=".Activites.LaunchCameraActivity" />
+        <activity android:name=".Managers.CognitoManager" />
+        <activity android:name=".Activites.CreateNewUserActivity" />
+        <activity android:name=".Activites.ConfirmNewUserActivity" />
+        <activity android:name=".Activites.ResetPasswordActivity" />
+        <activity android:name=".Activites.ResetPasswordEnterUsernameActivity" />
+        <activity android:name=".Activites.mapActivity" />
+        <activity android:name=".Tasks.DownloadPhotoTask"/>
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Activites.TabbedUserHomeActivity"
+            android:label="@string/title_activity_tabbed_user_home2"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Activites.MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
 </manifest>

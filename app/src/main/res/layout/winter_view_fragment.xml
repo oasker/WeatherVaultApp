@@ -31,7 +31,7 @@
                 android:layout_column="1"
                 android:text="@string/snowfall"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/snowfall_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -56,7 +56,7 @@
                 android:layout_column="1"
                 android:text="@string/snowfall_rate"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/snowfall_rate_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -82,7 +82,7 @@
                 android:layout_column="1"
                 android:text="@string/snowfall_depth"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/snow_depth_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -106,7 +106,7 @@
                 android:layout_column="1"
                 android:text="@string/water_equivalent"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/water_equiv_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -131,7 +131,7 @@
                 android:layout_column="1"
                 android:text="@string/freezing_rain"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/freezing_rain_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -149,6 +149,31 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
+
+            <TextView
+                android:text="@string/freezing_rain_accumulation"
+                android:layout_column="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:layout_margin="5dp" />
+
+            <TextView
+                android:text="TextView"
+                android:layout_column="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/freezing_rain_accum_fieldTV"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:layout_margin="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,7 +181,7 @@
                 android:layout_column="1"
                 android:text="Sleet"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -164,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/sleet_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -180,7 +205,7 @@
                 android:layout_column="1"
                 android:text="Blowdrift"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -188,7 +213,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/blowdrift_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -205,7 +230,7 @@
                 android:layout_column="1"
                 android:text="Whiteout"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -213,7 +238,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/whiteout_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -230,7 +255,7 @@
                 android:layout_column="1"
                 android:text="Thundersnow"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -238,7 +263,57 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/thundersnow_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--Winter Injuries -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/winter_injuries_label_tv"
+                android:layout_column="1"
+                android:text="Injuries"
+                android:textAlignment="viewStart"
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/winter_injuries_field_tv"
+                android:layout_column="2"
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+
+        <!--Winter Fatalities -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/winter_injurieslabel_tv"
+                android:layout_column="1"
+                android:text="Thundersnow"
+                android:textAlignment="viewStart"
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/background_dark" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/winter_fatalities_field_tvs"
+                android:layout_column="2"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>

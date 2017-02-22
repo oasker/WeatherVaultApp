@@ -86,8 +86,6 @@ public class QueryLauncherActivity extends AppCompatActivity implements ICallbac
         //ORIGNINAL
         setContentView(R.layout.weather_list_view);
 
-
-
         //fragment placeholder
         //setContentView(R.layout.fragment_placeholder_layout);
 
@@ -135,6 +133,7 @@ public class QueryLauncherActivity extends AppCompatActivity implements ICallbac
         getRecordsForDayTask.setContext(this);
        // getRecordsForDayTask.setReportAttributesArray(getResources().getStringArray(R.array.reportFields));
         getRecordsForDayTask.setReportAttributesArray(test);
+        getRecordsForDayTask.delegate = this;
         getRecordsForDayTask.execute();
 
 
@@ -160,12 +159,6 @@ public class QueryLauncherActivity extends AppCompatActivity implements ICallbac
             scanAyncTask.execute(attrHMap);
             attrHMap.clear();
         }
-        */
-
-        /*
-        MyQueryAsyncTask queryAsync = new MyQueryAsyncTask(this);
-        queryAsync.delegate = this;
-        queryAsync.execute();
         */
     }
 

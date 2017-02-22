@@ -5,7 +5,7 @@
 
 
     <TextView
-        android:text="Severe Weather Features"
+        android:text="@string/severe_weather_features"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/severe_weather_title"
@@ -28,7 +28,7 @@
                 android:layout_column="1"
                 android:text="@string/severe_weather_type"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/black" />
             <TextView
@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/severe_type_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -46,23 +46,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/wind_speed_label_tv"
                 android:layout_column="1"
                 android:text="@string/windspeed"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/wind_speed_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
+
         </TableRow>
         <!-- WINDGUST -->
         <TableRow
@@ -75,7 +75,7 @@
                 android:layout_column="1"
                 android:text="@string/wind_gust"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/wind_gust_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -99,7 +99,7 @@
                 android:layout_column="1"
                 android:text="@string/wind_direction"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/wind_direction_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -123,7 +123,7 @@
                 android:layout_column="1"
                 android:text="@string/hail_size"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/hail_size_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -148,7 +148,7 @@
                 android:layout_column="1"
                 android:text="@string/tornado"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tornado_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -172,7 +172,7 @@
                 android:layout_column="1"
                 android:text="@string/barometer"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -180,130 +180,20 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/barometer_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
 
         <!-- Severe Weather Type -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_trees_label_tv"
-                android:layout_column="1"
-                android:text="@string/downed_trees"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_trees_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
         <!-- DOWNED LIMBS -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_limbs_label_tv"
-                android:layout_column="1"
-                android:text="@string/downed_limbs"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_limbs_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
         <!-- DIAMETER LIMBS -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/diameter_limbs_label_tv"
-                android:layout_column="1"
-                android:text="@string/limb_diameter"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/diameter_limbs_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
         <!-- Severe Weather Type -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_poles_label_tv"
-                android:layout_column="1"
-                android:text="@string/downed_poles"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_poles_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
         <!-- DOWNED WIRES-->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_wires_label_tv"
-                android:layout_column="1"
-                android:text="@string/downed_wires"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/downed_wires_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
         <!-- WIND DAMAGE -->
         <TableRow
@@ -316,7 +206,7 @@
                 android:layout_column="1"
                 android:text="@string/wind_damage"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -324,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/wind_damage_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -340,7 +230,7 @@
                 android:layout_column="1"
                 android:text="@string/lightning_damage"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -348,7 +238,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/lightning_damage_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
         </TableRow>
@@ -364,7 +254,7 @@
                 android:layout_column="1"
                 android:text="@string/damage_comments"
                 android:textAlignment="viewStart"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
             <TextView
@@ -372,7 +262,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/damage_comments_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark"
                 />
