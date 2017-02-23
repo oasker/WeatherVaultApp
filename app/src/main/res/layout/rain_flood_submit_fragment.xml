@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
@@ -37,9 +37,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/rain_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:inputType="numberDecimal" />
         </TableRow>
 
 
@@ -64,7 +63,8 @@
                 android:layout_column="2"
                 android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:inputType="numberDecimal" />
         </TableRow>
 
 
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/river_flood_label_tv"
                 android:layout_column="1"
-                android:text="@string/riverFlood"
+                android:text="@string/comments"
                 android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:layout_margin="5dp"
@@ -94,101 +94,16 @@
         </TableRow>
 
         <!--Creek/Stream FLOODING -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/creek_stream_flood_label_tv"
-                android:layout_column="1"
-                android:text="@string/creekStreamFloodingLabel"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/creek_stream_flood_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
 
 
-    <!-- Street Flood -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/street_flood_label_tv"
-                android:layout_column="1"
-                android:text="@string/streetFLoodingLabel"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/street_flood_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
+        <!-- Street Flood -->
 
-    <!-- Large River Flood -->
+        <!-- Large River Flood -->
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/large_river_flood_label_tv"
-                android:layout_column="1"
-                android:text="@string/largeRiverFloodLabel"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/large_river_flood_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
+            android:layout_height="match_parent" ></TableRow>
 
 
         <!-- Ice Jam Flood -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ice_jam_flood_label_tv"
-                android:layout_column="1"
-                android:text="@string/iceJamFloodLabel"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/ice_jam_field_tv"
-                android:layout_column="2"
-                android:textSize="18sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
-        </TableRow>
     </TableLayout>
 </LinearLayout>

@@ -9,6 +9,7 @@ package com.example.oliverasker.skywarnmarkii.Mappers;
 ////import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
@@ -250,7 +251,7 @@ public class SkywarnWSDBMapper implements Serializable {
         DateOfEvent = s;
     }
 
-    @DynamoDBAttribute(attributeName = "Username")
+    @DynamoDBIndexHashKey(attributeName = "Username")
     public String getUsername(){return Username;}
     public void setUsername(String un){Username = un;}
 

@@ -1,7 +1,6 @@
 package com.example.oliverasker.skywarnmarkii.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
 import java.io.Serializable;
-import java.util.Random;
 
 /**
  * 10/16/16  --> https://www.youtube.com/watch?v=nOdSARCVYic&list=PL6gx4Cwl9DGBsvRxJJOzG4r4k_zLKrnxl&index=48
@@ -65,9 +63,10 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
 
         //  Set text fields in layout to value of row items
         dateTV.setText("Submitted On: " +dbRow.getDateSubmittedString());
-        Log.d(TAG, "dbRow.getDateSubmittedString(): " + dbRow.getDateSubmittedString());
-        Log.d(TAG, "dbRow.getDateSubmittedEpoch(): " + dbRow.getDateSubmittedEpoch());
-        Log.d(TAG, "dbRow.getDateOfEvent() (epoch) : " + dbRow.getDateOfEvent());
+//        Log.d(TAG, "dbRow.getDateSubmittedString(): " + dbRow.getDateSubmittedString());
+//        Log.d(TAG, "dbRow.getDateSubmittedEpoch(): " + dbRow.getDateSubmittedEpoch());
+//        Log.d(TAG, "dbRow.getDateOfEvent() (epoch) : " + dbRow.getDateOfEvent());
+//        Log.d(TAG, "dbRow.getUsername(): " + dbRow.getUsername());
 
 
         //  Combine town and state fields into one textview
@@ -75,7 +74,6 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         usernameTV.setText(dbRow.getUsername());
         weatherEventTV.setText(dbRow.getWeatherEvent() );
         eventDescript.setText(dbRow.getComments());
-        messageUserTextVT.setText("Submitted: " + getRandomNumber());
         dateTV.setText(Utility.epochToDateTimeString(dbRow.getDateOfEvent()));
 
         //  Set Icon Image Based on Weather Type
@@ -103,11 +101,4 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         static ImageView weatherImage;
     }
 
-    public String getRandomNumber() {
-        int min =0;
-        int max =100;
-        Random rand = new Random();
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-        return Integer.toString(randomNum);
-    }
 }

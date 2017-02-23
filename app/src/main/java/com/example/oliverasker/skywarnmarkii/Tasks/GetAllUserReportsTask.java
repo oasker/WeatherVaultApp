@@ -28,9 +28,10 @@ import java.util.Map;
  * Created by oliverasker on 2/17/17.
  */
 
-public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
+public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
+    private static final String TAG = "GetAllUserReportsTask";
+
     private String[] reportAttributes;
-    private static final String TAG = "GetAllRecordsForDayTask";
     ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
     SkywarnWSDBMapper testReport;
     AmazonDynamoDBClient ddb;
@@ -64,7 +65,7 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected Void doInBackground(Void... params) {
         //AmazonDynamoDBClient dynamoDB = MainActivity.clientManager.ddb(); //Use MainActivity client manager
-       // DynamoDBMapper mapper = new DynamoDBMapper(dynamoDB);
+        // DynamoDBMapper mapper = new DynamoDBMapper(dynamoDB);
         CognitoCachingCredentialsProvider credentials = new CognitoCachingCredentialsProvider(
                 mContext,
                 Constants.IDENTITY_POOL_ID,
@@ -74,7 +75,8 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
         ddb.setRegion(Region.getRegion(Regions.US_EAST_1));
         DynamoDBMapper mapper = new DynamoDBMapper(ddb);
 
-       // DynamoDBManager.query();
+        // DynamoDBManager.query();
+
 
 
         //FINALLY WORKS
@@ -84,12 +86,11 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
         //Create condition for hashkey
         Condition hashKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.EQ.toString())
-//                .withAttributeValueList(new AttributeValue().withS("02/12/2017"));
-                .withAttributeValueList(new AttributeValue().withS(date));
+                .withAttributeValueList(new AttributeValue().withS("kd1cy_rob"));
 
-        keyCondition.put("DateSubmittedString", hashKeyCondition);
+        keyCondition.put("Username", hashKeyCondition);
 
-        // Create Rangekeycondition
+//         Create Rangekeycondition
         Condition rangeKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.GT.toString())
                 .withAttributeValueList(new AttributeValue().withN("0"));
@@ -97,12 +98,14 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
 
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName("SkywarnWSDB_rev4")
-                .withKeyConditions(keyCondition);
+                .withKeyConditions(keyCondition)
+                .withIndexName("ProfilePageSorter");
 
         QueryResult queryResult = ddb.query(queryRequest);
         List<Map<String, AttributeValue>> valMap = queryResult.getItems();
 
 
+        Log.i(TAG, "NUMBER RETURNED REPORTS: "+queryResult.getCount().toString());
         for(Map item : queryResult.getItems()) {
             SkywarnWSDBMapper reportEntry = new SkywarnWSDBMapper();
 
@@ -112,27 +115,21 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
 
             /// Location Attributes
-            if(reportEntry.getState() != null &&  !reportEntry.getState().equals(""))
+            if(reportEntry.getState() != null)
                 reportEntry.setEventState(Utility.parseDynamoDBResultValuesToString(item.get("State").toString()));
-            if(reportEntry.getCity() != null &&  !reportEntry.getCity().equals(""))
+            if(reportEntry.getCity() != null)
                 reportEntry.setEventCity(Utility.parseDynamoDBResultValuesToString(item.get("City").toString()));
-            if(reportEntry.getStreet() != null &&  !reportEntry.getStreet().equals(""))
+            if(reportEntry.getStreet() != null)
                 reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
-            if(reportEntry.getFirstName() != null && !reportEntry.getFirstName().equals(""))
+            if(reportEntry.getFirstName() != null)
                 reportEntry.setFirstName(Utility.parseDynamoDBResultValuesToString(item.get("FirstName").toString()));
-            if(reportEntry.getLastName() != null && !reportEntry.getLastName().equals(""))
+            if(reportEntry.getLastName() != null)
                 reportEntry.setLastName(Utility.parseDynamoDBResultValuesToString(item.get("LastName").toString()));
-            if(reportEntry.getZipCode() != null && !reportEntry.getZipCode().equals(""))
+            if(reportEntry.getZipCode() != null)
                 reportEntry.setZipCode(Utility.parseDynamoDBResultValuesToString(item.get("ZipCode").toString()));
 
             //if(reportEntry.getUsername() != null &&  !reportEntry.getUsername().equals(""))
                 reportEntry.setUsername(Utility.parseDynamoDBResultValuesToString(item.get("Username").toString()));
-//            if(!item.get("Latitude").toString().equals(""))
-//                reportEntry.setLatitude(Utility.parseDynamoDBResultValuesToLong((item.get("Latitude").toString())));
-//            if(!item.get("Longitude").toString().equals(""))
-//                reportEntry.setLongitude(Utility.parseDynamoDBResultValuesToLong(item.get("Longitdue").toString()));
-
-
             ////////// WeatherSpotter Attributes //////////
 
             if(item.containsKey("CallSign"))
@@ -159,7 +156,7 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             if(item.containsKey("Barometer"))
                 reportEntry.setBarometer(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("Barometer").toString())));
 
-                ////////// Winter Attributes //////////
+            ////////// Winter Attributes //////////
             if(item.containsKey("BlowDrift"))
                 reportEntry.setBlowDrift(Utility.parseDynamoDBResultValuesToString(item.get("BlowDrift").toString()));
             if(item.containsKey("FreezingRain"))
@@ -225,31 +222,29 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             if(item.containsKey("NumberOfInjuries"))
                 reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
 
+            Log.d(TAG, "adding report with epoch to list: " + String.valueOf(reportEntry.getDateSubmittedEpoch()));
             reportList.add(reportEntry);
-            reportEntry = null;
+            reportEntry =null;
             //Log.d(TAG, "report: " + item.values());
-            for(Object items: item.values())
+            for(Object items: item.keySet())
                 Log.d(TAG, items.toString());
         }
 
 
-        int counter = 0;
+
         Log.d(TAG, "QueryResultSize: "+ queryResult.getCount());
-//        for(Map item : queryResult.getItems()) {
-//            SkywarnWSDBMapper report = new SkywarnWSDBMapper();
-//            //Prints all report attributes
-//            //Log.d(TAG, "All report Attributes: " + item.toString());
-//            //Gets attribute values
-//            //AttributeValue val = (AttributeValue)  item.get("DateSubmittedEpoch");
-//            //AttributeValue val  = (AttributeValue) item.get(reportAttributes[counter]);
-//            //if(((AttributeValue) item.get(reportAttributes[counter])).getS() == null) {
-//          //for(int i =0; i < reportAttributes.length-1; i++){
-//              //Log.i(TAG, "attribute: " + reportAttributes[i] + " report: " + item.get("DateSubmittedEpoch")+ " has: " +  item.get(reportAttributes[i]).toString());
-//             // if(item.get("WaterEquivalent")!= null)
-//              //Log.d(TAG)
-//
-//         // }
-//        }
+
+            //Prints all report attributes
+            //Log.d(TAG, "All report Attributes: " + item.toString());
+            //Gets attribute values
+            //AttributeValue val = (AttributeValue)  item.get("DateSubmittedEpoch");
+            //AttributeValue val  = (AttributeValue) item.get(reportAttributes[counter]);
+            //if(((AttributeValue) item.get(reportAttributes[counter])).getS() == null) {
+            //for(int i =0; i < reportAttributes.length-1; i++){
+            //Log.i(TAG, "attribute: " + reportAttributes[i] + " report: " + item.get("DateSubmittedEpoch")+ " has: " +  item.get(reportAttributes[i]).toString());
+            // if(item.get("WaterEquivalent")!= null)
+            //Log.d(TAG)
+            // }
         return null;
     }
 
@@ -264,6 +259,8 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
 //        SkywarnWSDBMapper test = new SkywarnWSDBMapper();
 //                test.setDateSubmittedEpoch((long)12312442);
 //                test.setDateSubmittedString("2/2/2");
+        for(int i=0; i < reportList.size();i++)
+            Log.d(TAG, "onPostExecute Values: "+String.valueOf(reportList.get(i).getDateSubmittedEpoch()));
         delegate.processFinish(reportList);
         delegate = null;
     }

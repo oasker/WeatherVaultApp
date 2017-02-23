@@ -211,19 +211,20 @@ public class SubmitReportActivity extends AppCompatActivity {
         report.put("NumberOfImages", new AttributeValue().withN(String.valueOf(UserInformationModel.getNumberOfImages())));
         report.put("NumberOfVideos", new AttributeValue().withN(String.valueOf(UserInformationModel.getNumberOfVideos())));
 
-        if(UserInformationModel.getInstance().getAffiliation() != null)
+        if(!UserInformationModel.getInstance().getAffiliation().equals(""))
             report.put("Affiliation", new AttributeValue().withS(UserInformationModel.getInstance().getAffiliation()));
 
-        if(UserInformationModel.getInstance().getSpotterID() != null)
-            report.put("SpotterID", new AttributeValue().withS(UserInformationModel.getInstance().getAffiliation()));
+        if(!UserInformationModel.getInstance().getSpotterID().equals(""))
+            report.put("SpotterID", new AttributeValue().withS(UserInformationModel.getInstance().getSpotterID()));
 
-        if(UserInformationModel.getInstance().getCallsign() != null)
+        if(!UserInformationModel.getInstance().getCallsign().equals(""))
             report.put("CallSign", new AttributeValue().withS(UserInformationModel.getInstance().getCallsign()));
-        // Set Composite Primary key using DateSubmittedString
-       // reportToSubmit.setUsername(UserInformationModel.getInstance().getUsername());
-        //reportToSubmit.setDateSubmittedEpoch(System.currentTimeMillis());
-        //reportToSubmit.setDateSubmittedEpoch(String.valueOf(System.currentTimeMillis()));
-        ///reportToSubmit.setDateSubmittedString(Utility.epochToDateTimeString(reportToSubmit.getDateSubmittedEpoch() /1000));
+
+            Log.i(TAG, "Callsign: " + UserInformationModel.getInstance().getCallsign()
+                    +" SpotterID: " +  UserInformationModel.getInstance().getSpotterID()
+                    +" Affiliation:  " +  UserInformationModel.getInstance().getAffiliation());
+
+            ///reportToSubmit.setDateSubmittedString(Utility.epochToDateTimeString(reportToSubmit.getDateSubmittedEpoch() /1000));
     /////////////////////////////////////////////////////////////////////////////
     ////              VALIDATE LOCATION WHEN SUBMITTING REPORTs             /////
     /////////////////////////////////////////////////////////////////////////////
@@ -252,9 +253,9 @@ public class SubmitReportActivity extends AppCompatActivity {
 
             // DateOfEvent Stuff
             long epoch = getDateFromDatePicker(datePicker);
-            Log.d(TAG, "LaunchSubmitReportDetails():::: DATE: " + epoch);
+            //Log.d(TAG, "LaunchSubmitReportDetails():::: DATE: " + epoch);
             report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(epoch)));
-            Log.i(TAG, "Date of Event: " + report.get("DateOfEvent"));
+            //Log.i(TAG, "Date of Event: " + report.get("DateOfEvent"));
 
 
             String[] keyArray=Utility.AttributeHashMapKeyToArray(report);
@@ -264,7 +265,7 @@ public class SubmitReportActivity extends AppCompatActivity {
            // Utility.printMap(report);
 
             for(int i =0; i < attrArray.length; i++){
-                Log.d(TAG, "key: " + keyArray[i] + " val: " + attrArray[i].toString());
+               // Log.d(TAG, "key: " + keyArray[i] + " val: " + attrArray[i].toString());
             }
 
 

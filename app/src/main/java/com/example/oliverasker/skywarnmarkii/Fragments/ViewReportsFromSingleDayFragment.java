@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
+import com.example.oliverasker.skywarnmarkii.Activites.MapsActivity;
 import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
 import com.example.oliverasker.skywarnmarkii.ICallback;
@@ -35,9 +37,10 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
    // MyAsyncTask myAsync = new MyAsyncTask(this);
     private Button addDayButton;
     private Button subtractDayButton;
+    private Button viewReportsOnMapToggle;
     private Calendar cal;
     private TextView dateTV;
-
+    private  SkywarnWSDBMapper[] data ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         Log.d(TAG, "onCreateView");
@@ -74,11 +77,12 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
 
         addDayButton = (Button)v.findViewById(R.id.increment_date_by_one_button);
         subtractDayButton = (Button)v.findViewById(R.id.deincrement_day_by_one_button);
+        viewReportsOnMapToggle = (ToggleButton)v.findViewById(R.id.toggle_map_list_view);
+
         addDayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (cal == Calendar.getInstance()){
-                    Log.d(TAG, "No reports in the future");
                     dateTV.setText(format1.format(cal.getTime()));
                     launchGetReportsForOneDayTask(format1.format(cal.getTime()));
                 }
@@ -99,7 +103,15 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
             }
         });
 
-        //listView = (ListView) findViewById(R.id.listView);
+        viewReportsOnMapToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchMapView();
+            }
+        });
+
+
+
         SkywarnWSDBMapper[]reportArray = data.toArray(new SkywarnWSDBMapper[data.size()]);
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), reportArray);
 
@@ -117,6 +129,15 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
 //        });
         return v;
     }
+
+    public void launchMapView(){
+        Intent i = new Intent(getContext(), MapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("reportList", data);
+        i.putExtras(bundle);
+        startActivity(i);
+    }
+
     public void launchGetReportsForOneDayTask(String date){
         GetAllRecordsForDayTask getRecordsForDayTask = new GetAllRecordsForDayTask();
         getRecordsForDayTask = new GetAllRecordsForDayTask();
@@ -127,6 +148,7 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
     }
     public void launchViewReportActivity(SkywarnWSDBMapper clickedReport){
         Intent intent = new Intent(getContext(), ViewReportActivity.class);
+        Log.i(TAG, "launchViewREport(): ClickedReport.getUserName: " + clickedReport.getUsername());
         intent.putExtra("selectedReport", clickedReport);
         startActivity(intent);
     }
@@ -136,11 +158,8 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
          *  Once database row is received this interface method runs.
          *  We need to use the data immediately, so send data to listview
          */
-        SkywarnWSDBMapper[] data = null;
-        //data = null;
-//        listView = null;
-//        listView = (ListView)findViewById(R.id.weather_list_view);
-        //listView = (ListView) findViewById(R.id.listView);
+        data = null;
+
         if(result.size() ==0){
             Toast.makeText(getContext(),"No Reports found",Toast.LENGTH_LONG).show();
         }

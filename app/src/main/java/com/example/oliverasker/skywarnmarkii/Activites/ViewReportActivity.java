@@ -235,7 +235,7 @@ public class ViewReportActivity extends Activity {
         valueMap.put("Comments", map.getComments());
         valueMap.put("CurrentTemperature", String.valueOf(map.getCurrentTemperature()) + "F");
 
-
+        Log.d(TAG, "Username: " + map.getUsername());
 
 
 
@@ -336,7 +336,7 @@ public class ViewReportActivity extends Activity {
             String filename = map.getDateSubmittedEpoch() + "_" + map.getUsername()+"_" + "0";
             DownloadPhotoTask downloadPhotoTask = new DownloadPhotoTask(getApplicationContext(),filename);
             downloadPhotoTask.setcallback(callback);
-            downloadPhotoTask.execute();
+           // downloadPhotoTask.execute();
     }
 
     @Override

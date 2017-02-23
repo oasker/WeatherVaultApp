@@ -184,9 +184,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             //report.put("RainEventComments", new AttributeValue().withS(RainEventComments.getText().toString()));
             //report.put("FloodComments", new AttributeValue().withS(FLoodComments.getText().toString()));
 
-////            reportToSubmit.setWeatherEvent("Rain");
-////            reportToSubmit.setRain(Float.parseFloat(Rain.getText().toString()));
-////            reportToSubmit.setPrecipRate(Float.parseFloat(PrecipRate.getText().toString())
         }
         if (isCoastalEvent) {
             StormSurge = (EditText) findViewById(R.id.storm_surge_field_tv);
@@ -195,11 +192,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             report.put("WeatherEvent", new AttributeValue().withS("Coastal Event"));
             if(!StormSurge.getText().toString().equals(""))
                 report.put("StormSurge", new AttributeValue().withS(StormSurge.getText().toString()));
-            //if(!CoastalEventComments.getText().equals(""))
-            //report.put("CoastalEventComments", new AttributeValue().withS(CoastalEventComments.getText().toString()));
-
-////            reportToSubmit.setStormSurge(Float.parseFloat(StormSurge.getText().toString()));
-////            reportToSubmit.setWeatherEvent("Coastal Flooding");
         }
 
         if (isSevereEvent) {
@@ -246,17 +238,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             else
              Log.d(TAG, "SEVERE FIELDS NOT FILLED IN");
 
-////            reportToSubmit.setWeatherEvent("Severe");
-////            //reportToSubmit.setSevereType(SevereType.getText().toString());
-////            reportToSubmit.setWindSpeed(Float.parseFloat(WindSpeed.getText().toString()));
-////            reportToSubmit.setWindGust(Float.parseFloat(WindGust.getText().toString()));
-////            reportToSubmit.setWindDirection(WindDirection.getText().toString());
-////            reportToSubmit.setHailSize(HailSize.getText().toString());
-////            reportToSubmit.setTornado(Tornado.getText().toString());
-////            reportToSubmit.setBarometer(Float.parseFloat(Barometer.getText().toString()));
-////            reportToSubmit.setWindDamage(WindDamage.getText().toString());
-////            reportToSubmit.setDamageComments(DamageComments.getText().toString());
-////            reportToSubmit.setLightningDamage(LightningDamage.getText().toString());
         }
         if (isWinterEvent) {
             Snowfall = (EditText) findViewById(R.id.snowfall_field_tv);
@@ -309,7 +290,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             report.put("DateSubmittedEpoch", new AttributeValue().withN(String.valueOf(System.currentTimeMillis())));
 
 
-            keyArray = new String[report.size()];
+        keyArray = new String[report.size()];
             attributeValArray = new AttributeValue[report.size()];
 
            // Log.d(TAG, "Iterating through reports HMap:---END ");

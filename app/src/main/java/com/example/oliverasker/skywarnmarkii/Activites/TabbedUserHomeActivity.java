@@ -151,10 +151,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         Intent i = new Intent(this,ConfirmNewUserActivity.class);
         startActivity(i);
     }
-    public void launchQueryLaucher(){
-        Intent i = new Intent(this, QueryLauncherActivity.class);
-        startActivity(i);
-    }
     public void launchLoginActivity(){
         UserInformationModel.getInstance().clearAllUserInformation();
 
@@ -175,8 +171,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
-
-
 
 
     public static class PlaceholderFragment extends Fragment {
@@ -211,8 +205,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
             return rootView;
         }
     }
-
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

@@ -8,15 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
+import com.example.oliverasker.skywarnmarkii.Activites.MapsActivity;
 import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
 import com.example.oliverasker.skywarnmarkii.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
-import com.example.oliverasker.skywarnmarkii.Tasks.GetAllRecordsForDayTask;
-import com.example.oliverasker.skywarnmarkii.Tasks.MyAsyncTask;
+import com.example.oliverasker.skywarnmarkii.Tasks.GetAllUserReportsTask;
 
 import java.util.ArrayList;
 
@@ -28,29 +29,34 @@ import static android.content.ContentValues.TAG;
 
 public class WeatherListViewFragment extends Fragment implements ICallback {
     ListView listView;
-    MyAsyncTask myAsync = new MyAsyncTask(this);
+//    MyAsyncTask myAsync = new MyAsyncTask(this);
+    GetAllUserReportsTask getUserReportsTask;
+    Button mapViewButton;
+    SkywarnWSDBMapper[] data=null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         Log.d(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_home_weather_list_view, container, false);
-        GetAllRecordsForDayTask getRecordsForDayTask = null;
-
+        //GetAllRecordsForDayTask getRecordsForDayTask = null;
         ArrayList<SkywarnWSDBMapper> data = new ArrayList<>();
-        SkywarnWSDBMapper testReport = new SkywarnWSDBMapper();
-        testReport.setDateSubmittedEpoch((long) 3442311);
-        testReport.setDateSubmittedString("2/12/9000");
-        data.add(testReport);
+//        SkywarnWSDBMapper testReport = new SkywarnWSDBMapper();
+//        testReport.setDateSubmittedEpoch((long) 3442311);
+//        testReport.setDateSubmittedString("2/12/9000");
+//        data.add(testReport);
 
-        getRecordsForDayTask = new GetAllRecordsForDayTask();
-        getRecordsForDayTask.setContext(getContext());
-        getRecordsForDayTask.delegate = this;
-        getRecordsForDayTask.execute();
+        mapViewButton = (Button)v.findViewById(R.id.toggle_map_list_view);
+        mapViewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchMapActivity();
+            }
+        });
 
-
-
-
-
+        getUserReportsTask = new GetAllUserReportsTask();
+        getUserReportsTask.setContext(getContext());
+        getUserReportsTask.delegate = this;
+        getUserReportsTask.execute();
 
         listView = null;
         listView = (ListView)v.findViewById(R.id.weather_list_view);
@@ -72,6 +78,15 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
 //        });
         return v;
     }
+
+    public void launchMapActivity(){
+        Intent i = new Intent(getContext(), MapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("reportList", data);
+        i.putExtras(bundle);
+        startActivity(i);
+    }
+
     public void launchViewReportActivity(SkywarnWSDBMapper clickedReport){
         Intent intent = new Intent(getContext(), ViewReportActivity.class);
         intent.putExtra("selectedReport", clickedReport);
@@ -83,12 +98,17 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
          *  Once database row is received this interface method runs.
          *  We need to use the data immediately, so send data to listview
          */
-        SkywarnWSDBMapper[] data = null;
+        data = null;
         //data = null;
 //        listView = null;
 //        listView = (ListView)findViewById(R.id.weather_list_view);
         //listView = (ListView) findViewById(R.id.listView);
         data = result.toArray(new SkywarnWSDBMapper[result.size()]);
+
+        for(int  i =0; i < result.size(); i ++){
+            Log.d(TAG,"processFinished(): "+ String.valueOf(result.get(i).getDateSubmittedEpoch()));
+        }
+
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), data);
 
         //for(int i=0; i< data.length; i++)

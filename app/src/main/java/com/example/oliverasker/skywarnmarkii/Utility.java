@@ -130,8 +130,8 @@ public class Utility {
         AMPMString = "PM";
 
         StringBuilder s = new StringBuilder(month + "/" + day + "/" + year + " at: " + hour + ":" + minutes + " " + AMPMString);
-        Log.d(TAG, "Year 1: " + year + " Year2: ");
-        Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
+//        Log.d(TAG, "Year 1: " + year + " Year2: ");
+//        Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
         return s.toString();
     }
 
@@ -141,8 +141,8 @@ public class Utility {
         int counter = 0;
         Set<Map.Entry<String, AttributeValue>> entrySet = attrMap.entrySet();
         for (Map.Entry entry : entrySet) {
-            Log.d(TAG, "looping counter: " + counter + " total Size: " + entrySet.size());
-            Log.d(TAG, "key: " + entry.getKey() + " value: " + entry.getValue().toString());
+//            Log.d(TAG, "looping counter: " + counter + " total Size: " + entrySet.size());
+//            Log.d(TAG, "key: " + entry.getKey() + " value: " + entry.getValue().toString());
 
             keyArray[counter] = entry.getKey().toString();
             if (counter < entrySet.size())
@@ -166,27 +166,28 @@ public class Utility {
             if (counter < entrySet.size())
                 counter++;
         }
-//        for(int i=0; i < attrMap.size()-1;i++)
-            //Log.d(TAG, attrArray[i].getS().toString());
+
         return attrArray;
     }
 
     public static String parseDynamoDBResultValuesToString(String dynamoDBValue){
         dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
         dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
-        Log.i(TAG, "Value after parseToString: " + dynamoDBValue);
+        //Log.i(TAG, "Value after parseToString: " + dynamoDBValue);
         return dynamoDBValue;
     }
 
     public static long parseDynamoDBResultValuesToLong(String dynamoDBValue){
         String s = dynamoDBValue;
         dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
-        dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")-1).trim();
+        dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
         if(dynamoDBValue.length() > 10) {
          //   dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.length() - (dynamoDBValue.length() - 10));
-            dynamoDBValue = dynamoDBValue.substring(0, 10);
+//            dynamoDBValue = dynamoDBValue.substring(0, 10);
+            dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.indexOf('.'));
+
         }
-        Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
+       // Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
         Long longVal = Long.parseLong(dynamoDBValue);
         return longVal;
     }

@@ -67,7 +67,6 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         UserSubmittedPhotosAdapter userPhotoAdapter = new UserSubmittedPhotosAdapter(getContext(), photoModelList);
 
         photoListView.setAdapter(userPhotoAdapter);
-
         v = photoListView.getAdapter().getView(0,null,container );
         return v;
     }
