@@ -17,10 +17,11 @@ import android.widget.ToggleButton;
 import com.example.oliverasker.skywarnmarkii.Activites.MapsActivity;
 import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
-import com.example.oliverasker.skywarnmarkii.ICallback;
+import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetAllRecordsForDayTask;
+import com.example.oliverasker.skywarnmarkii.Tasks.GetTopRatedReportsTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         Log.d(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_weather_singleday_listview, container, false);
         GetAllRecordsForDayTask getRecordsForDayTask = null;
+        GetTopRatedReportsTask getTopRatedTaslk = null;
 
 //        Bundle b = getArguments();
 //        String date = b.getString("date");
@@ -57,12 +59,18 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         Log.d(TAG, "Date In ViewReports " + String.valueOf(format1.format(cal.getTime())));
         String date = format1.format(cal.getTime());
 
-        getRecordsForDayTask = new GetAllRecordsForDayTask();
-        getRecordsForDayTask.setDate(date);
-        getRecordsForDayTask.setContext(getContext());
-        getRecordsForDayTask.delegate = this;
-        getRecordsForDayTask.execute();
+        //ToDo: Create way to switch between looking at all reports from single day and top rated
+//        getRecordsForDayTask = new GetAllRecordsForDayTask();
+//        getRecordsForDayTask.setDate(date);
+//        getRecordsForDayTask.setContext(getContext());
+//        getRecordsForDayTask.delegate = this;
+//        getRecordsForDayTask.execute();
 
+        getTopRatedTaslk = new GetTopRatedReportsTask();
+        getTopRatedTaslk.setDate(date);
+        getTopRatedTaslk.setContext(getContext());
+        getTopRatedTaslk.delegate = this;
+        getTopRatedTaslk.execute();
 
         //Set Up Date
 //        cal = Calendar.getInstance();

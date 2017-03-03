@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
         super.onCreate(savedInstance);
 
         //Initialize widgets
-        setContentView(R.layout.login_activity_layout);
+        setContentView(R.layout.activiy_login_layout);
         emailTV = (EditText) findViewById(R.id.login_email_tv);
 
 

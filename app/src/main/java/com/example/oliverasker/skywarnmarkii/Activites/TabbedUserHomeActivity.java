@@ -142,7 +142,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
             android.support.v7.app.AlertDialog dialog = builder.create();
             dialog.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -199,9 +198,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                                  Bundle savedInstanceState) {
 //            View rootView = inflater.inflate(R.layout.fragment_tabbed_user_home_activity2, container, false);
             View rootView = inflater.inflate(R.layout.fragment_placeholder_layout, container, false);
-
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-
             return rootView;
         }
     }
@@ -240,10 +237,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                     ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     viewRep.setArguments(b);
                     return  viewRep;
-
-                    //return new ViewReportsFromSingleDayFragment();
-                    //return new ReportListViewFragment();
-                    //return new QuerySingleDayFragment();
                 default:
                     Log.d(TAG, "Default placeholder fragment");
                     return new UserInfoHomeFragment();
@@ -270,4 +263,5 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
             return null;
         }
     }
+
 }

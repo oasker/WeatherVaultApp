@@ -2,9 +2,7 @@ package com.example.oliverasker.skywarnmarkii.Tasks;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.v4.util.LruCache;
 import android.util.Log;
 
@@ -38,6 +36,7 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
     String bitmapPath;
     Context mContext;
     final int maxMemory = (int)(Runtime.getRuntime().maxMemory())/24;
+    Context getmContext;
 
     ViewReportActivity.bitmapCallback callback;
     final int cacheSize =maxMemory/8;
@@ -61,8 +60,14 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
     //Accepts context
     public DownloadPhotoTask(Context context, String filename ){
         fileName = filename;
-        String externalStorage= Environment.getExternalStorageDirectory().toString()+"/";
-        filePath =externalStorage+filename;
+        //String externalStorage= Environment.getExternalStorageDirectory().toString()+"/";
+        String externalStorage = context.getCacheDir().toString()+"/";
+
+        //String externalStorage = context.getExternalCacheDir().toString()+"/";
+
+        //Log.d(TAG, "getCacheDir: "+context.getCacheDir().toString());
+        //Log.d(TAG, "getExternalCacheDir: " + context.getExternalCacheDir().toString());
+        filePath = externalStorage+filename;
         mContext = context;
     }
 
@@ -79,16 +84,22 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
         try {
             //File file =new File(Environment.getExternalStorageDirectory().toString()+ "/Download/bingo.png");
             File file =new File(filePath);
+            if(!file.exists() | !file.canRead()) {
+                Log.d(TAG, "doInBackground(): file doesnt exist or cant be read");
+                File myTempDir = new File(mContext.getExternalCacheDir(), filePath);
+                myTempDir.mkdir();
+            }
             TransferUtility transferUtility = new TransferUtility(s3Client, mContext);
             TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, "bingo.png", file);
 
-            bitmapPath=file.getPath();
+           // bitmapPath=file.getPath();
             Log.d(TAG, "file.getPath(): " + file.getPath() );
-            File f = new File(Environment.getExternalStorageDirectory().toString());
+            //File f = new File(Environment.getExternalStorageDirectory().toString());
+            //File f = new File(String.valueOf(Environment.getDownloadCacheDirectory()));
 
-            for(File ff : f.listFiles()) {
-                Log.d(TAG, "List Files: ff; "+ ff);
-            }
+//            for(File ff : f.listFiles()) {
+//                Log.d(TAG, "List Files: ff; "+ ff);
+//            }
 
 //            bitmap = BitmapFactory.decodeFile(file.getPath());
 //            Log.d(TAG ,"doInBackground(): bitmapExists?: " + (bitmap != null));
@@ -101,6 +112,7 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
                 public void onStateChanged(int id, TransferState state) {
                     Log.d(TAG, "onStateChanged: + state: "+ state.toString());
                 }
+
                 @Override
                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                     int percentage = (int) (bytesCurrent/(bytesTotal+1) * 100);
@@ -111,6 +123,7 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
                     Log.e(TAG, "onError",ex);
                 }
             });
+
         } catch (AmazonClientException ace) {
             Log.d(TAG, "Caught an AmazonClientException, which means" +
                     " the client encountered " +
@@ -122,17 +135,18 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
         return null;
     }
 
-
-
     @Override
     protected void onPostExecute(Bitmap bitmap){
         Log.d(TAG, "onPostExecute");
-        File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/bingo.png");
-        bitmap = BitmapFactory.decodeFile(file.getPath());
+        //File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/bingo.png");
+        //bitmap = BitmapFactory.decodeFile(file.getPath());
         Log.d(TAG ,"onPostExecute(): bitmapExists?: " + (bitmap != null));
        if( callback!=null) {
-           callback.onFinishedString(bitmapPath);
-           callback.onFinishedBitmap(bitmap);
+           //callback.onFinishedString(bitmapPath);
+           Log.d(TAG, "onPostExecute() filepath: "+filePath);
+           callback.onFinishedString(filePath);
+
+           //callback.onFinishedBitmap(bitmap);
        }
     }
 //
@@ -154,40 +168,13 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
         return mMemoryCache.get(key);
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    //                          callback METHODS                          //
-    ////////////////////////////////////////////////////////////////////////
 
     public void setcallback(ViewReportActivity.bitmapCallback callback) {
         this.callback = callback;
     }
 
-    static File getDirectory(String variableName, String defaultPath) {
-        String path = System.getenv(variableName);
-        return path == null ? new File(defaultPath) : new File(path);
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
     }
-
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                    // permission was granted, yay! Do the
-//                    // contacts-related task you need to do.
-//
-//                } else {
-//
-//                    // permission denied, boo! Disable the
-//                    // functionality that depends on this permission.
-//                }
-//                return;
-//            }
-//
-//            // other 'case' lines to check for other
-//            // permissions this app might request
-//        }
-  }
+}

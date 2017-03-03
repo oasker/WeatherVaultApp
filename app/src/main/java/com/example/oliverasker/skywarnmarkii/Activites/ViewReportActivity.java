@@ -22,6 +22,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Fragments.CoastalFloodingViewReportFragment;
@@ -31,9 +39,9 @@ import com.example.oliverasker.skywarnmarkii.Fragments.SevereViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.WinterViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
-import com.example.oliverasker.skywarnmarkii.Tasks.DownloadPhotoTask;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
+import java.io.File;
 import java.util.HashMap;
 
 /*
@@ -42,84 +50,6 @@ import java.util.HashMap;
 
 public class ViewReportActivity extends Activity {
     private static final String TAG = "ViewReportActivity";
-    AmazonS3Client s3;
-    private int numberOfPhotos;
-
-    private int reportImageWidth = 375;
-    private int reportImageHeight = 375;
-
-
-    //Download photo callback
-    public interface bitmapCallback{
-        void onFinishedBitmap(Bitmap b);
-        void onFinishedString(String s);
-    }
-
-    bitmapCallback callback  = new bitmapCallback() {
-        @Override
-        public void onFinishedString(String s) {
-            Bitmap b = BitmapFactory.decodeFile(s);
-            //iconImageView.setImageBitmap(b);
-        }
-
-        @Override
-        public void onFinishedBitmap( Bitmap b) {
-            horizontalLinearLayout = (LinearLayout)findViewById(R.id.view_report_activity_horizontal_linearlayout);
-            horizontalLinearLayout.addView(createImageView(b));
-            horizontalLinearLayout.addView(createImageView(R.drawable.snow));
-            horizontalLinearLayout.addView(createImageView(R.drawable.sunny));
-            horizontalLinearLayout.addView(createImageView(R.drawable.sunny));
-            horizontalLinearLayout.addView(createImageView(R.drawable.sunny));
-            horizontalLinearLayout.addView(createImageView(R.drawable.sunny));
-            horizontalLinearLayout.addView(createImageView(R.drawable.sunny));
-        }
-    };
-
-
-    //Create imageview with either bitmap or resourceID
-    public ImageView createImageView(Bitmap b){
-        final Bitmap tempBitmap = b;
-        ImageView IV = new ImageView(getApplicationContext());
-        IV.setId(0);
-        IV.requestLayout();
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth,reportImageHeight);
-        IV.setLayoutParams(layoutParams);
-        IV.setPadding(15,15,15,15);
-        IV.setImageBitmap(b);
-        IV.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ViewReportActivity.this);
-                LayoutInflater inflater = getLayoutInflater();
-                View alertLayout = inflater.inflate(R.layout.dialog_view_photo_layout, null);
-                TextView dateTV = (TextView)alertLayout.findViewById(R.id.dialog_dateTV);
-                ImageView imageView = (ImageView)alertLayout.findViewById((R.id.imageView));
-                imageView.setImageBitmap(tempBitmap);
-                builder.setIcon(R.drawable.sunny)
-                        .setMessage("message")
-                        .setTitle("Title");
-                builder.show();
-            }
-
-            //IV.setScaleType(ImageView.ScaleType.FIT_XY);
-            // b = Bitmap.createScaledBitmap(b,IV.getWidth(),IV.getHeight(),false);
-        });
-        return IV;
-    }
-
-
-    public ImageView createImageView(int resourceID){
-        ImageView IV = new ImageView(getApplicationContext());
-        IV.setId(0);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth,reportImageHeight);
-        IV.setLayoutParams(layoutParams);
-        IV.setPadding(15,15,15,15);
-        IV.setImageResource(resourceID);
-       // IV.setScaleType(ImageView.ScaleType.FIT_XY);
-        return IV;
-    }
-
 
     private WinterViewReportFragment winterFrag;
     private CoastalFloodingViewReportFragment coastalFloodingFrag;
@@ -145,23 +75,50 @@ public class ViewReportActivity extends Activity {
 
     HashMap<String,String> valueMap;
     ImageView iconImageView;
+    AmazonS3Client s3;
+    private int numberOfPhotos=0;
+    private int reportImageWidth = 375;
+    private int reportImageHeight = 375;
+    private int numPhoto=0;
+    private int photoNumber;
+
+    //Download photo callback
+    public interface bitmapCallback{
+        void onFinishedBitmap(Bitmap b);
+        void onFinishedString(String s);
+    }
+    bitmapCallback callback  = new bitmapCallback() {
+        @Override
+        public void onFinishedString(String s) {
+            Log.d(TAG, "onFinished(String): s: "+ s);
+            //Bitmap b = BitmapFactory.decodeFile("/storage/emulated/0/Android/data/com.example.oliverasker.skywarnmarkii/cache/1488476818_tjpereira1995_0");
+            Bitmap b = BitmapFactory.decodeFile(s);
+            //iconImageView.setImageBitmap(b);
+        }
+
+        //ToDo: Set correct photos when viewing report
+        @Override
+        public void onFinishedBitmap( Bitmap b) {
+        }
+    };
+
 
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_view_report_layout);
-
+        Log.d(TAG, "OnCreate()");
         Intent intent = getIntent();
         Bundle weatherReport = intent.getExtras();
 
+        horizontalLinearLayout = (LinearLayout)findViewById(R.id.view_report_activity_horizontal_linearlayout);
         photoIV = (ImageView)findViewById(R.id.photoIV);
 //        //Get s3 images
 //        launchDownloadPhotoTask();
 //
         valueMap = new HashMap<String, String>();
         map = (SkywarnWSDBMapper) weatherReport.get("selectedReport");
-        //initGUI(map);
-
+        initGUI(map);
 
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragTransaction = fragManager.beginTransaction();
@@ -220,7 +177,6 @@ public class ViewReportActivity extends Activity {
         valueMap.put("NumberOfVideos",String.valueOf(map.getNumberOfVideos()));
         valueMap.put("NumberOfImages",String.valueOf(map.getNumberOfImages()));
 
-
         valueMap.put("ZipCode", map.getZipCode());
         valueMap.put("Username", map.getUsername());
         valueMap.put("Longitude", String.valueOf(map.getLongitude()));
@@ -228,14 +184,12 @@ public class ViewReportActivity extends Activity {
 
         valueMap.put("WeatherEvent",map.getWeatherEvent());
 
-
         valueMap.put("Street", String.valueOf(map.getStreet()));
         valueMap.put("City", String.valueOf(map.getEventCity()));
         valueMap.put("State", String.valueOf(map.getState()));
         valueMap.put("Comments", map.getComments());
-        valueMap.put("CurrentTemperature", String.valueOf(map.getCurrentTemperature()) + "F");
+        valueMap.put("CurrentTemperature", String.valueOf(map.getCurrentTemperature()) + " F");
 
-        Log.d(TAG, "Username: " + map.getUsername());
 
 
 
@@ -269,7 +223,7 @@ public class ViewReportActivity extends Activity {
         //                          General Report Details                          //
         /////////////////////////////////////////////////////////////////////////////
         username = (TextView)findViewById(R.id.view_report_activity_reporter);
-        username.setText("Submitted by  " + map.getUsername());
+        username.setText(getString(R.string.submited_by) + map.getUsername());
 
         ///////////////////////////////////////////////
         //               Date Format Stuff           //
@@ -285,39 +239,42 @@ public class ViewReportActivity extends Activity {
         eventType.setText(map.getWeatherEvent() );
 
         location = (TextView)findViewById(R.id.view_report_activity_location);
-        location.setText(map.getEventCity() + ", " + map.getEventState());
+        location.setText(map.getStreet() + " " + map.getEventCity() + ", " + map.getEventState());
 
         reportRating = (TextView)findViewById(R.id.view_report_activity_report_rating);
-        reportRating.setText("Rating: " + map.getRating());
+        reportRating.setText(getString(R.string.rating) + map.getRating());
 
         longitude = (TextView)findViewById(R.id.view_report_activity_long_latt);
         //longitude.setText("Lat/Long: " + map.getLattitude()+ (char)0x00B0 + " " + map.getLongitude()+(char)0x00B0 );
         generalInfoFrag = new GeneralSubmitReportFragment().newInstance(valueMap);
         fragTransaction.add(R.id.frag0_container, generalInfoFrag, "general_info_submit_fragment");
 
+
+
         if(map.getWeatherEvent().toUpperCase().contains("SEVERE")) {
             severeFrag = new SevereViewReportFragment().newInstance(valueMap);
             fragTransaction.add(R.id.frag1_container, severeFrag, "severeFrag");
         }
-
         if(map.getWeatherEvent().toUpperCase().contains("WINTER")) {
             winterFrag = new WinterViewReportFragment().newInstance(valueMap);
             fragTransaction.add(R.id.frag2_container, winterFrag, "winterFrag");
         }
-
         if(map.getWeatherEvent().toUpperCase().contains("COASTAL")) {
             coastalFloodingFrag = new CoastalFloodingViewReportFragment().newInstance(valueMap);
             fragTransaction.add(R.id.frag3_container, coastalFloodingFrag, "coastalFrag");
         }
-
         if(map.getWeatherEvent().toUpperCase().contains("RAIN")) {
             rainFrag = new RainFloodViewReportFragment().newInstance(valueMap);
             fragTransaction.add(R.id.frag4_container, rainFrag, "rainFrag");
         }
 
+
         storagePermitted(this);
-        //Get s3 images
-        launchDownloadPhotoTask();
+        Log.d(TAG, "Epoch:" + map.getDateOfEvent() + " NumberPhotos: " + map.getNumberOfImages());
+        if(numberOfPhotos >0) {
+            Log.i(TAG, "NUMBERPHOTOS: " + numberOfPhotos);
+            launchDownloadPhotoTask();
+        }
         fragTransaction.commit();
     }
 
@@ -329,18 +286,16 @@ public class ViewReportActivity extends Activity {
 
     private void initGUI(SkywarnWSDBMapper Map){
         map = Map;
-
     }
 
     public void launchDownloadPhotoTask(){
-            String filename = map.getDateSubmittedEpoch() + "_" + map.getUsername()+"_" + "0";
-            DownloadPhotoTask downloadPhotoTask = new DownloadPhotoTask(getApplicationContext(),filename);
-            downloadPhotoTask.setcallback(callback);
-           // downloadPhotoTask.execute();
+        Log.d(TAG, "launchDownloadPhotoTask()");
+        downloadPhoto();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult()");
         if(resultCode == RESULT_OK){
             Log.d(TAG, "OnActivityResult");
             data.getExtras();
@@ -351,11 +306,6 @@ public class ViewReportActivity extends Activity {
     }
 
     public void launchMapActivity(){
-        /*
-        Intent i = new Intent(this, MapsActivity.class );
-        i.putExtra("report", map );
-        startActivity(i);
-        */
         Intent i = new Intent(this, MapsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("report", map);
@@ -374,6 +324,100 @@ public class ViewReportActivity extends Activity {
             Log.d(TAG, "storagePermitted: Denied: "+ ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE.toString()));
 
             return false;
+        }
+    }
+
+    //Create imageview with either bitmap or resourceID
+    public ImageView createImageView(Bitmap b){
+        Log.d(TAG, "createImageView()");
+        final Bitmap tempBitmap = b;
+        ImageView IV = new ImageView(getApplicationContext());
+        IV.setId(0);
+        IV.requestLayout();
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth,reportImageHeight);
+        IV.setLayoutParams(layoutParams);
+        IV.setPadding(15,15,15,15);
+        IV.setImageBitmap(b);
+        IV.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ViewReportActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.dialog_view_photo_layout, null);
+                TextView dateTV = (TextView)alertLayout.findViewById(R.id.dialog_dateTV);
+                ImageView imageView = (ImageView)alertLayout.findViewById((R.id.imageView));
+                imageView.setImageBitmap(tempBitmap);
+                builder.setIcon(R.drawable.sunny)
+                        .setMessage("message")
+                        .setTitle("Title");
+                builder.show();
+            }
+
+            //IV.setScaleType(ImageView.ScaleType.FIT_XY);
+            // b = Bitmap.createScaledBitmap(b,IV.getWidth(),IV.getHeight(),false);
+        });
+        return IV;
+    }
+
+    public ImageView createImageView(int resourceID){
+        ImageView IV = new ImageView(getApplicationContext());
+        IV.setId(0);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth,reportImageHeight);
+        IV.setLayoutParams(layoutParams);
+        IV.setPadding(15,15,15,15);
+        IV.setImageResource(resourceID);
+        // IV.setScaleType(ImageView.ScaleType.FIT_XY);
+        return IV;
+    }
+
+    public void downloadPhoto(){
+        Log.d(TAG, "downloadPhoto()");
+        String filename = map.getDateOfEvent() + "_" + map.getUsername()+"_" + photoNumber + ".jpg";
+       String externalStorage = this.getCacheDir().toString()+"/";
+        final String filePath = externalStorage+filename;
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                this,
+                Constants.IDENTITY_POOL_ID, // Identity Pool ID
+                Regions.US_EAST_1           // Region
+        );
+
+        AmazonS3 s3Client = new AmazonS3Client(credentialsProvider);
+        try {
+            File file =new File(filePath);
+            TransferUtility transferUtility = new TransferUtility(s3Client, this);
+            TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
+
+            Log.d(TAG, "file.getPath(): " + file.getPath() );
+
+            transferObserver.setTransferListener(new TransferListener(){
+                @Override
+                public void onStateChanged(int id, TransferState state) {
+                    Log.d(TAG, "onStateChanged: + state: "+ state.toString());
+                    if(state == TransferState.COMPLETED){
+                        Log.i(TAG, "number Photos: " +numPhoto++);
+                        Bitmap b = BitmapFactory.decodeFile(filePath);
+                        horizontalLinearLayout.addView(createImageView(b));
+                    }
+                }
+                @Override
+                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    int percentage = (int) ((bytesCurrent+1) /(bytesTotal+1) * 100);
+                    Log.d(TAG, "onStateChanged(); bytesTotal: " +bytesTotal +" bytesCurrent: "+ bytesCurrent) ;
+                }
+                @Override
+                public void onError(int id, Exception ex) {
+                    Log.e(TAG, "onError",ex);
+                }
+            });
+
+        } catch (AmazonClientException ace) {
+            Log.d(TAG, "Caught an AmazonClientException, which means" +
+                    " the client encountered " +
+                    "an internal error while trying to " +
+                    "communicate with S3, " +
+                    "such as not being able to access the network.");
+            Log.d(TAG, "Error Message: " + ace.getMessage());
         }
     }
 }

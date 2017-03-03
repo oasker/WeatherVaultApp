@@ -1,12 +1,6 @@
 package com.example.oliverasker.skywarnmarkii.Mappers;
 
-//import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
-//import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;
-//import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBIndexRangeKey;
-////import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-////import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-////import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
-////import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
@@ -85,8 +79,8 @@ public class SkywarnWSDBMapper implements Serializable {
     private String WindDamage="|";
     private String LightningDamage="|";
     private String DamageComments="|";
-    private String SevereInjuries;
-    private String SevereFatalities;
+    private String SevereInjuries = "|";
+    private String SevereFatalities="|";
 
     ///////////////////////////////////////////////////////////////
     //                  Winter Weather                          //
@@ -110,10 +104,10 @@ public class SkywarnWSDBMapper implements Serializable {
     //////////////////////////////////////////////////////////////
     private float Rain = 9999;
     private float PrecipRate= 9999;
-    private String FloodComments;
-    private String RainEventComments;
-    private String RainEventFatalities;
-    private String RainEventInjuries;
+    private String FloodComments="|";
+    private String RainEventComments="|";
+    private String RainEventFatalities="|";
+    private String RainEventInjuries="|";
 
 
 
@@ -122,12 +116,21 @@ public class SkywarnWSDBMapper implements Serializable {
     //////////////////////////////////////////////////////////////
     //Coastal Flooding Specific Attributes
     private float StormSurge = 9999;
-    private String CoastalEventComments;
-    private String CoastalEventFatalities;
-    private String CoastalEventInjuries;
+    private String CoastalEventComments="|";
+    private String CoastalEventFatalities="|";
+    private String CoastalEventInjuries="|";
 
 
-      ////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
+    //                      Report Rating                       //
+    //////////////////////////////////////////////////////////////
+
+    private int UpVote =0 ;
+    private int DownVote = 0;
+    private int NetVote = 0;
+
+
+    ////////////////////////////////////////////////////////////////////////////////
      ///                             Constructors                                ///
     //////////////////////////////////////////////////////////////////////////////
 
@@ -751,6 +754,32 @@ public class SkywarnWSDBMapper implements Serializable {
     }
     public void setInjuryComments(String injuryComments) {
         InjuryComments = injuryComments;
+    }
+
+    @DynamoDBAttribute(attributeName = "UpVote")
+    public int getUpVote() {
+        return UpVote;
+    }
+
+    public void setUpVote(int upVote) {
+        UpVote = upVote;
+    }
+
+    @DynamoDBAttribute(attributeName = "DownVote")
+    public int getDownVote() {
+        return DownVote;
+    }
+
+    public void setDownVote(int downVote) {
+        DownVote = downVote;
+    }
+    @DynamoDBAttribute(attributeName = "NetVote")
+    public int getNetVote() {
+        return NetVote;
+    }
+
+    public void setNetVote(int netVote) {
+        NetVote = netVote;
     }
 }
 

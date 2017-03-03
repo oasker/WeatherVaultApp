@@ -41,11 +41,11 @@ public class GeneralSubmitReportFragment extends Fragment implements ISetTextInF
             HashMap<String, String> s= (HashMap<String, String>) b.getSerializable("hMap");
         }
 
-        UsernameTV = (TextView)view.findViewById(R.id.username_field_tv);
-        UsernameTV.setText(reportValues.get("Username"));
-
-        ZipTV = (TextView)view.findViewById(R.id.zip_field_tv);
-        ZipTV.setText(reportValues.get("ZipCode"));
+//        UsernameTV = (TextView)view.findViewById(R.id.username_field_tv);
+//        UsernameTV.setText(reportValues.get("Username"));
+//
+//        ZipTV = (TextView)view.findViewById(R.id.zip_field_tv);
+//        ZipTV.setText(reportValues.get("ZipCode"));
 
         WeatherEventTV = (TextView)view.findViewById(R.id.weather_event_field_tv);
         WeatherEventTV.setText(reportValues.get("WeatherEvent"));
@@ -56,11 +56,11 @@ public class GeneralSubmitReportFragment extends Fragment implements ISetTextInF
         LatitudeTV = (TextView)view.findViewById(R.id.lattitude_field_tv);
         LatitudeTV.setText(reportValues.get("Latitude"));
 
-        StreetTV = (TextView)view.findViewById(R.id.street_field_tv);
-        StreetTV.setText(reportValues.get("Street"));
+//        StreetTV = (TextView)view.findViewById(R.id.street_field_tv);
+//        StreetTV.setText(reportValues.get("Street"));
 
-        CityTV = (TextView)view.findViewById(R.id.city_field_tv);
-        CityTV.setText(reportValues.get("City"));
+//        CityTV = (TextView)view.findViewById(R.id.city_field_tv);
+//        CityTV.setText(reportValues.get("City"));
 
         CommentsTV = (TextView) view.findViewById(R.id.comments_field_tv);
         CommentsTV.setText(reportValues.get("Comments"));
@@ -68,8 +68,8 @@ public class GeneralSubmitReportFragment extends Fragment implements ISetTextInF
         CurrentTempTV = (TextView) view.findViewById(R.id.current_temp_field_tv);
         CurrentTempTV.setText(reportValues.get("CurrentTemperature"));
 
-        StateTV = (TextView)view.findViewById(R.id.state_field_tv);
-        StateTV.setText(reportValues.get("State"));
+//        StateTV = (TextView)view.findViewById(R.id.state_field_tv);
+//        StateTV.setText(reportValues.get("State"));
         return view;
     }
 

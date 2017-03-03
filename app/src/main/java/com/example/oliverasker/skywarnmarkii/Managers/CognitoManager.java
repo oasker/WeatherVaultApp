@@ -56,7 +56,7 @@ import java.util.Map;
 
 public class CognitoManager extends Activity implements ResetPasswordDialog.ResetPasswordDialogListener, ResetPasswordEnterCodeDialog.ResetPasswordEnterCodeDialogListener {
     private static final String TAG = "CognitoManager";
-    private CognitoUserPool userPool = new CognitoUserPool(this, Constants.cognitoPoolID, Constants.cognitoAppClientId,null);
+    private CognitoUserPool userPool = new CognitoUserPool(this, Constants.cognitoPoolID, Constants.cognitoAppClientId, null);
     private CognitoUser user;
     private int signInUserReturnResult = Constants.SIGN_UP_FAILED;
     ForgotPasswordContinuation forgotPasswordContinuation;
@@ -243,6 +243,7 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
     }
     public CognitoUser setUserFromId(String userId) {
         user = userPool.getUser(userId);
+        Log.d(TAG, "USERID: " + user.getUserId());
         return user;
     }
 
@@ -442,9 +443,6 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
 }
 
 
-
-
-
     //////////////////////////////////////////////////////////////
     //                  Resend Confirmation Code                //
     //////////////////////////////////////////////////////////////
@@ -461,7 +459,6 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
             public void onFailure(Exception exception) {
                 Log.e(TAG, "requestConfirmationCode() onFailure",exception);
                try {
-
                }
                    catch(InvalidParameterException er){
                        Log.e(TAG, "requestConfirmationCode() onFailure inside InvaldParameters catch" );
@@ -487,7 +484,6 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
                // UserInformationModel.getInstance().setUserIsVerified(true);
                 //  Code below gives User singleton credentials to access other AWS resources
                 //  (DynamoDB, S3...etc)
-
 
                 UserInformationModel.setCognitoUserSession(userSession);
 
@@ -560,13 +556,6 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
             }
         };
         user.getSessionInBackground(authenticationHandler);
-
-//        Log.e(TAG, "confirm sign up setResult()");
-//        Intent i = new Intent();
-//        i.putExtra("login_success_or_failure", signInUserReturnResult);
-//        setResult(Activity.RESULT_OK,i);
-//        finish();
-
     }
 
 
@@ -655,11 +644,6 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
         };
 
         user.getDetailsInBackground(getDetailsHandler);
-
-//        Intent i = new Intent();
-//        i.putExtra("attributeArray",attributes);
-//        setResult(RESULT_OK,i);
-//        finish();
     }
 
     public void launchConfirmUser(){

@@ -16,7 +16,7 @@ public class ConfirmSubmitReportActivity extends AppCompatActivity{
     @Override
     public void onCreate(Bundle b){
         super.onCreate(b);
-        setContentView(R.layout.confirm_submit_report_activity_layout);
+        setContentView(R.layout.activity_confirm_submit_report_layout);
     }
 
     public void launchUserHome(View v){

@@ -101,7 +101,7 @@ public class GetUserSubmittedPhotosTask extends AsyncTask {
                     File f = new File(Environment.getExternalStorageDirectory().toString());
 
                     for (File ff : f.listFiles()) {
-                        Log.d(zzs.TAG, "List Files: ff; " + ff);
+                       // Log.d(zzs.TAG, "List Files: ff; " + ff);
                     }
 
 //            bitmap = BitmapFactory.decodeFile(file.getPath());

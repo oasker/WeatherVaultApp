@@ -5,14 +5,10 @@ package com.example.oliverasker.skywarnmarkii;
  */
 
 public class Constants {
-
-
-
     //////////////////////////////////////////////////////////////////////
     /// DynamoDB Constants
     public static final String IDENTITY_POOL_ID ="us-east-1:75c2afbc-dfba-4e27-bdc0-0d7e65027111";
-     public static final String TEST_TABLE_NAME="SkywarnWSDB_rev4";
-   // public static final String TEST_TABLE_NAME="Test_Table";
+    public static final String TEST_TABLE_NAME="SkywarnWSDB_rev4";
     //////////////////////////////////////////////////////////////////////
 
 
@@ -93,6 +89,7 @@ public class Constants {
 
     //Get details Handler Error Codes
     public static final String GET_USER_ATTRIBUTES_ERROR_NOT_AUTHENTICATED = "user is not authenticated";
+
 
 
 }

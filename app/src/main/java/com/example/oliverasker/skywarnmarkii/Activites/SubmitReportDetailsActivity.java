@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMappingException;
@@ -19,12 +21,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
+import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Fragments.CoastalFloodingSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.GeneralSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.RainFloodSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.SevereWeatherSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.WinterSubmitReportFragment;
-import com.example.oliverasker.skywarnmarkii.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility;
@@ -71,6 +73,9 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     private EditText WindDamage;
     private EditText LightningDamage;
     private EditText DamageComments;
+    private Spinner SevereWeatherTypeSpinner;
+    private Spinner WindDirectionSpinner;
+
 
     //Winter
     private EditText Snowfall;
@@ -195,16 +200,51 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         }
 
         if (isSevereEvent) {
-            SevereType = (EditText) findViewById(R.id.severe_type_field_tv);
+            //SevereType = (EditText) findViewById(R.id.severe_type_field_tv);
             WindSpeed = (EditText) findViewById(R.id.wind_speed_field_tv);
             WindGust = (EditText) findViewById(R.id.wind_gust_field_tv);
-            WindDirection = (EditText) findViewById(R.id.wind_direction_field_tv);
+           // WindDirection = (EditText) findViewById(R.id.wind_direction_field_tv);
             HailSize = (EditText) findViewById(R.id.hail_size_field_tv);
             Tornado = (EditText) findViewById(R.id.tornado_field_tv);
             Barometer = (EditText) findViewById(R.id.barometer_field_tv);
             LightningDamage = (EditText) findViewById(R.id.lightning_damage_field_tv);
             DamageComments = (EditText) findViewById(R.id.damage_comments_field_tv);
             WindDamage = (EditText) findViewById(R.id.wind_damage_field_tv);
+            //  Severe weather Spinners
+            SevereWeatherTypeSpinner = (Spinner)findViewById(R.id.severe_weather_spinner);
+            WindDirectionSpinner = (Spinner)findViewById(R.id.severe_wind_direction_spinner);
+
+            SevereWeatherTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String severeWeatherItem = parent.getItemAtPosition(position).toString();
+                    Log.d(TAG, "SevereWeatherTypeItem: " + severeWeatherItem);
+                    report.put("SevereWeatherType", new AttributeValue().withS(severeWeatherItem));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    report.put("SevereType", new AttributeValue().withS("General"));
+                }
+            });
+
+            WindDirectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String windDirectionItem = parent.getItemAtPosition(position).toString();
+                    Log.d(TAG, "WindDirectionItem: " + windDirectionItem);
+                    report.put("WindDirection", new AttributeValue().withS(windDirectionItem));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    //report.put("WindDirection", new AttributeValue().withS("General"));
+                }
+            });
+
+
+
+
 //
             //if (checkIfEditTextFieldEmpty(list)) {
                 report.put("WeatherEvent", new AttributeValue().withS("Severe"));
@@ -268,17 +308,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
                 report.put("Whiteout", new AttributeValue().withS(Whiteout.getText().toString()));
             if (!Thundersnow.getText().toString().equals(""))
                 report.put("Thundersnow", new AttributeValue().withS(Thundersnow.getText().toString()));
-////            reportToSubmit.setWeatherEvent("Winter");
-////            reportToSubmit.setSnowfall(Float.parseFloat(Snowfall.getText().toString()));
-////            reportToSubmit.setSnowDepth(Float.parseFloat(SnowDepth.getText().toString()));
-////            reportToSubmit.setSnowfallRate(Float.parseFloat(SnowfallRate.getText().toString()));
-////            reportToSubmit.setWaterEquivalent(Float.parseFloat(WaterEquivalent.getText().toString()));
-////            reportToSubmit.setFreezingRain(FreezingRain.getText().toString());
-////            reportToSubmit.setSnowFallSleet(Float.parseFloat((Sleet.getText().toString())));
-////            reportToSubmit.setBlowDrift(BlowDrift.getText().toString());
-////            reportToSubmit.setWhiteout(Whiteout.getText().toString());
-////            reportToSubmit.setThundersnow(Thundersnow.getText().toString())
-//        }
         }
 
             Calendar cal = Calendar.getInstance();
@@ -290,7 +319,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             report.put("DateSubmittedEpoch", new AttributeValue().withN(String.valueOf(System.currentTimeMillis())));
 
 
-        keyArray = new String[report.size()];
+            keyArray = new String[report.size()];
             attributeValArray = new AttributeValue[report.size()];
 
            // Log.d(TAG, "Iterating through reports HMap:---END ");

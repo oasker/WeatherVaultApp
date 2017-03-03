@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii;
+package com.example.oliverasker.skywarnmarkii.Callbacks;
 
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 

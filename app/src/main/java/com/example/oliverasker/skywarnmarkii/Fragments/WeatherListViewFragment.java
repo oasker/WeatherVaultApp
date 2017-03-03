@@ -14,7 +14,7 @@ import android.widget.ListView;
 import com.example.oliverasker.skywarnmarkii.Activites.MapsActivity;
 import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
-import com.example.oliverasker.skywarnmarkii.ICallback;
+import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetAllUserReportsTask;
@@ -99,10 +99,6 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
          *  We need to use the data immediately, so send data to listview
          */
         data = null;
-        //data = null;
-//        listView = null;
-//        listView = (ListView)findViewById(R.id.weather_list_view);
-        //listView = (ListView) findViewById(R.id.listView);
         data = result.toArray(new SkywarnWSDBMapper[result.size()]);
 
         for(int  i =0; i < result.size(); i ++){

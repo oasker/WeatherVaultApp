@@ -14,8 +14,8 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
+import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
-import com.example.oliverasker.skywarnmarkii.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
@@ -37,26 +37,12 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
     AmazonDynamoDBClient ddb;
     Context mContext;
     private String date;
+    private String user;
 
     public ICallback delegate = null;
     ArrayList<SkywarnWSDBMapper> weatherList = null;
 
-    public void setDelegate(ICallback delegate){
-        this.delegate=delegate;
-    }
 
-    public void setReportAttributesArray(String[] reportAttr){
-        reportAttributes=reportAttr;
-        for(String s: reportAttributes)
-            Log.d(TAG, "setReportAttributesArray: " +s);
-    }
-
-    public void setDate(String Date){
-        date = Date;
-    }
-    public void setContext(Context c){
-        mContext=c;
-    }
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -75,14 +61,13 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
         ddb.setRegion(Region.getRegion(Regions.US_EAST_1));
         DynamoDBMapper mapper = new DynamoDBMapper(ddb);
 
-        // DynamoDBManager.query();
-
 
 
         //FINALLY WORKS
         //https://aws.amazon.com/blogs/mobile/amazon-dynamodb-on-mobile-part-4-local-secondary-indexes/
         Map keyCondition = new HashMap();
 
+        //ToDo: For Update query value for individual users, not just rob
         //Create condition for hashkey
         Condition hashKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.EQ.toString())
@@ -103,7 +88,6 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
 
         QueryResult queryResult = ddb.query(queryRequest);
         List<Map<String, AttributeValue>> valMap = queryResult.getItems();
-
 
         Log.i(TAG, "NUMBER RETURNED REPORTS: "+queryResult.getCount().toString());
         for(Map item : queryResult.getItems()) {
@@ -198,6 +182,7 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
                 reportEntry.setStormSurge(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("StormSurge").toString())));
 
 
+
             ////////// Severe Attributes //////////
             if(item.containsKey("HailSize"))
                 reportEntry.setHailSize(Utility.parseDynamoDBResultValuesToString(item.get("HailSize").toString()));
@@ -222,10 +207,19 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
             if(item.containsKey("NumberOfInjuries"))
                 reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
 
+
+            //////////  Report Rating Fiels //////////
+            if(item.containsKey("NetVote"))
+                reportEntry.setNetVote(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NetVote").toString())));
+            if(item.containsKey("UpVote"))
+                reportEntry.setNetVote(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("UpVote").toString())));
+            if(item.containsKey("DownVote"))
+                reportEntry.setNetVote(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("DownVote").toString())));
+
+
             Log.d(TAG, "adding report with epoch to list: " + String.valueOf(reportEntry.getDateSubmittedEpoch()));
             reportList.add(reportEntry);
             reportEntry =null;
-            //Log.d(TAG, "report: " + item.values());
             for(Object items: item.keySet())
                 Log.d(TAG, items.toString());
         }
@@ -256,14 +250,35 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-//        SkywarnWSDBMapper test = new SkywarnWSDBMapper();
-//                test.setDateSubmittedEpoch((long)12312442);
-//                test.setDateSubmittedString("2/2/2");
+
         for(int i=0; i < reportList.size();i++)
             Log.d(TAG, "onPostExecute Values: "+String.valueOf(reportList.get(i).getDateSubmittedEpoch()));
         delegate.processFinish(reportList);
         delegate = null;
     }
+
+
+    //Getters and Setters
+    public void setDelegate(ICallback delegate){
+        this.delegate=delegate;
+    }
+    public void setReportAttributesArray(String[] reportAttr){
+        reportAttributes=reportAttr;
+        for(String s: reportAttributes)
+            Log.d(TAG, "setReportAttributesArray: " +s);
+    }
+    public void setDate(String Date){
+        date = Date;
+    }
+    public void setContext(Context c){
+        mContext=c;
+    }
+    public void setUser(String User){
+        user = User;
+
+    }
+
+
 
 
 }

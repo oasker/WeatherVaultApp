@@ -47,7 +47,8 @@
         android:layout_alignStart="@+id/image_view"
         android:layout_alignEnd="@+id/image_view"
         android:id="@+id/report_rating_row_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:textAlignment="center" />
 
     <TextView
         android:text="TextView"

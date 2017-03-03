@@ -8,7 +8,7 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMappingE
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.example.oliverasker.skywarnmarkii.Activites.MainActivity;
-import com.example.oliverasker.skywarnmarkii.ICallback;
+import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 
 import java.util.ArrayList;

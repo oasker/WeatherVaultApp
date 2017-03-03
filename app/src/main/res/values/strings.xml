@@ -180,7 +180,9 @@
     <string name="date_submitted">Date Submitted:</string>
     <string name="event">Event:</string>
     <string name="severe_weather_features">Severe Weather Features</string>
-
+    <string name="google_geocoder_api_key">AIzaSyDH2J3guJF68Eet85VUrfMPpo2U2iLcI-E</string>
+    <string name="submited_by">"Submitted by  "</string>
+    <string name="rating">"Rating: "</string>
 
     <string-array name="ItemsArray">
         <item name="Item1" />
@@ -188,8 +190,23 @@
         <item name="Item3" />
     </string-array>
 
-    <string-array name="reportFields">
-        <item name ="DateSubmittedEpoch"/>
+    <string-array name="severe_weather_spinner_values_array">
+        <item name ="Tornado"/>
+        <item name = "Thunderstorm"/>
+        <item name ="Non-Thunderstorm"/>
+        <item name ="Tropical Storm"/>
+        <item name ="Hurricane"/>
+    </string-array>
+
+    <string-array name = "wind_direction_values_array">
+        <item name = "North"/>
+        <item name = "South"/>
+        <item name = "East"/>
+        <item name = "West"/>
+        <item name = "Northeast "/>
+        <item name = "Southeast"/>
+        <item name = "Northwest"/>
+        <item name = "Southwest"/>
 
     </string-array>
 </resources>

@@ -49,17 +49,11 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         TextView eventDescript = (TextView) customView.findViewById(R.id.event_description_row_text);
         TextView timeTV =(TextView)customView.findViewById(R.id.time_row_text);
         TextView commentsTV = (TextView) customView.findViewById(R.id.view_report_activity_comments);
+        TextView ratingTV = (TextView)customView.findViewById(R.id.report_rating_row_text);
 
         //Image to represent event
         ImageView imageView = (ImageView)customView.findViewById(R.id.image_view);
 
-        // Save fields to ViewHolder
-        ViewHolder.date = dateTV;
-        ViewHolder.location = locationTV;
-        ViewHolder.username = usernameTV;
-        ViewHolder.weatherEvent =weatherEventTV;
-        ViewHolder.comments = messageUserTextVT;
-        ViewHolder.weatherImage = imageView;
 
         //  Set text fields in layout to value of row items
         dateTV.setText("Submitted On: " +dbRow.getDateSubmittedString());
@@ -75,6 +69,8 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         weatherEventTV.setText(dbRow.getWeatherEvent() );
         eventDescript.setText(dbRow.getComments());
         dateTV.setText(Utility.epochToDateTimeString(dbRow.getDateOfEvent()));
+        ratingTV.setText("Rating: " + String.valueOf(dbRow.getNetVote()));
+        //ratingTV.setText("Working?");
 
         //  Set Icon Image Based on Weather Type
         String weatherType = dbRow.getWeatherEvent().toUpperCase();
@@ -89,6 +85,15 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
             imageView.setImageResource(R.drawable.coastal);
         if(weatherType.toUpperCase().contains("GENERAL"))
             imageView.setImageResource(R.drawable.sunny);
+
+
+        // Save fields to ViewHolder
+        ViewHolder.date = dateTV;
+        ViewHolder.location = locationTV;
+        ViewHolder.username = usernameTV;
+        ViewHolder.weatherEvent =weatherEventTV;
+        ViewHolder.comments = messageUserTextVT;
+        ViewHolder.weatherImage = imageView;
         return customView;
     }
 

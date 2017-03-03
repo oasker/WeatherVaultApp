@@ -26,8 +26,8 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
+import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Fragments.ReportListViewFragment;
-import com.example.oliverasker.skywarnmarkii.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetAllRecordsForDayTask;
@@ -315,6 +315,7 @@ public class QueryLauncherActivity extends AppCompatActivity implements ICallbac
         });
         result = null;
     }
+
 
     @Override
     public int describeContents() {

@@ -23,7 +23,7 @@ public class UserInformationModel {
     private static String lastName="TEST LastName";
     private static String phone;
     private static String email;
-    private static String username ="TEST USERNAME";
+    private static String username ="oasker";
     private static String password;
     private static String userID="TEST USERID";
     private static int numberOfImages = 0;
