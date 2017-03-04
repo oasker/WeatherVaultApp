@@ -460,6 +460,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    //ToDo: submit reports when this button is clicked instead of at time of selection
     //check if user has button Disable button if user does not have camera
     private void launchConfirmtSubmitReport() {
         Intent intent = new Intent(this, ConfirmSubmitReportActivity.class);
