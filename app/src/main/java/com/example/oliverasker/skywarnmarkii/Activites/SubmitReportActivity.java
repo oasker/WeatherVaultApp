@@ -451,6 +451,7 @@ class GetReportCountyTask extends AsyncTask<Void, Void, Void> {
                             Log.d(TAG, "OBGDGA " + obj);
                             Log.d(TAG, "ARRAYdfdasf" + array2.toString());
                            Log.d(TAG, "sdlfjadslkfja: " + array4);
+
                             //JSONObject county = array2.getJSONObject("long_name");
                            // Log.d(TAG, "COUNTYYY: " + county);
                             //Log.i(TAG, "ARRAY @:  " + array2.toString());

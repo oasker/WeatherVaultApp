@@ -3,13 +3,13 @@ package com.example.oliverasker.skywarnmarkii.Activites;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,24 +24,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.example.oliverasker.skywarnmarkii.Constants;
-import com.example.oliverasker.skywarnmarkii.Fragments.PreviewUserSubmitPhotoFragment;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 /**
  * Created by oliverasker on 1/2/17.
@@ -63,14 +63,16 @@ public class LaunchCameraActivity extends AppCompatActivity {
     private static final File EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard");
     Uri photoURI;
     Bitmap bitmap;
+    //Bitmap existingBitmap;
+
 
 
     Button submitButton;
     Button addExistingPhotostoReportButton;
     Button takeNewPhotoButton;
     private Button addPhotostoReportButton;
-    private ImageView newPhotoIV;
-    private ImageView newPhotoIV2;
+
+    private LinearLayout previewPhotoLayout;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static int fragmentCount;
@@ -102,28 +104,8 @@ public class LaunchCameraActivity extends AppCompatActivity {
         Intent i = getIntent();
         //epoch = Float.parseFloat(i.getStringExtra("reportID"));
 
-        newPhotoIV = (ImageView) findViewById(R.id.user_first_IV);
-        newPhotoIV2= (ImageView) findViewById(R.id.user_second_IV);
 
-
-       /*
-        submitButton = (Button) findViewById(R.id.download_button);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                if (Build.VERSION.SDK_INT >= 19) {
-                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                } else {
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                }
-                intent.setType("image/*");
-                startActivityForResult(intent, 0);
-            }
-        });
-        */
+        previewPhotoLayout = (LinearLayout)findViewById(R.id.preview_photo_holder);
 
         /////////////////////////////////////////////////////
         //              TAKE NEW PHOTO                     //
@@ -141,20 +123,16 @@ public class LaunchCameraActivity extends AppCompatActivity {
                 }
         );
 
-
         //BROWSE EXISTING PHOTOS
         addExistingPhotostoReportButton = (Button) findViewById(R.id.upload_existing_button);
         addExistingPhotostoReportButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View arg0) {
-
-                    // in onCreate or any event where your want the user to
-                    // select a file
+                    // in onCreate or any event where your want the user to select a file
                     Intent intent = new Intent();
-                    intent.setType("image/*");
+                    intent.setType("image/* video/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent,
-                            "Select Picture"), SELECT_PICTURE);
-        }
+                     startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                }
         });
 
         //SEND PHOTOS TO S3
@@ -172,11 +150,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
         //https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
         /////////////////// ///////////////////
         transferUtility = Utility.getTransferUtility(this);
-      //  checkedIndex = INDEX_NOT_CHECKED;
-       // transferRecordMaps = new ArrayList<HashMap<String, Object>>();
     }
-
-
 
     static File getDirectory(String variableName, String defaultPath) {
         String path = System.getenv(variableName);
@@ -201,7 +175,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
         Log.d(TAG, "createImageFile(): mCurrentPhotoPath = " + mCurrentPhotoPath);
         return image;
     }
-
 
     private void launchVideoCamera(View view){
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
@@ -233,8 +206,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
         }
     }
 
-
-
     public  boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -259,76 +230,52 @@ public class LaunchCameraActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         fragmentCount++;
-
         //New Photo
         if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_TAKE_PHOTO){
 
             // Log.d(TAG, "Uri: " + data.getData().toString());
             // Uri uri = data.getData();
-            Toast.makeText(this,"Image saved to: " + photoURI.toString(),Toast.LENGTH_LONG).show();
-            Toast.makeText(this,"Result Code: " + resultCode, Toast.LENGTH_LONG).show();
+            Log.i(TAG, "Video saved to: " + photoURI.toString());
+            Log.i(TAG, "Result Code: " + resultCode);
             try {
                 String path = getPath(photoURI);
-                beginUpload(path);
-                beginUpload(mCurrentPhotoPath);
+                //beginUpload(path);
+                //beginUpload(mCurrentPhotoPath);
 
-
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoURI);
-                if(pictureCount==1)
-                    newPhotoIV.setImageBitmap(bitmap);
-                if(pictureCount==2)
-                    newPhotoIV2.setImageBitmap(bitmap);
-
-                //newPhotoIV.setImageBitmap(bitmap);
-                //Add fragment to activity previewing photo
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                PreviewUserSubmitPhotoFragment previewPhotoFrag = new PreviewUserSubmitPhotoFragment();
-                fragmentTransaction.add(R.id.first_framelayout,previewPhotoFrag,"Photo1");
-                //previewPhotoFrag.setImage(bitmap);
-                //fragmentTransaction.commit();
-
+                Bitmap newBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
+                previewPhotoLayout.addView(createdScaledImageView(newBitmap));
+                createdScaledImageView(newBitmap);
             }catch (URISyntaxException e){
                 Log.d(TAG, "URISyntaxException",e);
             }
             catch (IOException e){
                 Log.d(TAG, "IOException",e);
             }
-//             //Add fragment to activity previewing photo
-//            FragmentManager fragmentManager = getFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            PreviewUserSubmitPhotoFragment previewPhotoFrag = new PreviewUserSubmitPhotoFragment();
-//            previewPhotoFrag.setImage(bitmap);
-//            fragmentTransaction.add(R.id.first_framelayout,previewPhotoFrag,"Photo1");
-//            fragmentTransaction.commit();
         }
 
 
         //Existing Photo
         if(resultCode ==Activity.RESULT_OK && requestCode == SELECT_PICTURE){
            Uri selectedImageUri = data.getData();
-            try {
-
-                selectedImagePath = getPath(selectedImageUri);
-                mCurrentPhotoPath = selectedImagePath;
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoURI);
-                newPhotoIV.setImageBitmap(bitmap);
-                beginUpload(selectedImagePath);
-            }catch(URISyntaxException ex){
-                Log.d(TAG, "onActivityResult(): Existing Photo");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            Bitmap existingBitmap = null;
+            if(data!=null){
+                try{
+                    existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData() );
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
             }
+            createdScaledImageView(existingBitmap);
+            ImageView existingImageIV = createdScaledImageView(existingBitmap);
+            previewPhotoLayout.addView(existingImageIV);
         }
 
         //For Videos
         if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
             // Log.d(TAG, "Uri: " + data.getData().toString());
             // Uri uri = data.getData();
-            Toast.makeText(this,"Video saved to: " + photoURI.toString(),Toast.LENGTH_LONG).show();
-            Toast.makeText(this,"Result Code: " + resultCode, Toast.LENGTH_LONG).show();
+           Log.i(TAG, "Video saved to: " + photoURI.toString());
+           Log.i(TAG, "Result Code: " + resultCode);
             try {
                 String path = getPath(photoURI);
                 beginUpload(path);
@@ -337,6 +284,67 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
            // mVideoView.setVideoURI(photoURI);
         }
+    }
+
+    private TableRow createTableRow(Bitmap bitmap, String text){
+        TableRow tableRow = new TableRow(this);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        ImageView newIV = createdScaledImageView(bitmap);
+        linearLayout.addView(newIV);
+        tableRow.addView(linearLayout);
+
+        return tableRow;
+    }
+
+    private ImageView createdScaledImageView(Bitmap bitmap){
+        int width =0;
+        int height =0;
+        ImageView newImageView = new ImageView(this);
+
+        try{
+            width = bitmap.getWidth();
+        }catch (NullPointerException e) {
+            throw new NoSuchElementException("Can't find image");
+        }
+        height = bitmap.getHeight();
+        int bounding = dpToPx(250);
+//        Log.i("Test", "original width = " + Integer.toString(width));
+//        Log.i("Test", "original height = " + Integer.toString(height));
+//        Log.i("Test", "bounding = " + Integer.toString(bounding));
+
+        float xScale = ((float) bounding/width);
+        float yScale = ((float) bounding/height);
+        float scale = (xScale <= yScale) ? xScale:yScale;
+//        Log.i("Test", "xScale = " + Float.toString(xScale));
+//        Log.i("Test", "yScale = " + Float.toString(yScale));
+//        Log.i("Test", "scale = " + Float.toString(scale));
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale,scale);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,0,0,width,height,matrix,true);
+        width = scaledBitmap.getWidth();
+        height=scaledBitmap.getHeight();
+
+        BitmapDrawable result = new BitmapDrawable(getApplicationContext().getResources(),scaledBitmap);
+//        Log.i("Test", "scaled width = " + Integer.toString(width));
+//        Log.i("Test", "scaled height = " + Integer.toString(height));
+        newImageView.setImageDrawable(result);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50));
+        params.setMargins(10,10,10,10);
+        params.width = width;
+        params.height = height;
+        newImageView.setLayoutParams(params);
+        
+        newImageView.setImageBitmap(bitmap);
+       // previewPhotoLayout.addView(newImageView,params);
+        return newImageView;
+    }
+    private int dpToPx(int dp){
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((float)dp*density);
     }
 
 
@@ -460,6 +468,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         /*
         // Clear transfer listeners to prevent memory leak, or
         // else this activity won't be garbage collected.

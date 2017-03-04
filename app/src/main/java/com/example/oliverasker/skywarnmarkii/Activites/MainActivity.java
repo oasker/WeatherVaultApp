@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
          // Intent intent = new Intent(this, LoginActivity.class);
         //Intent intent = new Intent(this, TabbedUserHomeActivity.class);
        // Intent intent = new Intent(this, QueryLauncherActivity.class);
-        //Intent intent =new Intent(this, launchCameraActivity.class);
-        Intent intent = new Intent(this,SubmitReportActivity.class);
+        Intent intent =new Intent(this, LaunchCameraActivity.class);
+        //Intent intent = new Intent(this,SubmitReportActivity.class);
         startActivity(intent);
     }
 }

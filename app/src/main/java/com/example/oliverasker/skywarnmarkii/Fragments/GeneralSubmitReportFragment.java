@@ -41,26 +41,6 @@ public class GeneralSubmitReportFragment extends Fragment implements ISetTextInF
             HashMap<String, String> s= (HashMap<String, String>) b.getSerializable("hMap");
         }
 
-//        UsernameTV = (TextView)view.findViewById(R.id.username_field_tv);
-//        UsernameTV.setText(reportValues.get("Username"));
-//
-//        ZipTV = (TextView)view.findViewById(R.id.zip_field_tv);
-//        ZipTV.setText(reportValues.get("ZipCode"));
-
-//        WeatherEventTV = (TextView)view.findViewById(R.id.weather_event_field_tv);
-//        WeatherEventTV.setText(reportValues.get("WeatherEvent"));
-//
-//        LongitudeTV = (TextView)view.findViewById(R.id.longitude_field_tv);
-//        LongitudeTV.setText(reportValues.get("Longitude"));
-//
-//        LatitudeTV = (TextView)view.findViewById(R.id.lattitude_field_tv);
-//        LatitudeTV.setText(reportValues.get("Latitude"));
-
-//        StreetTV = (TextView)view.findViewById(R.id.street_field_tv);
-//        StreetTV.setText(reportValues.get("Street"));
-
-//        CityTV = (TextView)view.findViewById(R.id.city_field_tv);
-//        CityTV.setText(reportValues.get("City"));
 
         CommentsTV = (TextView) view.findViewById(R.id.comments_field_tv);
         CommentsTV.setText(reportValues.get("Comments"));
