@@ -73,7 +73,6 @@ public class MapsActivity extends FragmentActivity implements
                 Log.d(TAG, "data.length:  " + receivedData.length);
 
                 for (int i = 0; i < receivedData.length; i++) {
-
                     String title = createMarkerTitle(receivedData[i]);
 
                      LatLng ll = MapUtility.getLocationFromAddress(this,title);

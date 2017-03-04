@@ -143,6 +143,8 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         isCoastalEvent = (eventBools.containsKey("coastalFloodBool") && eventBools.get("coastalFloodBool"));
         isRainEvent = (eventBools.get("rainFloodBool") && eventBools.get("rainFloodBool"));
 
+        //fragTransaction.add(R.id.general_info_container, generalInfoFrag, "generalInfoFrag");
+
         if(isWinterEvent | isSevereEvent | isCoastalEvent | isRainEvent){
         if(isWinterEvent) {
             fragTransaction.add(R.id.first_container, winterFrag, "winterFrag");

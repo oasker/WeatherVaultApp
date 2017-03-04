@@ -47,14 +47,14 @@ public class GeneralSubmitReportFragment extends Fragment implements ISetTextInF
 //        ZipTV = (TextView)view.findViewById(R.id.zip_field_tv);
 //        ZipTV.setText(reportValues.get("ZipCode"));
 
-        WeatherEventTV = (TextView)view.findViewById(R.id.weather_event_field_tv);
-        WeatherEventTV.setText(reportValues.get("WeatherEvent"));
-
-        LongitudeTV = (TextView)view.findViewById(R.id.longitude_field_tv);
-        LongitudeTV.setText(reportValues.get("Longitude"));
-
-        LatitudeTV = (TextView)view.findViewById(R.id.lattitude_field_tv);
-        LatitudeTV.setText(reportValues.get("Latitude"));
+//        WeatherEventTV = (TextView)view.findViewById(R.id.weather_event_field_tv);
+//        WeatherEventTV.setText(reportValues.get("WeatherEvent"));
+//
+//        LongitudeTV = (TextView)view.findViewById(R.id.longitude_field_tv);
+//        LongitudeTV.setText(reportValues.get("Longitude"));
+//
+//        LatitudeTV = (TextView)view.findViewById(R.id.lattitude_field_tv);
+//        LatitudeTV.setText(reportValues.get("Latitude"));
 
 //        StreetTV = (TextView)view.findViewById(R.id.street_field_tv);
 //        StreetTV.setText(reportValues.get("Street"));

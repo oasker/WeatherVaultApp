@@ -202,8 +202,6 @@ public class SubmitReportActivity extends AppCompatActivity implements JsonObjec
             //Add elements to row object and pass to next activity
             datePicker = (DatePicker) findViewById(R.id.submit_report_date_picker);
             String date = datePicker.getDayOfMonth() + "/" + datePicker.getMonth() + "/" + datePicker.getYear();
-
-
 //            if(!Street.getText().toString().equals(""))
 //                report.put("Street", new AttributeValue().withS(Street.getText().toString()));
 //            if(!Zip.getText().toString().equals(""))
@@ -244,7 +242,6 @@ public class SubmitReportActivity extends AppCompatActivity implements JsonObjec
 //            //report.put("County", new AttributeValue().withS(county));
 //
 //           // Log.i(TAG, "lat/long: " + latitude + ", " + longitude + "  county: " + county);
-
 
             if (sH == null) {
                 //Add values to stateholder
@@ -445,9 +442,20 @@ class GetReportCountyTask extends AsyncTask<Void, Void, Void> {
                             JSONObject reportGeoCodeDetails = new JSONObject(response);
                             JSONArray array = reportGeoCodeDetails.getJSONArray("results");
                             JSONObject array2 = array.getJSONObject(0);
-                            Log.i(TAG, "ARRAY @:  " + array2.toString());
 
-                            Log.i(TAG, String.valueOf(array));
+                            JSONArray array4 = array2.getJSONArray("address_components");
+                               JSONObject obj = (JSONObject) array4.get(3);
+                            String j = obj.getString("long_name");
+
+                            Log.d(TAG , "JJJ: " + j);
+                            Log.d(TAG, "OBGDGA " + obj);
+                            Log.d(TAG, "ARRAYdfdasf" + array2.toString());
+                           Log.d(TAG, "sdlfjadslkfja: " + array4);
+                            //JSONObject county = array2.getJSONObject("long_name");
+                           // Log.d(TAG, "COUNTYYY: " + county);
+                            //Log.i(TAG, "ARRAY @:  " + array2.toString());
+
+                            //Log.i(TAG, String.valueOf(array));
                             //JSONArray array = reportGeoCodeDetails.getJSONArray("results").getJSONObject(0).getJSONArray("address_components");
                             //String long_name1 = reportGeoCodeDetails.getJSONObject(0).getString("long_name");
 
@@ -471,8 +479,6 @@ class GetReportCountyTask extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
-
-
     @Override
     protected void onPostExecute(Void aVoid) {
         Log.i(TAG, "onPostExecute()");
@@ -487,11 +493,6 @@ class GetReportCountyTask extends AsyncTask<Void, Void, Void> {
 
 
     //Setters and Getters
-
-    public Context getmContext() {
-        return mContext;
-    }
-
     public void setmContext(Context mContext) {
         this.mContext = mContext;
     }
@@ -502,10 +503,6 @@ class GetReportCountyTask extends AsyncTask<Void, Void, Void> {
 
     public void setRes(Resources res) {
         this.res = res;
-    }
-
-    public JsonObjectCallback getCallback() {
-        return callback;
     }
 
     public void setCallback(JsonObjectCallback callback) {
@@ -520,16 +517,8 @@ class GetReportCountyTask extends AsyncTask<Void, Void, Void> {
         this.state = state;
     }
 
-    public String getZip() {
-        return zip;
-    }
-
     public void setZip(String zip) {
         this.zip = zip;
-    }
-
-    public String getTown() {
-        return town;
     }
 
     public void setTown(String town) {
