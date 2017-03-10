@@ -106,10 +106,11 @@ public class Utility {
             return string;
     }
 
-    public static String epochToDateTimeString(long epoch) {
+    public static String epochToDateTimeString(double epoch) {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(epoch * 1000);
+        long d = (long) epoch;
+        calendar.setTimeInMillis(d * 1000);
         // calendar.setTimeInMillis((long) 1491252072 *1000);
         //calendar.setTimeInMillis((long) 1491252072*1000);
         //Log.d(TAG, "Day Of Month " + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
@@ -177,18 +178,19 @@ public class Utility {
         return dynamoDBValue;
     }
 
-    public static long parseDynamoDBResultValuesToLong(String dynamoDBValue){
+    public static double parseDynamoDBResultValuesToLong(String dynamoDBValue){
         String s = dynamoDBValue;
         dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
         dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
-        if(dynamoDBValue.length() > 10) {
-         //   dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.length() - (dynamoDBValue.length() - 10));
-//            dynamoDBValue = dynamoDBValue.substring(0, 10);
-            dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.indexOf('.'));
-
-        }
+//        if(dynamoDBValue.length() > 10) {
+//         //   dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.length() - (dynamoDBValue.length() - 10));
+////            dynamoDBValue = dynamoDBValue.substring(0, 10);
+//           if(dynamoDBValue.indexOf('.') >= 0) {
+//               dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.indexOf('.'));
+//           }
+        //}
        // Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
-        Long longVal = Long.parseLong(dynamoDBValue);
+        double longVal = Double.parseDouble(dynamoDBValue.trim());
         return longVal;
     }
 

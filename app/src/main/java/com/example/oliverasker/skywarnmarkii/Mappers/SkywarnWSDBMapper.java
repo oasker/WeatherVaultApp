@@ -23,7 +23,7 @@ public class SkywarnWSDBMapper implements Serializable {
 
     //Map these fields to database attributes
     //http://www.epochconverter.com/
-    private long DateOfEvent;
+    private double DateOfEvent;
 //    private long DateSubmittedEpoch =758698787;        //Sort Key
 //   // private String DateSubmittedEpoch ="34343434";        //Sort Key
 //    private String DateSubmittedString = "2/15/2017";     // Primary Key
@@ -214,7 +214,7 @@ public class SkywarnWSDBMapper implements Serializable {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private long DateSubmittedEpoch;        //Sort Key
+    private double DateSubmittedEpoch;        //Sort Key
      //private String DateSubmittedEpoch ="34343434";        //Sort Key
     private String DateSubmittedString ;     // Primary Key
 
@@ -233,10 +233,10 @@ public class SkywarnWSDBMapper implements Serializable {
 
     //PRIMARY SORT KEY
     @com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBRangeKey(attributeName = "DateSubmittedEpoch")
-    public long getDateSubmittedEpoch() {
+    public double getDateSubmittedEpoch() {
         return DateSubmittedEpoch;
     }
-    public void setDateSubmittedEpoch(long dateSubmittedEpoch) {
+    public void setDateSubmittedEpoch(double dateSubmittedEpoch) {
         DateSubmittedEpoch = dateSubmittedEpoch;
     }
 
@@ -247,10 +247,10 @@ public class SkywarnWSDBMapper implements Serializable {
 
 
     @DynamoDBAttribute(attributeName = "DateOfEvent")
-    public long getDateOfEvent() {
+    public double getDateOfEvent() {
         return DateOfEvent;
     }
-    public void setDateOfEvent(long s){
+    public void setDateOfEvent(double s){
         DateOfEvent = s;
     }
 

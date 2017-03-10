@@ -43,7 +43,6 @@ public class UserHomePersonalDetailsFragment extends Fragment {
         //spotterIDTV = (TextView)v.findViewById(R.id.weatherSpotterTV);
 
         Bundle b = getArguments();
-       // String[] cognitoValArray = b.getStringArray("cognitoVals");
         Map<String,String> vals = (Map<String, String>) b.get("attrMap");
 
         if(vals.containsKey("phone_number")){
@@ -62,17 +61,16 @@ public class UserHomePersonalDetailsFragment extends Fragment {
             Log.i(TAG, "AttrMap contains: " + pair.getKey() + " = " + pair.getValue());
         }
 
-
         /// the following values are returned
-        /*
-            email
-            given_name
-            custom:Affiliation
-            custom:SpotterID
-            family_name   <- last name
-            given_name   <- first name
-            phone_number
-         */
+
+//            email
+//            given_name
+//            custom:Affiliation
+//            custom:SpotterID
+//            family_name   <- last name
+//            given_name   <- first name
+//            phone_number
+
         TableLayout tableLayout = (TableLayout)v.findViewById(R.id.user_cognito_details_table_layout);
 
         TableRow tableRow = new TableRow(getContext());
@@ -104,6 +102,7 @@ public class UserHomePersonalDetailsFragment extends Fragment {
         if(vals.containsKey("email")){
             tableLayout.addView(createTableRow("Email: " , vals.get("email")));
         }
+
         return v;
     }
 

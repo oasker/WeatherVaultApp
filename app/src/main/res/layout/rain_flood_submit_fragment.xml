@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Rain and Flooding Event"
+        android:id="@+id/rain_flood_fragment_title_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rain_flood_fragment_title_label"
-        android:background="@color/backgroundColor"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
-        android:textAlignment="center" />
+        android:background="@color/colorPrimaryDark"
+        android:padding="10dp"
+        android:text="@string/rain_and_flooding_event"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -38,7 +40,8 @@
                 android:id="@+id/rain_field_tv"
                 android:layout_column="2"
                 android:layout_margin="5dp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                tools:ignore="LabelFor" />
         </TableRow>
 
 
@@ -64,7 +67,8 @@
                 android:textSize="18sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                tools:ignore="LabelFor" />
         </TableRow>
 
 
@@ -83,14 +87,17 @@
                 android:textSize="18sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark" />
+
             <EditText
+                android:id="@+id/river_flood_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/river_flood_field_tv"
                 android:layout_column="2"
-                android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:inputType="text"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp"
+                tools:ignore="LabelFor" />
         </TableRow>
 
         <!--Creek/Stream FLOODING -->
@@ -99,9 +106,6 @@
         <!-- Street Flood -->
 
         <!-- Large River Flood -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" ></TableRow>
 
 
         <!-- Ice Jam Flood -->

@@ -27,7 +27,7 @@ public class ConfirmNewUserActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-        setContentView(R.layout.confirm_new_user_activity_layout);
+        setContentView(R.layout.activity_confirm_new_user_layout);
 
         Log.d(TAG, "onCreate()");
 

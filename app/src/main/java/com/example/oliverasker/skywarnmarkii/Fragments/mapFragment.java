@@ -14,6 +14,6 @@ import com.example.oliverasker.skywarnmarkii.R;
 public class mapFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
-        return inflater.inflate(R.layout.map_fragment_layout,container, false);
+        return inflater.inflate(R.layout.fragment_map_layout,container, false);
     }
 }

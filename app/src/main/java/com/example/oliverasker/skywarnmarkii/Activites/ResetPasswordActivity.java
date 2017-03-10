@@ -29,7 +29,7 @@ public class ResetPasswordActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-        setContentView(R.layout.reset_password_activity_layout);
+        setContentView(R.layout.activity_reset_password_layout);
 
         /*
         pwResetConfirmationCodeTV = (EditText)findViewById(R.id.reset_pw_confirmation_codeTV);

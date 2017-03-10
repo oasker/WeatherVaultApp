@@ -4,15 +4,16 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="@string/coastal_flooding_features"
+        android:id="@+id/coastal_flood_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/coastal_flood_title_tv"
+        android:background="@color/colorPrimaryDark"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:padding="10dp"
+        android:text="@string/coastal_flooding_features"
         android:textAlignment="center"
-        android:textSize="24sp"
         android:textColor="@color/textColor"
-        android:backgroundTint="@color/backgroundColor"
-        android:background="@color/toolBarColor" />
+        android:textSize="24sp" />
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

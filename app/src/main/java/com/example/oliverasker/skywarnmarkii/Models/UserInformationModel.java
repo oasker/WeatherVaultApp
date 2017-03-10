@@ -158,8 +158,6 @@ public class UserInformationModel {
     }
 
 
-
-
     public String getNewPassword() {
         return newPassword;
     }

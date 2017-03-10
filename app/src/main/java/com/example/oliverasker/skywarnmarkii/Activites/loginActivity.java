@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
         });
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {

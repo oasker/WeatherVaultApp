@@ -216,17 +216,18 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             SevereWeatherTypeSpinner = (Spinner)findViewById(R.id.severe_weather_spinner);
             WindDirectionSpinner = (Spinner)findViewById(R.id.severe_wind_direction_spinner);
 
+
             SevereWeatherTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     String severeWeatherItem = parent.getItemAtPosition(position).toString();
                     Log.d(TAG, "SevereWeatherTypeItem: " + severeWeatherItem);
-                    report.put("SevereWeatherType", new AttributeValue().withS(severeWeatherItem));
+                   // report.put("SevereWeatherType", new AttributeValue().withS(severeWeatherItem));
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
-                    report.put("SevereType", new AttributeValue().withS("General"));
+                   // report.put("SevereType", new AttributeValue().withS("General"));
                 }
             });
 
@@ -235,7 +236,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     String windDirectionItem = parent.getItemAtPosition(position).toString();
                     Log.d(TAG, "WindDirectionItem: " + windDirectionItem);
-                    report.put("WindDirection", new AttributeValue().withS(windDirectionItem));
                 }
 
                 @Override
@@ -256,10 +256,14 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
                 if(!WindGust.getText().toString().equals(""))
                     report.put("WindGust", new AttributeValue().withS(WindGust.getText().toString()));
 
-                if(!WindDirection.getText().toString().equals(""))
-                    report.put("WindDirection", new AttributeValue().withS(WindDirection.getText().toString()));
+//                if(!WindDirection.getText().toString().equals(""))
+//                    report.put("WindDirection", new AttributeValue().withS(WindDirection.getText().toString()));
 
-                if(!HailSize.getText().toString().equals(""))
+            report.put("WindDirection", new AttributeValue().withS(WindDirectionSpinner.getSelectedItem().toString()));
+
+            report.put("SevereWeatherType", new AttributeValue().withS(SevereWeatherTypeSpinner.getSelectedItem().toString()));
+
+            if(!HailSize.getText().toString().equals(""))
                     report.put("HailSize", new AttributeValue().withN(HailSize.getText().toString()));
 
                 if(!Tornado.getText().toString().equals(""))

@@ -33,7 +33,7 @@ public class GeneralSubmitReportFragment extends Fragment implements ISetTextInF
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance) {
         reportValues = (HashMap<String,String>)getArguments().getSerializable("hMap");
-        View view = inflater.inflate(R.layout.general_info_submit_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_general_info_submit, container, false);
 
         Bundle b= new Bundle();
         if(b!= null){

@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -57,19 +58,16 @@ public class LaunchCameraActivity extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE =2;
     static final int SELECT_PICTURE =3;
 
-
-    static final int PHOTOUTIL_REQUEST =2;
-    private static final int INDEX_NOT_CHECKED = -1;
     private static final File EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard");
     Uri photoURI;
-    Bitmap bitmap;
-    //Bitmap existingBitmap;
+    ArrayList<Uri> bitMapPathList;
 
 
 
     Button submitButton;
     Button addExistingPhotostoReportButton;
     Button takeNewPhotoButton;
+    Button continueNoPhotosButton;
     private Button addPhotostoReportButton;
 
     private LinearLayout previewPhotoLayout;
@@ -131,7 +129,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
                     Intent intent = new Intent();
                     intent.setType("image/* video/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
-                     startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
                 }
         });
 
@@ -144,12 +142,24 @@ public class LaunchCameraActivity extends AppCompatActivity {
                 launchConfirmtSubmitReport();
             }
         });
+        continueNoPhotosButton = (Button)findViewById(R.id.continue_no_photos_button);
+        continueNoPhotosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchConfirmReportActivity();
+            }
+        });
 
         /////////////////// ///////////////////
         ////// AWS Example method
         //https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
         /////////////////// ///////////////////
         transferUtility = Utility.getTransferUtility(this);
+    }
+
+    private void launchConfirmReportActivity(){
+        Intent i = new Intent(this, ConfirmSubmitReportActivity.class);
+        startActivity(i);
     }
 
     static File getDirectory(String variableName, String defaultPath) {
@@ -261,6 +271,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
             if(data!=null){
                 try{
                     existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData() );
+                bitMapPathList.add(data.getData());
                 }catch (IOException e){
                     e.printStackTrace();
                 }
@@ -286,16 +297,28 @@ public class LaunchCameraActivity extends AppCompatActivity {
         }
     }
 
-    private TableRow createTableRow(Bitmap bitmap, String text){
+    private TableRow createTableRow(Bitmap bitmap){
         TableRow tableRow = new TableRow(this);
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        ImageView newIV = createdScaledImageView(bitmap);
-        linearLayout.addView(newIV);
+        //ImageView newIV = createdScaledImageView(bitmap);
+        Button deleteButton = new Button(this);
+
+        deleteButton.setText("Delete");
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        linearLayout.addView(createdScaledImageView(bitmap));
+
         tableRow.addView(linearLayout);
 
         return tableRow;
     }
+
+
 
     private ImageView createdScaledImageView(Bitmap bitmap){
         int width =0;

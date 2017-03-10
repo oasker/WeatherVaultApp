@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.oliverasker.skywarnmarkii.Callbacks.UserAttributesCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Fragments.SearchDBFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.UserInfoHomeFragment;
@@ -27,10 +28,13 @@ import com.example.oliverasker.skywarnmarkii.Fragments.ViewReportsFromSingleDayF
 import com.example.oliverasker.skywarnmarkii.Managers.CognitoManager;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
+import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
+
+import java.util.Map;
 
 //import com.example.oliverasker.skywarnmarkii.Fragments.QuerySingleDayFragment;
 
-public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, UserAttributesCallback {
     private static final String TAG= "TabbedUserHomeActivity";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -41,7 +45,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed_user_home);
-
         Log.d(TAG, "onCreate");
         //Setup toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbars);
@@ -54,9 +57,18 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(0);
 
         tabLayout = (TabLayout)findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(mViewPager);
+
+        GetUserCognitoAttributesTask attributesTask = new GetUserCognitoAttributesTask(TabbedUserHomeActivity.this);
+        // showUserInfoFragment();
+
+        //Get User details
+        attributesTask.initUserPool(this);
+        attributesTask.setCognitoUser(UserInformationModel.getInstance().getUserID());
+        attributesTask.execute();
 
     }
 
@@ -171,6 +183,16 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
     }
 
+    @Override
+    public void onProcessFinished(Map<String, String> vals) {
+
+    }
+
+    @Override
+    public void onProcessFinished(String[] vals) {
+
+    }
+
 
     public static class PlaceholderFragment extends Fragment {
 
@@ -184,7 +206,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
 //          Returns a new instance of this fragment for the given section
 //          number.
-
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -237,6 +258,10 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                     ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     viewRep.setArguments(b);
                     return  viewRep;
+
+//                case 3:
+//                    Log.d(TAG, "Submit Report TAB");
+//                    return new SubmitReportActivity();
                 default:
                     Log.d(TAG, "Default placeholder fragment");
                     return new UserInfoHomeFragment();

@@ -17,6 +17,7 @@ import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
+import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
 import java.util.ArrayList;
@@ -71,7 +72,9 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
         //Create condition for hashkey
         Condition hashKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.EQ.toString())
-                .withAttributeValueList(new AttributeValue().withS("kd1cy_rob"));
+//                .withAttributeValueList(new AttributeValue().withS("kd1cy_rob"));
+                .withAttributeValueList(new AttributeValue().withS(UserInformationModel.getInstance().getUsername()));
+
 
         keyCondition.put("Username", hashKeyCondition);
 

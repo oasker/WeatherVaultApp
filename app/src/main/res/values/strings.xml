@@ -183,6 +183,7 @@
     <string name="google_geocoder_api_key">AIzaSyDH2J3guJF68Eet85VUrfMPpo2U2iLcI-E</string>
     <string name="submited_by">"Submitted by  "</string>
     <string name="rating">"Rating: "</string>
+    <string name="rain_and_flooding_event">Rain and Flooding Event</string>
 
     <string-array name="ItemsArray">
         <item name="Item1" />

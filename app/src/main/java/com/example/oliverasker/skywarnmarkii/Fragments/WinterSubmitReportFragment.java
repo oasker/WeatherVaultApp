@@ -31,7 +31,7 @@ public class WinterSubmitReportFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance){
-        View view = inflater.inflate(R.layout.winter_submit_fragment,container,false);
+        View view = inflater.inflate(R.layout.fragment_winter_submit,container,false);
         Snowfall = (TextView)view.findViewById(R.id.snowfall_field_tv);
         SnowfallRate = (TextView)view.findViewById(R.id.snowfall_rate_field_tv);
         SnowDepth = (TextView)view.findViewById(R.id.snow_depth_field_tv);

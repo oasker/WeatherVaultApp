@@ -58,18 +58,17 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         View v = inflater.inflate(R.layout.user_info_home_fragment_layout,container, false);
 
         profileImage = (ImageView)v.findViewById(R.id.user_profile_picture_imageview);
-        //usernameTV = (TextView)v.findViewById(R.id.username_home_activityTV);
-        //usernameTV.setText(UserInformationModel.getInstance().getUsername());
-       // emailTV = (TextView)v.findViewById(R.id.emailTV);
-//        emailTV.setText(UserInformationModel.getInstance().getEmail());
-        //nameTV= (TextView)v.findViewById(R.id.nameTV);
-     //   nameTV.setText(UserInformationModel.getFirstName() + " " + UserInformationModel.getLastName());
-       // usernameTV.setText(UserInformationModel.getInstance().getUserID());
 
         //User report, photo, info buttons
         viewUserInfoButton = (Button)v.findViewById(R.id.view_user_info_button);
         viewUserPhotosButton = (Button)v.findViewById(R.id.view_user_photos_button);
         viewUserReportsButton = (Button)v.findViewById(R.id.view_user_reports_button);
+
+        GetUserCognitoAttributesTask attributesTask = new GetUserCognitoAttributesTask(UserInfoHomeFragment.this);
+        // showUserInfoFragment();
+        attributesTask.initUserPool(getContext());
+        attributesTask.setCognitoUser(UserInformationModel.getInstance().getUserID());
+        attributesTask.execute();
 
         viewUserInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,12 +196,9 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         //Log.d(TAG, "phoneAFF " + UserInformationModel.getInstance().getAffiliation());
 
         showUserInfoFragment(vals);
-        Log.i(TAG, "onProcessFinished() : return size"+ vals.size());
+        Log.i(TAG, "onProcessFinished() : CALLSIGN: " + UserInformationModel.getInstance().getCallsign());
         //Log.d(TAG, "onProceessFinised(): " + vals.get("phone_number"));
     }
-
-
-
 
     public void downloadPhoto(){
         Log.d(TAG, "downloadPhoto()");
