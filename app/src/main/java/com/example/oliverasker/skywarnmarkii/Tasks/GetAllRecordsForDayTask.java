@@ -108,10 +108,14 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
 
 //            reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
             reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
+            Log.d(TAG, "dateSubmittedEpoch(): " + Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
 
 
             reportEntry.setDateSubmittedString(Utility.parseDynamoDBResultValuesToString(item.get("DateSubmittedString").toString()));
-            reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
+            if(item.containsKey("DateOfEvent"))
+                reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
+            else
+                reportEntry.setDateOfEvent(9999);
 
             /// Location Attributes
             if(reportEntry.getState() != null &&  !reportEntry.getState().equals(""))
@@ -268,6 +272,7 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
+
     }
 
     @Override

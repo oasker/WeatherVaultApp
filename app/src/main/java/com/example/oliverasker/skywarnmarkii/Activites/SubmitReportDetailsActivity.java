@@ -31,6 +31,7 @@ import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,7 +56,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     RainFloodSubmitReportFragment rainFrag;
     SevereWeatherSubmitReportFragment severeFrag;
     GeneralSubmitReportFragment generalInfoFrag;
-
 
     //Rain
     private EditText Rain;
@@ -103,6 +103,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     @Override
    public void onCreate(Bundle savedInstance) {
        super.onCreate(savedInstance);
+        setContentView(R.layout.activity_submit_report_details);
         Intent i = this.getIntent();
         Bundle bundle = i.getExtras();
         Bundle weatherEventBoolsArray = i.getExtras();
@@ -123,11 +124,9 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         //Get report from previous activity
         reportToSubmit = (SkywarnWSDBMapper) bundle.getSerializable("reportToSubmit");
 
-
         //Setup Toolbar
         Toolbar myToolbar = (Toolbar)findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-
 
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragTransaction = fragManager.beginTransaction();
@@ -136,14 +135,14 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         rainFrag = new RainFloodSubmitReportFragment();
         coastalFloodingFrag = new CoastalFloodingSubmitReportFragment();
         severeFrag = new SevereWeatherSubmitReportFragment();
-        generalInfoFrag= new GeneralSubmitReportFragment();
+        //generalInfoFrag= new GeneralSubmitReportFragment();
 
         isWinterEvent = (eventBools.containsKey("winterBool") && eventBools.get("winterBool"));
         isSevereEvent = (eventBools.get("severeBool")  && eventBools.get("severeBool"));
         isCoastalEvent = (eventBools.containsKey("coastalFloodBool") && eventBools.get("coastalFloodBool"));
         isRainEvent = (eventBools.get("rainFloodBool") && eventBools.get("rainFloodBool"));
 
-        //fragTransaction.add(R.id.general_info_container, generalInfoFrag, "generalInfoFrag");
+       // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
 
         if(isWinterEvent | isSevereEvent | isCoastalEvent | isRainEvent){
         if(isWinterEvent) {
@@ -161,11 +160,13 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         if(isRainEvent) {
             fragTransaction.add(R.id.fourth_container, rainFrag, "rainFrag");
         }
-        fragTransaction.commit();
-        setContentView(R.layout.activity_submit_report_details);
+           // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
+
+
+            fragTransaction.commit();
         }
         else {
-            launchConfirmSubmitReportActivity(findViewById(R.id.submit_report));
+
         }
    }
 
@@ -179,6 +180,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     }
 
     public void launchConfirmSubmitReportActivity(View v) {
+        report.put("WeatherEvent", new AttributeValue().withS("General"));
         if (isRainEvent) {
             Rain = (EditText) findViewById(R.id.rain_field_tv);
             PrecipRate = (EditText) findViewById(R.id.precip_rate_field_tv);
@@ -204,6 +206,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         if (isSevereEvent) {
             //SevereType = (EditText) findViewById(R.id.severe_type_field_tv);
             WindSpeed = (EditText) findViewById(R.id.wind_speed_field_tv);
+
             WindGust = (EditText) findViewById(R.id.wind_gust_field_tv);
            // WindDirection = (EditText) findViewById(R.id.wind_direction_field_tv);
             HailSize = (EditText) findViewById(R.id.hail_size_field_tv);
@@ -221,10 +224,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     String severeWeatherItem = parent.getItemAtPosition(position).toString();
-                    Log.d(TAG, "SevereWeatherTypeItem: " + severeWeatherItem);
-                   // report.put("SevereWeatherType", new AttributeValue().withS(severeWeatherItem));
                 }
-
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
                    // report.put("SevereType", new AttributeValue().withS("General"));
@@ -234,10 +234,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             WindDirectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    String windDirectionItem = parent.getItemAtPosition(position).toString();
-                    Log.d(TAG, "WindDirectionItem: " + windDirectionItem);
-                }
-
+                    String windDirectionItem = parent.getItemAtPosition(position).toString();}
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
                     //report.put("WindDirection", new AttributeValue().withS("General"));
@@ -248,106 +245,111 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
 
 
 //
-            //if (checkIfEditTextFieldEmpty(list)) {
-                report.put("WeatherEvent", new AttributeValue().withS("Severe"));
-                if(!WindSpeed.getText().toString().equals(""))
-                    report.put("WindSpeed", new AttributeValue().withN(WindSpeed.getText().toString()));
+        //if (checkIfEditTextFieldEmpty(list)) {
+        report.put("WeatherEvent", new AttributeValue().withS("Severe"));
+        if(!WindSpeed.getText().toString().equals(""))
+            report.put("WindSpeed", new AttributeValue().withN(WindSpeed.getText().toString()));
 
-                if(!WindGust.getText().toString().equals(""))
-                    report.put("WindGust", new AttributeValue().withS(WindGust.getText().toString()));
+        if(!WindGust.getText().toString().equals(""))
+            report.put("WindGust", new AttributeValue().withS(WindGust.getText().toString()));
 
-//                if(!WindDirection.getText().toString().equals(""))
-//                    report.put("WindDirection", new AttributeValue().withS(WindDirection.getText().toString()));
 
-            report.put("WindDirection", new AttributeValue().withS(WindDirectionSpinner.getSelectedItem().toString()));
+        report.put("WindDirection", new AttributeValue().withS(WindDirectionSpinner.getSelectedItem().toString()));
 
-            report.put("SevereWeatherType", new AttributeValue().withS(SevereWeatherTypeSpinner.getSelectedItem().toString()));
+        report.put("SevereWeatherType", new AttributeValue().withS(SevereWeatherTypeSpinner.getSelectedItem().toString()));
 
-            if(!HailSize.getText().toString().equals(""))
-                    report.put("HailSize", new AttributeValue().withN(HailSize.getText().toString()));
+        if(!HailSize.getText().toString().equals(""))
+                report.put("HailSize", new AttributeValue().withN(HailSize.getText().toString()));
 
-                if(!Tornado.getText().toString().equals(""))
-                    report.put("Tornado", new AttributeValue().withS(Tornado.getText().toString()));
+            if(!Tornado.getText().toString().equals(""))
+                report.put("Tornado", new AttributeValue().withS(Tornado.getText().toString()));
 
-                if(!Barometer.getText().toString().equals(""))
-                    report.put("Barometer", new AttributeValue().withS(Barometer.getText().toString()));
+            if(!Barometer.getText().toString().equals(""))
+                report.put("Barometer", new AttributeValue().withS(Barometer.getText().toString()));
 
-                if(!LightningDamage.getText().toString().equals(""))
-                    report.put("LightningDamage", new AttributeValue().withS(LightningDamage.getText().toString()));
+            if(!LightningDamage.getText().toString().equals(""))
+                report.put("LightningDamage", new AttributeValue().withS(LightningDamage.getText().toString()));
 
-                if(!DamageComments.getText().toString().equals(""))
-                    report.put("DamageComments", new AttributeValue().withS(DamageComments.getText().toString()));
+            if(!DamageComments.getText().toString().equals(""))
+                report.put("DamageComments", new AttributeValue().withS(DamageComments.getText().toString()));
 
-                if(!WindDamage.getText().toString().equals(""))
-                    report.put("WindDamage", new AttributeValue().withS(WindDamage.getText().toString()));
-            //}
-            else
-             Log.d(TAG, "SEVERE FIELDS NOT FILLED IN");
+            if(!WindDamage.getText().toString().equals(""))
+                report.put("WindDamage", new AttributeValue().withS(WindDamage.getText().toString()));
+        //}
+        else
+         Log.d(TAG, "SEVERE FIELDS NOT FILLED IN");
 
-        }
-        if (isWinterEvent) {
-            Snowfall = (EditText) findViewById(R.id.snowfall_field_tv);
-            SnowfallRate = (EditText) findViewById(R.id.snowfall_rate_field_tv);
-            SnowDepth = (EditText) findViewById(R.id.snow_depth_field_tv);
-            WaterEquivalent = (EditText) findViewById(R.id.water_equiv_field_tv);
-            FreezingRain = (EditText) findViewById(R.id.freezing_rain_field_tv);
-            SnowfallSleet = (EditText) findViewById(R.id.sleet_field_tv);
-            BlowDrift = (EditText) findViewById(R.id.blowdrift_tv);
-            Whiteout = (EditText) findViewById(R.id.whiteout_field_tv);
-            Thundersnow = (EditText) findViewById(R.id.thundersnow_field_tv);
+    }
+    if (isWinterEvent) {
+        Snowfall = (EditText) findViewById(R.id.snowfall_field_tv);
+        SnowfallRate = (EditText) findViewById(R.id.snowfall_rate_field_tv);
+        SnowDepth = (EditText) findViewById(R.id.snow_depth_field_tv);
+        WaterEquivalent = (EditText) findViewById(R.id.water_equiv_field_tv);
+        FreezingRain = (EditText) findViewById(R.id.freezing_rain_field_tv);
+        SnowfallSleet = (EditText) findViewById(R.id.sleet_field_tv);
+        BlowDrift = (EditText) findViewById(R.id.blowdrift_tv);
+        Whiteout = (EditText) findViewById(R.id.whiteout_field_tv);
+        Thundersnow = (EditText) findViewById(R.id.thundersnow_field_tv);
 
-            if (!Snowfall.getText().toString().equals(""))
-                report.put("Snowfall", new AttributeValue().withN(Snowfall.getText().toString()));
-            if (!SnowfallRate.getText().toString().equals(""))
-                report.put("SnowfallRate", new AttributeValue().withN(SnowfallRate.getText().toString()));
-            if (!SnowDepth.getText().toString().equals(""))
-                report.put("SnowDepth", new AttributeValue().withN(SnowDepth.getText().toString()));
-            if (!WaterEquivalent.getText().toString().equals(""))
-                report.put("WaterEquivalent", new AttributeValue().withN(WaterEquivalent.getText().toString()));
-            if (!FreezingRain.getText().toString().equals(""))
-                report.put("FreezingRain", new AttributeValue().withS(FreezingRain.getText().toString()));
-            if (!SnowfallSleet.getText().toString().equals(""))
-                report.put("SnowfallSleet", new AttributeValue().withN(SnowfallSleet.getText().toString()));
-            if (!BlowDrift.getText().toString().equals(""))
-                report.put("BlowDrift", new AttributeValue().withS(BlowDrift.getText().toString()));
-            if (!Whiteout.getText().toString().equals(""))
-                report.put("Whiteout", new AttributeValue().withS(Whiteout.getText().toString()));
-            if (!Thundersnow.getText().toString().equals(""))
-                report.put("Thundersnow", new AttributeValue().withS(Thundersnow.getText().toString()));
-        }
+        if (!Snowfall.getText().toString().equals(""))
+            report.put("Snowfall", new AttributeValue().withN(Snowfall.getText().toString()));
+        if (!SnowfallRate.getText().toString().equals(""))
+            report.put("SnowfallRate", new AttributeValue().withN(SnowfallRate.getText().toString()));
+        if (!SnowDepth.getText().toString().equals(""))
+            report.put("SnowDepth", new AttributeValue().withN(SnowDepth.getText().toString()));
+        if (!WaterEquivalent.getText().toString().equals(""))
+            report.put("WaterEquivalent", new AttributeValue().withN(WaterEquivalent.getText().toString()));
+        if (!FreezingRain.getText().toString().equals(""))
+            report.put("FreezingRain", new AttributeValue().withS(FreezingRain.getText().toString()));
+        if (!SnowfallSleet.getText().toString().equals(""))
+            report.put("SnowfallSleet", new AttributeValue().withN(SnowfallSleet.getText().toString()));
+        if (!BlowDrift.getText().toString().equals(""))
+            report.put("BlowDrift", new AttributeValue().withS(BlowDrift.getText().toString()));
+        if (!Whiteout.getText().toString().equals(""))
+            report.put("Whiteout", new AttributeValue().withS(Whiteout.getText().toString()));
+        if (!Thundersnow.getText().toString().equals(""))
+            report.put("Thundersnow", new AttributeValue().withS(Thundersnow.getText().toString()));
+    }
 
-            Calendar cal = Calendar.getInstance();
-            ///cal.add(Calendar.DATE, 1);
-            SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar cal = Calendar.getInstance();
+        ///cal.add(Calendar.DATE, 1);
+        SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
 //        Log.d(TAG, "FORMATTED DATE: " + String.valueOf(cal.getTime()));
-            Log.d(TAG, "FORMATTED DATE: " + String.valueOf(format1.format(cal.getTime())));
-            report.put("DateSubmittedString", new AttributeValue().withS(format1.format(cal.getTime())));
-            report.put("DateSubmittedEpoch", new AttributeValue().withN(String.valueOf(System.currentTimeMillis())));
+        Log.d(TAG, "FORMATTED DATE: " + String.valueOf(format1.format(cal.getTime())));
+        report.put("DateSubmittedString", new AttributeValue().withS(format1.format(cal.getTime())));
+
+        long epoch = System.currentTimeMillis();
+        Log.d(TAG, "epoch: "+ epoch);
+        report.put("DateSubmittedEpoch", new AttributeValue().withN(String.valueOf(epoch)));
 
 
-            keyArray = new String[report.size()];
-            attributeValArray = new AttributeValue[report.size()];
+        keyArray = new String[report.size()];
+        attributeValArray = new AttributeValue[report.size()];
 
-           // Log.d(TAG, "Iterating through reports HMap:---END ");
-            int counter = 0;
-            Set<Map.Entry<String, AttributeValue>> entrySet = report.entrySet();
-            for (Map.Entry entry : entrySet) {
-                Log.d(TAG, "looping counter: " + counter + " total Size: " + entrySet.size());
-                Log.d(TAG, "key: " + entry.getKey() + " value: " + entry.getValue().toString());
+       // Log.d(TAG, "Iterating through reports HMap:---END ");
+        int counter = 0;
+        Set<Map.Entry<String, AttributeValue>> entrySet = report.entrySet();
+        for (Map.Entry entry : entrySet) {
+            Log.d(TAG, "looping counter: " + counter + " total Size: " + entrySet.size());
+            Log.d(TAG, "key: " + entry.getKey() + " value: " + entry.getValue().toString());
 
-                keyArray[counter] = entry.getKey().toString();
-                attributeValArray[counter] = (AttributeValue) entry.getValue();
-                if (counter < entrySet.size()+1)
-                    counter++;
-            }
-       // Log.i(TAG, "Before submitting to async"+report.get("DateOfEvent").getN().toString());
-
-            AsyncInsertTask2 insertTask2 = new AsyncInsertTask2(attributeValArray);
-            insertTask2.execute(keyArray);
-
-            Intent intent = new Intent(this, LaunchCameraActivity.class);
-            startActivity(intent);
+            keyArray[counter] = entry.getKey().toString();
+            attributeValArray[counter] = (AttributeValue) entry.getValue();
+            if (counter < entrySet.size()+1)
+                counter++;
         }
+        AsyncInsertTask2 insertTask2 = new AsyncInsertTask2(attributeValArray);
+        insertTask2.execute(keyArray);
+
+        Intent intent = new Intent(this, LaunchCameraActivity.class);
+
+        DecimalFormat decimalFormat= new DecimalFormat("0.0");
+        String epochString = decimalFormat.format(epoch);
+
+        intent.putExtra("epoch",epoch);
+        Log.d(TAG, "epoch passed in intent: "+epochString);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -2,6 +2,7 @@ package com.example.oliverasker.skywarnmarkii.Fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -173,6 +174,16 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     public void processFinish(ArrayList<Bitmap> result) {
         //Pass bitmaps to fragment
         showUserPhotosFragment(result);
+    }
+
+    @Override
+    public void processFinish(Bitmap result) {
+
+    }
+
+    @Override
+    public void processFinish(Uri result) {
+
     }
 
     @Override

@@ -132,7 +132,7 @@ public class Utility {
 
         StringBuilder s = new StringBuilder(month + "/" + day + "/" + year + " at: " + hour + ":" + minutes + " " + AMPMString);
 //        Log.d(TAG, "Year 1: " + year + " Year2: ");
-//        Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
+        Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
         return s.toString();
     }
 
@@ -174,7 +174,7 @@ public class Utility {
     public static String parseDynamoDBResultValuesToString(String dynamoDBValue){
         dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
         dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
-        //Log.i(TAG, "Value after parseToString: " + dynamoDBValue);
+        Log.i(TAG, "Value after parseToString: " + dynamoDBValue);
         return dynamoDBValue;
     }
 
@@ -184,23 +184,20 @@ public class Utility {
         dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
 //        if(dynamoDBValue.length() > 10) {
 //         //   dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.length() - (dynamoDBValue.length() - 10));
-////            dynamoDBValue = dynamoDBValue.substring(0, 10);
+
+
+
+/*            dynamoDBValue = dynamoDBValue.substring(0, 10);
 //           if(dynamoDBValue.indexOf('.') >= 0) {
-//               dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.indexOf('.'));
-//           }
+/               dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.indexOf('.'));
+ */
+        Log.d(TAG,"dynamodbValue after parsing out of json: " +dynamoDBValue);
+        Log.d(TAG, String.valueOf(Double.parseDouble(dynamoDBValue)));
+
         //}
-       // Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
+        Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
         double longVal = Double.parseDouble(dynamoDBValue.trim());
         return longVal;
-    }
-
-    public static void parseAttributeToLong(AttributeValue attributeValue) {
-//        attributeValue.
-//        dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
-//        dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
-//        Log.i(TAG, "Value after parseToLong: " + dynamoDBValue);
-//        Long longVal = Long.parseLong(dynamoDBValue);
-//        return longVal;
     }
 
 }

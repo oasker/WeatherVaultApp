@@ -98,7 +98,6 @@ public class SkywarnWSDBMapper implements Serializable {
     private String Thundersnow = "false";
     private String WinterWeatherComments="|";
 
-
     ///////////////////////////////////////////////////////////////
     //                  Rain Weather                          //
     //////////////////////////////////////////////////////////////

@@ -85,13 +85,6 @@
                         android:layout_margin="3dp"
                         android:padding="3dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/view_report_activity_long_latt"
-                        android:textColor="@android:color/black"
-                        android:textSize="16sp" />
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -152,6 +145,22 @@
 
         </FrameLayout>
 
+        <LinearLayout
+            android:id="@+id/view_report_attribute_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.03"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:id="@+id/view_report_activity_tablelayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.03">
+
+            </TableLayout>
+        </LinearLayout>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -179,14 +188,14 @@
         </FrameLayout>
 
         <TextView
-            android:text="@string/photos"
+            android:id="@+id/view_report_activity_photo_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView13"
             android:layout_weight="0.03"
-            android:textSize="30sp"
+            android:text="@string/photos"
             android:textAlignment="center"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="30sp" />
 
         <ImageView
             android:layout_width="match_parent"

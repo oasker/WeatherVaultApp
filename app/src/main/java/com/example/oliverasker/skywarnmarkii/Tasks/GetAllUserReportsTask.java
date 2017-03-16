@@ -91,27 +91,31 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
 
         QueryResult queryResult = ddb.query(queryRequest);
         List<Map<String, AttributeValue>> valMap = queryResult.getItems();
-
         Log.i(TAG, "NUMBER RETURNED REPORTS: "+queryResult.getCount().toString());
         for(Map item : queryResult.getItems()) {
             SkywarnWSDBMapper reportEntry = new SkywarnWSDBMapper();
 
             reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
-
             reportEntry.setDateSubmittedString(Utility.parseDynamoDBResultValuesToString(item.get("DateSubmittedString").toString()));
             reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
-
+            double date = Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString());
+            Log.d(TAG, "DATE: " + date);
             /// Location Attributes
             if(reportEntry.getState() != null)
                 reportEntry.setEventState(Utility.parseDynamoDBResultValuesToString(item.get("State").toString()));
+
             if(reportEntry.getCity() != null)
                 reportEntry.setEventCity(Utility.parseDynamoDBResultValuesToString(item.get("City").toString()));
+
             if(reportEntry.getStreet() != null)
                 reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
+
             if(reportEntry.getFirstName() != null)
                 reportEntry.setFirstName(Utility.parseDynamoDBResultValuesToString(item.get("FirstName").toString()));
+
             if(reportEntry.getLastName() != null)
                 reportEntry.setLastName(Utility.parseDynamoDBResultValuesToString(item.get("LastName").toString()));
+
             if(reportEntry.getZipCode() != null)
                 reportEntry.setZipCode(Utility.parseDynamoDBResultValuesToString(item.get("ZipCode").toString()));
 

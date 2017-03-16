@@ -184,6 +184,7 @@
     <string name="submited_by">"Submitted by  "</string>
     <string name="rating">"Rating: "</string>
     <string name="rain_and_flooding_event">Rain and Flooding Event</string>
+    <string name="general_information">General Information</string>
 
     <string-array name="ItemsArray">
         <item name="Item1" />

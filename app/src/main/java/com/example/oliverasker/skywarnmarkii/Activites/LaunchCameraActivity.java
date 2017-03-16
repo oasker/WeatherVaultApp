@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -36,6 +37,7 @@ import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -51,17 +53,17 @@ import java.util.NoSuchElementException;
 //add photos to sd card
 //Command Line: adb push yourfile.xxx /sdcard/yourfile.xxx
 public class LaunchCameraActivity extends AppCompatActivity {
-    private final String TAG = "launchCameraActivity";
+    private final String TAG = "LaunchCameraActivity";
     private static final int DOWNLOAD_SELECTION_REQUEST_CODE = 1;
     private static int pictureCount;
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int REQUEST_VIDEO_CAPTURE =2;
     static final int SELECT_PICTURE =3;
+    private long epoch;
 
     private static final File EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard");
     Uri photoURI;
     ArrayList<Uri> bitMapPathList;
-
 
 
     Button submitButton;
@@ -74,15 +76,15 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static int fragmentCount;
-    private  static String selectedImagePath;
+    private static String selectedImagePath;
 
+    ArrayList<String> photoPaths;
     String mCurrentPhotoPath;
 
     //Manages S3 transfers
     TransferUtility transferUtility;
 
     PreviewPhotoCommunicator prePhotoCom;
-    private float epoch;
 
     //Interface to bridge asyncTask and this class
     public interface PreviewPhotoCommunicator {
@@ -93,16 +95,17 @@ public class LaunchCameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstace) {
         super.onCreate(savedInstace);
         setContentView(R.layout.launch_camera_activity_layout);
-        String reportID = getIntent().getStringExtra("reportID");
-        Log.d(TAG, "reportID: " + reportID);
+
+        photoPaths = new ArrayList<>();
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
         Intent i = getIntent();
-        //epoch = Float.parseFloat(i.getStringExtra("reportID"));
+        epoch = i.getLongExtra("epoch",-1);
+        Log.d(TAG, "epoch: "+epoch);
 
-
+       // epochString = String.format("%.0f", epoch);
         previewPhotoLayout = (LinearLayout)findViewById(R.id.preview_photo_holder);
 
         /////////////////////////////////////////////////////
@@ -127,7 +130,8 @@ public class LaunchCameraActivity extends AppCompatActivity {
                 public void onClick(View arg0) {
                     // in onCreate or any event where your want the user to select a file
                     Intent intent = new Intent();
-                    intent.setType("image/* video/*");
+                  //  intent.setType("image/* video/*");
+                    intent.setType("image/*");
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
                 }
@@ -139,6 +143,10 @@ public class LaunchCameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, " AddPhotosToReport.onClick()");
+                for(String path:photoPaths){
+                    Log.d(TAG, "addPhotosToREportButton: paths: " + path);
+                    beginUpload(path);
+                }
                 launchConfirmtSubmitReport();
             }
         });
@@ -150,11 +158,121 @@ public class LaunchCameraActivity extends AppCompatActivity {
             }
         });
 
+
         /////////////////// ///////////////////
         ////// AWS Example method
         //https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
         /////////////////// ///////////////////
         transferUtility = Utility.getTransferUtility(this);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        fragmentCount++;
+
+        //New Photo
+       // if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_TAKE_PHOTO){
+        if(requestCode == REQUEST_TAKE_PHOTO) {
+
+            Log.d(TAG, "requestCode == REQUEST_TAKE_PHOTO: resultCode: " + resultCode);
+            Log.i(TAG, "photo saved to: " + photoURI.getPath());
+
+            try {
+                String path = getPath(photoURI);
+               // beginUpload(path);
+                // beginUpload(mCurrentPhotoPath);
+                Log.d(TAG, "OnACtivityReslt new Photo : mCurrentPhotoPath: " + mCurrentPhotoPath);
+                Log.d(TAG, "OnACtivityReslt new Photo : photoURI.getPath: " + photoURI.getPath());
+
+                photoPaths.add(mCurrentPhotoPath);
+
+                Bitmap newBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
+                previewPhotoLayout.addView(createdScaledImageView(newBitmap));
+                createdScaledImageView(newBitmap);
+            } catch (URISyntaxException e) {
+                Log.d(TAG, "URISyntaxException", e);
+            } catch (IOException e) {
+                Log.d(TAG, "IOException", e);
+            }
+        }
+
+        //Existing Photo
+        //if(resultCode ==Activity.RESULT_OK && requestCode == SELECT_PICTURE){
+        if(requestCode==SELECT_PICTURE){
+            Bitmap existingBitmap = null;
+            if(data!=null){
+                try{
+                    existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData() );
+                    //bitMapPathList.add(data.getData());
+                    Uri uri = getImageUri(this, existingBitmap);
+                    Log.d(TAG, "URI: " + uri);
+                    String path = getRealPathFromURI(uri);
+                    Log.d(TAG, "path: " + path);
+                    //beginUpload(path);
+                    photoPaths.add(path);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+           // Uri pickedImage = data.getData();
+
+            createdScaledImageView(existingBitmap);
+            ImageView existingImageIV = createdScaledImageView(existingBitmap);
+            previewPhotoLayout.addView(existingImageIV);
+        }
+
+        //For Videos
+        if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
+            // Log.d(TAG, "Uri: " + data.getData().toString());
+            // Uri uri = data.getData();
+            Log.i(TAG, "Result Code: " + resultCode);
+            Log.i(TAG, "Video saved to: " + photoURI.toString());
+            Log.i(TAG, "Video saved to: " + photoURI.toString());
+            try {
+                String path = getPath(photoURI);
+                //beginUpload(path);
+                //beginUpload(mCurrentPhotoPath);
+                 photoPaths.add(mCurrentPhotoPath);
+            }catch (URISyntaxException e){}
+
+           // mVideoView.setVideoURI(photoURI);
+        }
+    }
+
+
+    // I COPIED AND PASTED THIS METOHD AND HEAVILY REFERENCED OTHER METHODS FROM
+    // EXAMPLE CODE FOUND AT THIS LINK:
+    // https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
+    private void beginUpload(String filePath) {
+        Log.d(TAG, "beginUpload()");
+        Log.d(TAG, "beginUpload(): filepath: " + filePath);
+        //File file = new File (mCurrentPhotoPath);
+        File file = new File (filePath);
+
+
+        Log.d(TAG, "fileName: " + file.getName() + "   filePath: " + filePath + " pictureCount: " + pictureCount);
+        String filename = epoch+ "_"+UserInformationModel.getInstance().getUsername()+"_"+pictureCount+".jpg";
+        Log.d(TAG, "beginUpload(): filename: " + filename);
+        TransferObserver observer = transferUtility.upload(Constants.BUCKET_NAME, filename, file);
+        observer.setTransferListener(new UploadListener());
+        pictureCount++;
     }
 
     private void launchConfirmReportActivity(){
@@ -174,10 +292,11 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp +"_" ;
+       // String imageFileName = "JPEG_" + timeStamp +"_" ;
+        String imageFileName = epoch+"_"+UserInformationModel.getInstance().getUsername()+".jpg";
         File storageDir = EXTERNAL_STORAGE_DIRECTORY;
         Log.d(TAG, "External Storage Directory " + EXTERNAL_STORAGE_DIRECTORY);
-       // File storageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Weather/");
+        // File storageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Weather/");
         //File storageDir = Environment.getExternalStorageDirectory();
 
         File image = new File(storageDir, imageFileName);
@@ -235,145 +354,56 @@ public class LaunchCameraActivity extends AppCompatActivity {
         }
     }
 
+    private boolean hasCamera() {
+        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
 
+    private class UploadListener implements TransferListener {
+        //Updates UI when notified
+        @Override
+        public void onStateChanged(int id, TransferState state) {
+            Log.d(TAG,"onStateChanged: " + id + state);
+
+        }
+
+        @Override
+        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+            Log.d(TAG,String.format("onProgressChanged:  %d, total %d, current: %d", id, bytesTotal,bytesCurrent));
+
+        }
+
+        @Override
+        public void onError(int id, Exception ex) {
+            Log.d(TAG,"Error during upload: " + ex);
+        }
+        //
+    }
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-        fragmentCount++;
-        //New Photo
-        if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_TAKE_PHOTO){
-
-            // Log.d(TAG, "Uri: " + data.getData().toString());
-            // Uri uri = data.getData();
-            Log.i(TAG, "Video saved to: " + photoURI.toString());
-            Log.i(TAG, "Result Code: " + resultCode);
-            try {
-                String path = getPath(photoURI);
-                //beginUpload(path);
-                //beginUpload(mCurrentPhotoPath);
-
-                Bitmap newBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
-                previewPhotoLayout.addView(createdScaledImageView(newBitmap));
-                createdScaledImageView(newBitmap);
-            }catch (URISyntaxException e){
-                Log.d(TAG, "URISyntaxException",e);
-            }
-            catch (IOException e){
-                Log.d(TAG, "IOException",e);
-            }
-        }
-
-
-        //Existing Photo
-        if(resultCode ==Activity.RESULT_OK && requestCode == SELECT_PICTURE){
-           Uri selectedImageUri = data.getData();
-            Bitmap existingBitmap = null;
-            if(data!=null){
-                try{
-                    existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData() );
-                bitMapPathList.add(data.getData());
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
-            }
-            createdScaledImageView(existingBitmap);
-            ImageView existingImageIV = createdScaledImageView(existingBitmap);
-            previewPhotoLayout.addView(existingImageIV);
-        }
-
-        //For Videos
-        if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
-            // Log.d(TAG, "Uri: " + data.getData().toString());
-            // Uri uri = data.getData();
-           Log.i(TAG, "Video saved to: " + photoURI.toString());
-           Log.i(TAG, "Result Code: " + resultCode);
-            try {
-                String path = getPath(photoURI);
-                beginUpload(path);
-                //beginUpload(mCurrentPhotoPath);
-            }catch (URISyntaxException e){}
-
-           // mVideoView.setVideoURI(photoURI);
-        }
+    protected void onResume(){
+        super.onResume();
     }
 
-    private TableRow createTableRow(Bitmap bitmap){
-        TableRow tableRow = new TableRow(this);
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        //ImageView newIV = createdScaledImageView(bitmap);
-        Button deleteButton = new Button(this);
+    //ToDo: submit reports when this button is clicked instead of at time of selection
+    //check if user has button Disable button if user does not have camera
+    private void launchConfirmtSubmitReport() {
+        Intent intent = new Intent(this, ConfirmSubmitReportActivity.class);
+        startActivity(intent);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
 
-        deleteButton.setText("Delete");
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        /*
+        // Clear transfer listeners to prevent memory leak, or
+        // else this activity won't be garbage collected.
+        if (observers != null && !observers.isEmpty()) {
+            for (TransferObserver observer : observers) {
+                observer.cleanTransferListener();
             }
-        });
-        linearLayout.addView(createdScaledImageView(bitmap));
-
-        tableRow.addView(linearLayout);
-
-        return tableRow;
-    }
-
-
-
-    private ImageView createdScaledImageView(Bitmap bitmap){
-        int width =0;
-        int height =0;
-        ImageView newImageView = new ImageView(this);
-
-        try{
-            width = bitmap.getWidth();
-        }catch (NullPointerException e) {
-            throw new NoSuchElementException("Can't find image");
         }
-        height = bitmap.getHeight();
-        int bounding = dpToPx(250);
-//        Log.i("Test", "original width = " + Integer.toString(width));
-//        Log.i("Test", "original height = " + Integer.toString(height));
-//        Log.i("Test", "bounding = " + Integer.toString(bounding));
-
-        float xScale = ((float) bounding/width);
-        float yScale = ((float) bounding/height);
-        float scale = (xScale <= yScale) ? xScale:yScale;
-//        Log.i("Test", "xScale = " + Float.toString(xScale));
-//        Log.i("Test", "yScale = " + Float.toString(yScale));
-//        Log.i("Test", "scale = " + Float.toString(scale));
-
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale,scale);
-
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,0,0,width,height,matrix,true);
-        width = scaledBitmap.getWidth();
-        height=scaledBitmap.getHeight();
-
-        BitmapDrawable result = new BitmapDrawable(getApplicationContext().getResources(),scaledBitmap);
-//        Log.i("Test", "scaled width = " + Integer.toString(width));
-//        Log.i("Test", "scaled height = " + Integer.toString(height));
-        newImageView.setImageDrawable(result);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50));
-        params.setMargins(10,10,10,10);
-        params.width = width;
-        params.height = height;
-        newImageView.setLayoutParams(params);
-        
-        newImageView.setImageBitmap(bitmap);
-       // previewPhotoLayout.addView(newImageView,params);
-        return newImageView;
-    }
-    private int dpToPx(int dp){
-        float density = getApplicationContext().getResources().getDisplayMetrics().density;
-        return Math.round((float)dp*density);
+        */
     }
 
-
-    // I COPIED AND PASTED THIS METOHD AND HEAVILY REFERENCED OTHER METHODS FROM
-    // EXAMPLE CODE FOUND AT THIS LINK:
-    // https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
     @SuppressLint("NewApi")
     private String getPath(Uri uri) throws URISyntaxException {
         final boolean needToCheckUri = Build.VERSION.SDK_INT >= 19;
@@ -442,66 +472,74 @@ public class LaunchCameraActivity extends AppCompatActivity {
     public static boolean isMediaDocument(Uri uri){
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
+    private TableRow createTableRow(Bitmap bitmap){
+        TableRow tableRow = new TableRow(this);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        //ImageView newIV = createdScaledImageView(bitmap);
+        Button deleteButton = new Button(this);
 
-    private void beginUpload(String filePath) {
-        Log.d(TAG,"beginUpload() called");
-        {
-            File file = new File (mCurrentPhotoPath);
-            pictureCount++;
-            Log.d(TAG, "fileName: " + file.getName() + "   filePath: " + filePath + " pictureCount: " + pictureCount);
-            TransferObserver observer = transferUtility.upload(Constants.BUCKET_NAME, epoch+"_"+UserInformationModel.getInstance().getUsername()+"_"+pictureCount+".jpg" , file);
-            observer.setTransferListener(new UploadListener());
-        }
-    }
+        deleteButton.setText("Delete");
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-    private boolean hasCamera() {
-        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
-    }
-
-    private class UploadListener implements TransferListener {
-        //Updates UI when notified
-        @Override
-        public void onStateChanged(int id, TransferState state) {
-            Log.d(TAG,"onStateChanged: " + id + state);
-
-        }
-
-        @Override
-        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-            Log.d(TAG,String.format("onProgressChanged:  %d, total %d, current: %d", id, bytesTotal,bytesCurrent));
-
-        }
-
-        @Override
-        public void onError(int id, Exception ex) {
-            Log.d(TAG,"Error during upload: " + ex);
-        }
-        //
-    }
-    @Override
-    protected void onResume(){
-        super.onResume();
-    }
-
-    //ToDo: submit reports when this button is clicked instead of at time of selection
-    //check if user has button Disable button if user does not have camera
-    private void launchConfirmtSubmitReport() {
-        Intent intent = new Intent(this, ConfirmSubmitReportActivity.class);
-        startActivity(intent);
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        /*
-        // Clear transfer listeners to prevent memory leak, or
-        // else this activity won't be garbage collected.
-        if (observers != null && !observers.isEmpty()) {
-            for (TransferObserver observer : observers) {
-                observer.cleanTransferListener();
             }
-        }
-        */
+        });
+        linearLayout.addView(createdScaledImageView(bitmap));
+
+        tableRow.addView(linearLayout);
+
+        return tableRow;
     }
 
+    private ImageView createdScaledImageView(Bitmap bitmap){
+        int width =0;
+        int height =0;
+        ImageView newImageView = new ImageView(this);
+
+        try{
+            width = bitmap.getWidth();
+        }catch (NullPointerException e) {
+            throw new NoSuchElementException("Can't find image");
+        }
+        height = bitmap.getHeight();
+        int bounding = dpToPx(250);
+//        Log.i("Test", "original width = " + Integer.toString(width));
+//        Log.i("Test", "original height = " + Integer.toString(height));
+//        Log.i("Test", "bounding = " + Integer.toString(bounding));
+
+        float xScale = ((float) bounding/width);
+        float yScale = ((float) bounding/height);
+        float scale = (xScale <= yScale) ? xScale:yScale;
+//        Log.i("Test", "xScale = " + Float.toString(xScale));
+//        Log.i("Test", "yScale = " + Float.toString(yScale));
+//        Log.i("Test", "scale = " + Float.toString(scale));
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale,scale);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,0,0,width,height,matrix,true);
+        width = scaledBitmap.getWidth();
+        height=scaledBitmap.getHeight();
+
+        BitmapDrawable result = new BitmapDrawable(getApplicationContext().getResources(),scaledBitmap);
+//        Log.i("Test", "scaled width = " + Integer.toString(width));
+//        Log.i("Test", "scaled height = " + Integer.toString(height));
+        newImageView.setImageDrawable(result);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50));
+        params.setMargins(10,10,10,10);
+        params.width = width;
+        params.height = height;
+        newImageView.setLayoutParams(params);
+
+        newImageView.setImageBitmap(bitmap);
+        // previewPhotoLayout.addView(newImageView,params);
+        return newImageView;
+    }
+    private int dpToPx(int dp){
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((float)dp*density);
+    }
 }

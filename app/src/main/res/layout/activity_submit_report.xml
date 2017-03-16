@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -18,17 +19,16 @@
             android:gravity="center_horizontal">
 
             <TextView
-                android:text="@string/submit_a_report"
+                android:id="@+id/submit_activity_title_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/submit_activity_title_text"
                 android:layout_marginTop="55dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+                android:padding="5dp"
+                android:text="@string/submit_a_report"
+                android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
                 android:textColor="@android:color/background_dark"
-                android:textSize="30sp"
-                android:textAlignment="center" />
+                android:textSize="30sp" />
 
             <TextView
                 android:text="@string/location"
@@ -48,30 +48,26 @@
                 android:layout_marginTop="42dp"
                 android:hint="@string/address"
                 style="@style/Widget.AppCompat.AutoCompleteTextView"
-                android:layout_below="@+id/submit_activity_title_text"
-                android:layout_alignStart="@+id/submit_activity_title_text"
                 android:layout_margin="5dp" />
 
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:ems="10"
                 android:id="@+id/submit_activity_town_text_field"
-                android:layout_marginTop="14dp"
-                android:hint="Town"
                 style="@style/Widget.AppCompat.AutoCompleteTextView"
-                android:layout_below="@+id/submit_activity_street_text_field"
-                android:layout_alignStart="@+id/submit_activity_street_text_field"
-                android:layout_margin="5dp" />
-
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName"
+                android:layout_margin="5dp"
+                android:layout_marginTop="14dp"
                 android:ems="10"
+                android:hint="@string/city"
+                android:inputType="textPersonName" />
+
+            <EditText
                 android:id="@+id/submit_activity_state_text_field"
-                android:hint="State" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/state"
+                android:inputType="textPersonName" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -81,57 +77,26 @@
                 android:id="@+id/submit_activity_zip_text_field"
                 android:hint="@string/zip"
                 style="@style/Widget.AppCompat.AutoCompleteTextView"
-                android:layout_below="@+id/submit_activity_town_text_field"
-                android:layout_alignStart="@+id/submit_activity_town_text_field"
                 android:layout_marginTop="21dp"
                 android:layout_margin="5dp" />
 
             <TextView
-                android:text="@string/or"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView6"
-                android:textAlignment="center"
-                android:textSize="24sp"
-                android:textColor="@android:color/background_dark"
-                android:layout_margin="5dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPostalAddress|numberDecimal"
-                android:ems="10"
-                android:id="@+id/submit_activity_longitude"
-                android:hint="@string/longitude" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:ems="10"
-                android:id="@+id/submit_activity_lattitude"
-                android:hint="@string/lattitude" />
-
-            <TextView
                 android:text="@string/date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:id="@+id/submit_activity_date_label"
                 android:textSize="24sp"
                 android:layout_below="@+id/submit_activity_zip_text_field"
-                android:layout_alignStart="@+id/submit_activity_zip_text_field"
                 android:textColor="@android:color/black"
                 android:textAlignment="center"
                 android:layout_margin="5dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                tools:ignore="ObsoleteLayoutParam" />
 
             <DatePicker
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/submit_activity_title_text"
                 android:id="@+id/submit_report_date_picker"
-                android:layout_below="@+id/submit_activity_date_label"
-                android:layout_alignEnd="@+id/submit_activity_title_text"
                 android:datePickerMode="spinner"
                 android:calendarViewShown="false"
                 android:layout_marginLeft="5dp"
@@ -155,14 +120,15 @@
                 android:background="@android:color/transparent" />
 
             <TextView
-                android:text="@string/weather_event_type"
+                android:id="@+id/submit_activity_weather_event_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/submit_activity_weather_event_label"
-                android:textSize="24sp"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="@string/weather_event_type"
                 android:textAlignment="center"
                 android:textColor="@android:color/background_dark"
-                android:layout_margin="5dp" />
+                android:textSize="24sp" />
 
             <LinearLayout
                 android:orientation="vertical"
@@ -209,6 +175,37 @@
                     android:layout_margin="5dp"
                     android:textSize="18sp"
                     />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/general_information"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp" />
+
+                <EditText
+                    android:id="@+id/submit_report_activity_temperature_field_TV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/current_temperature"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/comments"
+                    android:inputType="textPersonName" />
             </LinearLayout>
 
             <Button

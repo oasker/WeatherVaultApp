@@ -3,6 +3,7 @@ package com.example.oliverasker.skywarnmarkii.Fragments;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -202,6 +203,16 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     @Override
     public void processFinish(ArrayList<Bitmap> result) {
         Log.i(TAG , "bitMapcallback processFinished: size: " + result.size());
+
+    }
+
+    @Override
+    public void processFinish(Bitmap result) {
+
+    }
+
+    @Override
+    public void processFinish(Uri result) {
 
     }
 

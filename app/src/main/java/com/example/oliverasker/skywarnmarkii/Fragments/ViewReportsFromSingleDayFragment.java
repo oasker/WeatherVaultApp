@@ -60,17 +60,17 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         String date = format1.format(cal.getTime());
 
         //ToDo: Create way to switch between looking at all reports from single day and top rated
-//        getRecordsForDayTask = new GetAllRecordsForDayTask();
-//        getRecordsForDayTask.setDate(date);
-//        getRecordsForDayTask.setContext(getContext());
-//        getRecordsForDayTask.delegate = this;
-//        getRecordsForDayTask.execute();
+        getRecordsForDayTask = new GetAllRecordsForDayTask();
+        getRecordsForDayTask.setDate(date);
+        getRecordsForDayTask.setContext(getContext());
+        getRecordsForDayTask.delegate = this;
+        getRecordsForDayTask.execute();
 
-        getTopRatedTaslk = new GetTopRatedReportsTask();
-        getTopRatedTaslk.setDate(date);
-        getTopRatedTaslk.setContext(getContext());
-        getTopRatedTaslk.delegate = this;
-        getTopRatedTaslk.execute();
+//        getTopRatedTaslk = new GetTopRatedReportsTask();
+//        getTopRatedTaslk.setDate(date);
+//        getTopRatedTaslk.setContext(getContext());
+//        getTopRatedTaslk.delegate = this;
+//        getTopRatedTaslk.execute();
 
         //Set Up Date
 //        cal = Calendar.getInstance();
@@ -169,7 +169,7 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         data = null;
 
         if(result.size() ==0){
-            Toast.makeText(getContext(),"No Reports found",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(),"No Reports found",Toast.LENGTH_SHORT).show();
         }
         data = result.toArray(new SkywarnWSDBMapper[result.size()]);
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), data);

@@ -65,9 +65,6 @@ public class DynamoDBManager {
 
     public static void insertRecord(SkywarnWSDBMapper m) {
         reportToSubmit = m;
-//        reportToSubmit.setDateSubmittedString("01/29/2017");
-//        reportToSubmit.setDateSubmittedEpoch((long)1485890571.005256);
-
         AmazonDynamoDBClient ddb = MainActivity.clientManager.ddb(); //Use MainActivity client manager
         DynamoDBMapper mapper = new DynamoDBMapper(ddb);
         try {
@@ -126,6 +123,7 @@ public class DynamoDBManager {
 
             if (item.get("DateSubmittedEpoch") != null){
                 test.setDateSubmittedEpoch((Long.parseLong(item.get("DateSubmittedEpoch").getN())));
+                Log.d(TAG, " GETDATSUBMITTEDEPOCH: " + (Long.parseLong(item.get("DateSubmittedEpoch").getN().toString())));
                 //test.setDateSubmittedEpoch(Long.parseLong(item.get("DateSubmittedEpoch").getN()));
 
             }
@@ -194,8 +192,8 @@ public class DynamoDBManager {
 
 
         SkywarnWSDBMapper recordToFind = new SkywarnWSDBMapper();
-        recordToFind.setDateSubmittedEpoch(23213123);
-        recordToFind.setDateSubmittedString("02/12/2017");
+//        recordToFind.setDateSubmittedEpoch(23213123);
+//        recordToFind.setDateSubmittedString("02/12/2017");
         String queryString = "0";
 
         Condition rangeKeyCondition = new Condition()

@@ -66,8 +66,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
     private EditText Street;
     private EditText Zip;
     private EditText Town;
-    private EditText Longitude;
-    private EditText Latitude;
+
 
     private TimePicker timePicker;
     private DatePicker datePicker;
@@ -107,8 +106,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
             State = (EditText) findViewById(R.id.submit_activity_state_text_field);
             Zip = (EditText) findViewById(R.id.submit_activity_zip_text_field);
             Street = (EditText) findViewById(R.id.submit_activity_street_text_field);
-            Latitude = (EditText) findViewById(R.id.submit_activity_lattitude);
-            Longitude = (EditText) findViewById(R.id.submit_activity_longitude);
+
        // }
             proceedButton = (Button) findViewById(R.id.submit_activity_button_to_next_screen);
             proceedButton.setOnClickListener(new OnClickListener() {
@@ -123,43 +121,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
                         report.put("State", new AttributeValue().withS(State.getText().toString()));
                     if(!Town.getText().toString().equals(""))
                         report.put("City", new AttributeValue().withS(Town.getText().toString()));
-
-//                    String streetString = Street.getText().toString();
-//                    String zipString = Zip.getText().toString();
-//                    String townString = Town.getText().toString();
-//                    String stateString = State.getText().toString();
-//                    double latitude = MapUtility.getLatLongFromAddress(
-//                            getApplicationContext(),
-//                            streetString
-//                                    + " " + Town.getText().toString()
-//                                    +" " + State.getText().toString()
-//                                    + " " + Zip.getText().toString())[0];
 //
-//                    double longitude = MapUtility.getLatLongFromAddress(
-//                            getApplicationContext(),
-//                            Street.getText().toString()
-//                                    + " " + Town.getText().toString()
-//                                    +" " + State.getText().toString()
-//                                    + " " + Zip.getText().toString())[1];
-
-
-                    //String[] county = MapUtility.getCountyFromLatLong(this, getResources());
-                    // Log.i(TAG, "county: " + count)
-//                    GetReportCountyTask countyTask = new GetReportCountyTask();
-//                    countyTask.setmContext(getApplicationContext());
-//                    countyTask.setRes(getResources());
-//                    countyTask.setCallback(SubmitReportActivity.this);
-//                    countyTask.setStreet(streetString);
-//                    countyTask.setTown(townString);
-//                    countyTask.setState(stateString);
-//                    countyTask.setZip(zipString);
-//                    countyTask.execute();
-
-//                    report.put("Latitude", new AttributeValue().withN(String.valueOf(latitude)));
-//                    report.put("Longitude", new AttributeValue().withN(String.valueOf(longitude)));
-                    //report.put("County", new AttributeValue().withS(county));
-
-                    // Log.i(TAG, "lat/long: " + latitude + ", " + longitude + "  county: " + county);
                     Log.d(TAG,"OnProceedButtonCLicked()");
                     LaunchSubmitReportDetails();
                 }
@@ -244,8 +206,6 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
                 //Add values to stateholder
                 sH = new StateHolder();
                 sH.dateP = datePicker;
-                sH.lattitude = Latitude;
-                sH.longitude = Longitude;
                 sH.street = Street;
                 sH.town = Town;
                 sH.zip = Zip;
@@ -268,10 +228,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         if ((Street.getText().toString() == ""
                 | State.getText().toString() == ""
                 | Zip.getText().toString() == ""
-                | Town.getText().toString() == "")
-
-                | Latitude.getText().toString() == ""
-                | Longitude.getText().toString() == ""){
+                | Town.getText().toString() == "")){
             Log.d(TAG, "validateInputs() true");
         return false;
     }
@@ -409,12 +366,13 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         Log.i(TAG, "county: onProcessComplete():  " + s );
         report.put("County", new AttributeValue().withS(s));
 
-        if(validateInputs()) {
-            // HashMap<String, AttributeValue> report = new HashMap();
+        if(s != "countyError") {
+            if (validateInputs()) {
+                // HashMap<String, AttributeValue> report = new HashMap();
 
-            datePicker = (DatePicker) findViewById(R.id.submit_report_date_picker);
-            report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(getDateFromDatePicker(datePicker))));
-
+                datePicker = (DatePicker) findViewById(R.id.submit_report_date_picker);
+                report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(getDateFromDatePicker(datePicker))));
+                Log.d(TAG, "DATEOFEVENT: " + String.valueOf(getDateFromDatePicker(datePicker)));
 //            if(!Street.getText().toString().equals(""))
 //                report.put("Street", new AttributeValue().withS(Street.getText().toString()));
 //            if(!Zip.getText().toString().equals(""))
@@ -451,71 +409,72 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
 //            Log.i(TAG, "lat/long: " + latitude + ", " + longitude + "  county: " + county);
 
 
-            //Enter user details retreived from cognito
-            report.put("Username", new AttributeValue().withS(UserInformationModel.getInstance().getUsername()));
-            report.put("FirstName", new AttributeValue().withS(UserInformationModel.getFirstName()));
-            report.put("LastName", new AttributeValue().withS(UserInformationModel.getLastName()));
+                //Enter user details retreived from cognito
+                report.put("Username", new AttributeValue().withS(UserInformationModel.getInstance().getUsername()));
+                report.put("FirstName", new AttributeValue().withS(UserInformationModel.getFirstName()));
+                report.put("LastName", new AttributeValue().withS(UserInformationModel.getLastName()));
+
+                report.put("NumberOfImages", new AttributeValue().withN(String.valueOf(UserInformationModel.getNumberOfImages())));
+                report.put("NumberOfVideos", new AttributeValue().withN(String.valueOf(UserInformationModel.getNumberOfVideos())));
+
+                report.put("UpVote", new AttributeValue().withN(String.valueOf(0)));
+                report.put("NetVote", new AttributeValue().withN(String.valueOf(0)));
+                report.put("DownVote", new AttributeValue().withN(String.valueOf(0)));
+
+                if (!UserInformationModel.getInstance().getAffiliation().equals("")) {
+                    report.put("Affilliation", new AttributeValue().withS(UserInformationModel.getInstance().getAffiliation()));
+                } else
+                    report.put("Affilliation", new AttributeValue().withS("General"));
+
+                if (!UserInformationModel.getInstance().getSpotterID().equals(""))
+                    report.put("SpotterID", new AttributeValue().withS(UserInformationModel.getInstance().getSpotterID()));
+                else
+                    report.put("SpotterID", new AttributeValue().withS("|"));
+
+                if (UserInformationModel.getInstance().getCallsign() != null && !UserInformationModel.getInstance().getCallsign().equals(""))
+                    report.put("CallSign", new AttributeValue().withS(UserInformationModel.getInstance().getCallsign()));
+                else
+                    report.put("CallSign", new AttributeValue().withS("|"));
+
+                Log.i(TAG, "Callsign::::: " + UserInformationModel.getInstance().getCallsign()
+                        + " SpotterID:::: " + UserInformationModel.getInstance().getSpotterID()
+                        + " Affiliation::::  " + UserInformationModel.getInstance().getAffiliation());
+
+                ///reportToSubmit.setDateSubmittedString(Utility.epochToDateTimeString(reportToSubmit.getDateSubmittedEpoch() /1000));
+                /////////////////////////////////////////////////////////////////////////////
+                ////              VALIDATE LOCATION WHEN SUBMITTING REPORTs             /////
+                /////////////////////////////////////////////////////////////////////////////
+                //        Here we check to make sure that enough info is provided for the location
+                //            1. Street, City, State != null | = ""
+                //                A. Run the address through the geocoder and and show user what will be submitted
+                //                   i. User can select one of the addresses or reenter address
+                //            2. Lat/Long are filled out (only numbers)
+                //                A. (same as 1.A)
+
+                // DateOfEvent Stuff
+                long epoch = getDateFromDatePicker(datePicker);
+                report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(epoch/1000)));
+                Log.i(TAG, "Date of Event:: " + report.get("DateOfEvent"));
 
 
-            report.put("NumberOfImages", new AttributeValue().withN(String.valueOf(UserInformationModel.getNumberOfImages())));
-            report.put("NumberOfVideos", new AttributeValue().withN(String.valueOf(UserInformationModel.getNumberOfVideos())));
+                String[] keyArray = Utility.AttributeHashMapKeyToArray(report);
+                AttributeValue[] attrArray = Utility.AttributeHashMapValuesToArray(report);
 
-            report.put("UpVote", new AttributeValue().withN(String.valueOf(0)));
-            report.put("NetVote", new AttributeValue().withN(String.valueOf(0)));
-            report.put("DownVote", new AttributeValue().withN(String.valueOf(0)));
+                Bundle b = new Bundle();
+                Intent intent = new Intent(this, SubmitReportDetailsActivity.class);
 
-            if(!UserInformationModel.getInstance().getAffiliation().equals("")) {
-                report.put("Affiliation", new AttributeValue().withS(UserInformationModel.getInstance().getAffiliation()));
-            }
-            else
-                report.put("Affiliation", new AttributeValue().withS("|"));
+                intent.putExtra("keyArray", keyArray);
+                intent.putExtra("attrArray", attrArray);
 
-            if(!UserInformationModel.getInstance().getSpotterID().equals(""))
-                report.put("SpotterID", new AttributeValue().withS(UserInformationModel.getInstance().getSpotterID()));
-            else
-                report.put("SpotterID", new AttributeValue().withS("|"));
-
-            if(UserInformationModel.getInstance().getCallsign()!=null && !UserInformationModel.getInstance().getCallsign().equals(""))
-                report.put("CallSign", new AttributeValue().withS(UserInformationModel.getInstance().getCallsign()));
-             else
-                 report.put("Callsign", new AttributeValue().withS("|"));
-
-            Log.i(TAG, "Callsign::::: " + UserInformationModel.getInstance().getCallsign()
-                    +" SpotterID:::: " +  UserInformationModel.getInstance().getSpotterID()
-                    +" Affiliation::::  " +  UserInformationModel.getInstance().getAffiliation());
-
-            ///reportToSubmit.setDateSubmittedString(Utility.epochToDateTimeString(reportToSubmit.getDateSubmittedEpoch() /1000));
-            /////////////////////////////////////////////////////////////////////////////
-            ////              VALIDATE LOCATION WHEN SUBMITTING REPORTs             /////
-            /////////////////////////////////////////////////////////////////////////////
-            //        Here we check to make sure that enough info is provided for the location
-            //            1. Street, City, State != null | = ""
-            //                A. Run the address through the geocoder and and show user what will be submitted
-            //                   i. User can select one of the addresses or reenter address
-            //            2. Lat/Long are filled out (only numbers)
-            //                A. (same as 1.A)
-
-            // DateOfEvent Stuff
-            long epoch = getDateFromDatePicker(datePicker);
-            report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(epoch)));
-            Log.i(TAG, "Date of Event::::::: " + report.get("DateOfEvent"));
-
-
-            String[] keyArray=Utility.AttributeHashMapKeyToArray(report);
-            AttributeValue[] attrArray = Utility.AttributeHashMapValuesToArray(report);
-
-            Bundle b = new Bundle();
-            Intent intent = new Intent(this, SubmitReportDetailsActivity.class);
-
-            intent.putExtra("keyArray",keyArray);
-            intent.putExtra("attrArray",attrArray);
-
-            intent.putExtras(b);
-            intent.putExtra("weatherEventBoolsMap", weatherEventsBoolsMap);
-            startActivity(intent);
+                intent.putExtras(b);
+                intent.putExtra("weatherEventBoolsMap", weatherEventsBoolsMap);
+                startActivity(intent);
+            } else
+                Toast.makeText(this, "Please enter all required fields", Toast.LENGTH_LONG);
         }
-        else
-            Toast.makeText(this,"Please enter all required fields",Toast.LENGTH_LONG);
+        else{
+            Toast.makeText(this, "Please enter all fields",Toast.LENGTH_SHORT);
+        }
     }
     // This class simply holds the widget instances for each table item
         // so it is not lost when switching between activities.
@@ -563,13 +522,18 @@ class GetReportCountyTask extends AsyncTask<Void, Void, String> {
                             JSONObject array2 = array.getJSONObject(0);
 
                             JSONArray array4 = array2.getJSONArray("address_components");
-                               JSONObject obj = (JSONObject) array4.get(3);
+                            JSONObject obj = (JSONObject) array4.get(3);
                             String j = obj.getString("long_name");
-                            Log.d(TAG , "JJJ " + j);
+                            Log.d(TAG , "county: " + j);
+
+                            //Get Lat/Long
+                           // JSONObject lat = array4.get()
+
                             county = j;
                             callback.onProcessComplete(j);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            callback.onProcessComplete("countyError");
                         }
                     }
                 }, new Response.ErrorListener() {

@@ -1,6 +1,7 @@
 package com.example.oliverasker.skywarnmarkii.Callbacks;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.util.ArrayList;
 
@@ -10,4 +11,6 @@ import java.util.ArrayList;
 
 public interface BitmapCallback {
     void processFinish(ArrayList<Bitmap> result);
+    void processFinish(Bitmap result);
+    void processFinish(Uri result);
 }
