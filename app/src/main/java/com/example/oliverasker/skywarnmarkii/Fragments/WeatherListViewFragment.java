@@ -64,18 +64,6 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         SkywarnWSDBMapper[]reportArray = data.toArray(new SkywarnWSDBMapper[data.size()]);
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), reportArray);
 
-        //for(int i=0; i< data.length; i++)
-        // System.out.println("Received in QueryLauncherActivity: "+data[i].getEventCity() + " " + data[i].getComments());
-//        listView.setAdapter(skywarnAdapter);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id ) {
-//                int itemPos = position;
-//                SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) listView.getItemAtPosition(position);
-//                launchViewReportActivity(itemValue);
-//            }
-//        });
         return v;
     }
 

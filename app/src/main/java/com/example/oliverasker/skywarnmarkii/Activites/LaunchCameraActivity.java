@@ -94,7 +94,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstace) {
         super.onCreate(savedInstace);
-        setContentView(R.layout.launch_camera_activity_layout);
+        setContentView(R.layout.activity_launch_camera_layout);
 
         photoPaths = new ArrayList<>();
 

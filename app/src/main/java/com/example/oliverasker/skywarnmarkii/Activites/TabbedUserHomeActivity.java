@@ -32,7 +32,6 @@ import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
 
 import java.util.Map;
 
-//import com.example.oliverasker.skywarnmarkii.Fragments.QuerySingleDayFragment;
 
 public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, UserAttributesCallback {
     private static final String TAG= "TabbedUserHomeActivity";
@@ -203,7 +202,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         public PlaceholderFragment() {
         }
 
-
 //          Returns a new instance of this fragment for the given section
 //          number.
         public static PlaceholderFragment newInstance(int sectionNumber) {
@@ -252,7 +250,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                     Log.d(TAG, "Relevant report frag");
 
                     Intent i = new Intent();
-                    i.putExtra("date", "02/12/2017");
+                   // i.putExtra("date", "02/12/2017");
                     Bundle b = i.getExtras();
 
                     ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();

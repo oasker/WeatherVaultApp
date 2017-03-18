@@ -121,7 +121,6 @@ public class ViewReportActivity extends Activity implements UriCallback{
         @Override
         public void processFinish(Bitmap result) {
             if(result !=null) {
-                Log.i(TAG, "height: " + result.getHeight());
                 Log.i(TAG, "processFinished(bitmap)");
 
                 ImageView iV = new ImageView(getApplicationContext());
@@ -179,7 +178,7 @@ public class ViewReportActivity extends Activity implements UriCallback{
 
         //Send data to fragments
         //Stupid way to do this i think, but need to brute force it
-        valueMap.put("Submitted", map.getDateSubmittedString());
+       // valueMap.put("Submitted", map.getDateSubmittedString());
         valueMap.put("Date Submitted Epoch", String.valueOf(map.getDateSubmittedEpoch()));
         //valueMap.put("Date Of Event", String.valueOf(map.getDateOfEvent()));
 
@@ -202,8 +201,10 @@ public class ViewReportActivity extends Activity implements UriCallback{
 
         //Severe Weather
         valueMap.put("Severe Weather Type", map.getSevereType());
-        valueMap.put("Wind Speed", String.valueOf(map.getWindSpeed() + " MPH"));
-        valueMap.put("Wind Gust", String.valueOf(map.getWindGust()) + " MPH");
+        if(map.getWindSpeed() != 9999)
+            valueMap.put("Wind Speed", String.valueOf(map.getWindSpeed() + " MPH"));
+        if(map.getWindGust() != 9999)
+            valueMap.put("Wind Gust", String.valueOf(map.getWindGust()) + " MPH");
         valueMap.put("Wind Direction", map.getWindDirection());
         valueMap.put("Hail Size", String.valueOf(map.getHailSize()));
         valueMap.put("Tornado", map.getTornado());
@@ -221,26 +222,29 @@ public class ViewReportActivity extends Activity implements UriCallback{
         valueMap.put("NumberOfVideos", String.valueOf(map.getNumberOfVideos()));
         valueMap.put("NumberOfImages", String.valueOf(map.getNumberOfImages()));
 
-        valueMap.put("Zip", map.getZipCode());
+       // valueMap.put("Zip", map.getZipCode());
         valueMap.put("Username", map.getUsername());
         valueMap.put("Longitude", String.valueOf(map.getLongitude()));
         valueMap.put("Latitude", String.valueOf(map.getLatitude()));
 
-        valueMap.put("WeatherEvent", map.getWeatherEvent());
+        valueMap.put("Weather Event", map.getWeatherEvent());
 
         valueMap.put("Street", String.valueOf(map.getStreet()));
-        valueMap.put("City", String.valueOf(map.getEventCity()));
-        valueMap.put("State", String.valueOf(map.getState()));
+        //valueMap.put("City", String.valueOf(map.getEventCity()));
+        //valueMap.put("State", String.valueOf(map.getState()));
+
         valueMap.put("Comments", map.getComments());
+
         valueMap.put("Current Temperature", String.valueOf(map.getCurrentTemperature()) + " F");
 
+        Log.d(TAG, "Street: " + map.getStreet());
         //Remove unwanted views
         //Set<String> keySet = valueMap.keySet();
         Iterator<Map.Entry<String, String>> iter = valueMap.entrySet().iterator();
         while(iter.hasNext()){
             Map.Entry<String,String> entry = iter.next();
             String value = entry.getValue();
-            if(value.equals("|") || value .equals("9999") || value.equals("") | value.equals("false") | value.equals("9999.0") | value.equals("0.0") | value.equals("0") | value.equals("null") ) {
+            if(value.equals("|") || value.trim().equals("9999") || value.equals("") | value.equals("false") | value.trim().equals("9999.0") | value.equals("0.0")|value.trim().equals("0.0 F") | value.equals("0") | value.equals("null") ) {
                 Log.i(TAG, "REMOVING DEFAULT VALUES value: " + value);
                 iter.remove();
             }
@@ -279,6 +283,7 @@ public class ViewReportActivity extends Activity implements UriCallback{
         valueMap.remove("NumberOfVideos");
         valueMap.remove("Date Submitted Epoch");
         valueMap.remove("Username");
+        valueMap.remove("Street");
 
         android.widget.TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -302,23 +307,30 @@ public class ViewReportActivity extends Activity implements UriCallback{
 
 
         comments = (TextView) findViewById(R.id.view_report_activity_comments);
-        comments.setText(map.getComments());
-        if(map.getComments().isEmpty()){
+        if(!map.getComments().equals("|"))
+            comments.setText(map.getComments());
+        else
             ((ViewGroup) comments.getParent()).removeView(comments);
-        }
+
 
         eventType = (TextView) findViewById(R.id.view_report_activity_weather_event);
         eventType.setText(map.getWeatherEvent());
 
         location = (TextView) findViewById(R.id.view_report_activity_location);
-        location.setText(map.getStreet() + " " + map.getEventCity() + ", " + map.getEventState());
 
+        //Build String for location textview
+        StringBuilder locationString = new StringBuilder();
+        if(!map.getStreet().trim().equals("|"))
+            locationString.append(map.getStreet() + " ");
+        if(map.getCity()!="|")
+            locationString.append(map.getCity() );
+        if(map.getState()!="|")
+            locationString.append(", " + map.getState());
+        Log.i(TAG, "locationSTring: " +locationString.toString());
+        location.setText(locationString.toString());
         reportRating = (TextView) findViewById(R.id.view_report_activity_report_rating);
-        reportRating.setText("0");
-        if(map.getRating().trim() != "|")
-            reportRating.setText(getString(R.string.rating) + map.getRating());
-        else
-            reportRating.setText("0");
+
+            reportRating.setText(getString(R.string.rating) + map.getNetVote());
 //
 //        longitude = (TextView) findViewById(R.id.view_report_activity_long_latt);
 //        //longitude.setText("Lat/Long: " + map.getLattitude()+ (char)0x00B0 + " " + map.getLongitude()+(char)0x00B0 );

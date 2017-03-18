@@ -47,6 +47,9 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
     String fileName;
 
     //get S3 images if they exist
+    public DownloadPhotoTask(){
+
+    }
 
     private static void displayTextInputStream(InputStream input) throws IOException{
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));

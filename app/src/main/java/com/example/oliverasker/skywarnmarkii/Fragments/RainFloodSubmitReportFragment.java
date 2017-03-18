@@ -17,7 +17,7 @@ import com.example.oliverasker.skywarnmarkii.R;
 public class RainFloodSubmitReportFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance){
-        View view = inflater.inflate(R.layout.rain_flood_submit_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_rain_flood_submit, container, false);
         return view;
     }
 }

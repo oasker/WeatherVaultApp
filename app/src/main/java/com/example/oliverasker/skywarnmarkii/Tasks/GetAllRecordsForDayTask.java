@@ -102,14 +102,11 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
         QueryResult queryResult = ddb.query(queryRequest);
         List<Map<String, AttributeValue>> valMap = queryResult.getItems();
 
-
         for(Map item : queryResult.getItems()) {
             SkywarnWSDBMapper reportEntry = new SkywarnWSDBMapper();
 
-//            reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
             reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
             Log.d(TAG, "dateSubmittedEpoch(): " + Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
-
 
             reportEntry.setDateSubmittedString(Utility.parseDynamoDBResultValuesToString(item.get("DateSubmittedString").toString()));
             if(item.containsKey("DateOfEvent"))
@@ -120,14 +117,21 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             /// Location Attributes
             if(reportEntry.getState() != null &&  !reportEntry.getState().equals(""))
                 reportEntry.setEventState(Utility.parseDynamoDBResultValuesToString(item.get("State").toString()));
+
             if(reportEntry.getCity() != null &&  !reportEntry.getCity().equals(""))
                 reportEntry.setEventCity(Utility.parseDynamoDBResultValuesToString(item.get("City").toString()));
-            if(reportEntry.getStreet() != null &&  !reportEntry.getStreet().equals(""))
-                reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
+            Log.i(TAG, "City: " + reportEntry.getCity());
+
+            //if(reportEntry.getStreet() != null &&  !reportEntry.getStreet().equals(""))
+            reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
+                Log.i(TAG, "Streettt: " + item.get("Street").toString());
+
             if(reportEntry.getFirstName() != null && !reportEntry.getFirstName().equals(""))
                 reportEntry.setFirstName(Utility.parseDynamoDBResultValuesToString(item.get("FirstName").toString()));
+
             if(reportEntry.getLastName() != null && !reportEntry.getLastName().equals(""))
                 reportEntry.setLastName(Utility.parseDynamoDBResultValuesToString(item.get("LastName").toString()));
+
             if(reportEntry.getZipCode() != null && !reportEntry.getZipCode().equals(""))
                 reportEntry.setZipCode(Utility.parseDynamoDBResultValuesToString(item.get("ZipCode").toString()));
 

@@ -35,7 +35,7 @@ import com.example.oliverasker.skywarnmarkii.R;
 
     Fragment        ->      layout_resource.xml
     1. CoastalFloodingSubmittedReportFragment   ->  fragment_coastal_flooding_submit
-    2. RainFloodSubmitReportFragment    ->  rain_flood_submit_fragment
+    2. RainFloodSubmitReportFragment    ->  fragment_rain_flood_submit
     3. WinterSubmitReportFragment   ->  fragment_winter_submit
  */
 
@@ -50,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
         //Setup client manager
         clientManager = new AmazonClientManager(this);
 
-          Intent intent = new Intent(this, LoginActivity.class);
+         // Intent intent = new Intent(this, LoginActivity.class);
         //Intent intent = new Intent(this, TabbedUserHomeActivity.class);
        // Intent intent = new Intent(this, QueryLauncherActivity.class);
-       // Intent intent =new Intent(this, LaunchCameraActivity.class);
+        Intent intent =new Intent(this, LaunchCameraActivity.class);
         //Intent intent = new Intent(this,SubmitReportActivity.class);
         startActivity(intent);
     }

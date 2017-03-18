@@ -46,13 +46,13 @@ public class SkywarnWSDBMapper implements Serializable {
     private String Comments="|";
     private String Username;
     private String rating="|";
-    private String time = "0:0";
+    private String time = "|";
     private String WeatherEvent="|";
 
     // Location Details
-    private String Street="";
-    private String City="Null city";
-    private String State="MA";
+    private String Street="|";
+    private String City="|";
+    private String State="|";
     private String ZipCode="|";
     private long Longitude=9999;
     private long Latitude=9999;

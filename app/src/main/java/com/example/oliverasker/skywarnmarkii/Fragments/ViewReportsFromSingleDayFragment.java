@@ -35,7 +35,6 @@ import static android.content.ContentValues.TAG;
 
 public class ViewReportsFromSingleDayFragment extends Fragment implements ICallback {
     private ListView listView;
-   // MyAsyncTask myAsync = new MyAsyncTask(this);
     private Button addDayButton;
     private Button subtractDayButton;
     private Button viewReportsOnMapToggle;
@@ -49,9 +48,6 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         GetAllRecordsForDayTask getRecordsForDayTask = null;
         GetTopRatedReportsTask getTopRatedTaslk = null;
 
-//        Bundle b = getArguments();
-//        String date = b.getString("date");
-//        Log.d(TAG, "DATE::" + date);
         ArrayList<SkywarnWSDBMapper> data = new ArrayList<>();
 
         cal = Calendar.getInstance();
@@ -118,8 +114,6 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
             }
         });
 
-
-
         SkywarnWSDBMapper[]reportArray = data.toArray(new SkywarnWSDBMapper[data.size()]);
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), reportArray);
 
@@ -183,7 +177,10 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
             public void onItemClick(AdapterView<?> parent, View view, int position, long id ) {
                 int itemPos = position;
                 SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) listView.getItemAtPosition(position);
+                Log.i(TAG, "STreet:::::::::::::::::" + itemValue.getStreet());
+                Log.i(TAG, "City:::::::::::::::::" + itemValue.getCity());
                 launchViewReportActivity(itemValue);
+
             }
         });
         result = null;
