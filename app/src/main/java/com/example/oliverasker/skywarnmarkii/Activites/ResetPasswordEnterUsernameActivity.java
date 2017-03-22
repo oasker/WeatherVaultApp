@@ -23,7 +23,7 @@ public class ResetPasswordEnterUsernameActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setContentView(R.layout.reset_password_enter_username_activity_layout);
+        setContentView(R.layout.activity_reset_password_enter_username_layout);
 
 
         resetUsernameTV = (TextView)findViewById(R.id.pw_reset_enter_usernameTV);

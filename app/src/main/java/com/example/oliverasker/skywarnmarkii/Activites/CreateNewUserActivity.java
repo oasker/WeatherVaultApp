@@ -52,7 +52,7 @@ public class CreateNewUserActivity extends AppCompatActivity {
     @Override
     protected  void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-        setContentView(R.layout.create_new_user_layout);
+        setContentView(R.layout.activity_create_new_user_layout);
 
         //Assign
         signUpButton = (Button)findViewById(R.id.sign_up_button);

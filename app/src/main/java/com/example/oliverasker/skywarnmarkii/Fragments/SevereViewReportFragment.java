@@ -63,7 +63,7 @@ public class SevereViewReportFragment extends Fragment {
             HashMap<String, String> s= (HashMap<String, String>) b.getSerializable("hMap");
         }
 
-        View view = inflater.inflate(R.layout.severe_view_fragment,container,false);
+        View view = inflater.inflate(R.layout.fragment_severe_view,container,false);
 
         SevereType = (TextView)view.findViewById(R.id.severe_type_field_tv);
         SevereType.setText(values.get("SevereType"));

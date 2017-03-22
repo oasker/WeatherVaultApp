@@ -53,7 +53,7 @@ public class RainFloodViewReportFragment extends Fragment {
             HashMap<String, String> s = (HashMap<String, String>) b.getSerializable("hMap");
         }
 
-        View view = inflater.inflate(R.layout.rain_flood_view_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_rain_flood_view, container, false);
 
         Rain = (TextView) view.findViewById(R.id.rain_field_tv);
         Rain.setText(values.get("Rain"));

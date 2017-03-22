@@ -187,6 +187,19 @@
     <string name="general_information">General Information</string>
     <string name="upload_existing">Upload Existing</string>
     <string name="continue_without_adding_photos">Continue without Adding Photos</string>
+    <string name="take_new_video">Take New Video</string>
+    <string name="date_and_time">Date and Time</string>
+    <string name="date_range">Date Range</string>
+    <string name="search_date_range">Search Date Range</string>
+    <string name="use_current_gps_location">Use current GPS Location</string>
+    <string name="attributes">Attributes</string>
+    <string name="county">County</string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="set_date">Set Date</string>
+    <string name="severe_event">Severe Event</string>
+    <string name="winter_event">Winter Event</string>
+    <string name="rain_flood_event">Rain/Flood Event</string>
+    <string name="coastal_event">Coastal Event</string>
 
     <string-array name="ItemsArray">
         <item name="Item1" />
@@ -195,22 +208,69 @@
     </string-array>
 
     <string-array name="severe_weather_spinner_values_array">
-        <item name ="Tornado"/>
-        <item name = "Thunderstorm"/>
-        <item name ="Non-Thunderstorm"/>
-        <item name ="Tropical Storm"/>
-        <item name ="Hurricane"/>
+        <item name="Tornado" />
+        <item name="Thunderstorm" />
+        <item name="Non-Thunderstorm" />
+        <item name="Tropical Storm" />
+        <item name="Hurricane" />
     </string-array>
 
-    <string-array name = "wind_direction_values_array">
-        <item name = "North"/>
-        <item name = "South"/>
-        <item name = "East"/>
-        <item name = "West"/>
-        <item name = "Northeast "/>
-        <item name = "Southeast"/>
-        <item name = "Northwest"/>
-        <item name = "Southwest"/>
+    <string-array name="wind_direction_values_array">
+        <item name="North" />
+        <item name="South" />
+        <item name="East" />
+        <item name="West" />
+        <item name="Northeast " />
+        <item name="Southeast" />
+        <item name="Northwest" />
+        <item name="Southwest" />
+    </string-array>
+
+    <string-array name="WinterAttributes">
+        <item name="SnowfallSleet " />
+        <item name="SnowfallRate" />
+        <item name="SnowDepth" />
+        <item name="WaterEquivalent" />
+        <item name="FreezingRain" />
+        <item name="FreezingRainAccum" />
+        <item name="BlowDrift" />
+        <item name="Whiteout" />
+        <item name="Thundersnow" />
+        <item name="WinterWeatherComments" />
+    </string-array>
+
+    <string-array name="CoastalAttributes">
+        <item name="StormSurge" />
+        <item name="CoastalEventComments" />
+
+    </string-array>
+
+    <string-array name="SevereAttributes">
+        <item name="WindDamage" />
+        <item name="WindDamageComments" />
+        <item name="LightningDamage" />
+        <item name="LightningDamageComments" />
+        <item name="WhatDamaged" />
+        <item name="DamageComments" />
+        <item name="SevereWeatherComments" />
+        <item name="SevereType" />
+        <item name="WindSpeed" />
+        <item name="WindGust" />
+        <item name="WindDirection" />
+        <item name="HailSize" />
+        <item name="Tornado" />
+        <item name="Barometer" />
+    </string-array>
+
+    <string-array name="GeneralAttributes">
+
+    </string-array>
+
+    <string-array name="RainAttributes">
+        <item name="Rain" />
+        <item name="PrecipRate" />
+        <item name="FloodComments" />
+        <item name="RainEventComments" />
 
     </string-array>
 </resources>

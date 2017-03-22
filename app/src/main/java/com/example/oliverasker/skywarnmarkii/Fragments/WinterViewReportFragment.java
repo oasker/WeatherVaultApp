@@ -68,7 +68,7 @@ public class WinterViewReportFragment extends Fragment implements ISetTextInFrag
             HashMap<String, String> s= (HashMap<String, String>) b.getSerializable("hMap");
         }
 
-        View view = inflater.inflate(R.layout.winter_view_fragment,container,false);
+        View view = inflater.inflate(R.layout.fragment_winter_view,container,false);
 
         Snowfall = (TextView)view.findViewById(R.id.snowfall_field_tv);
        // Snowfall.setText(snowfallString);

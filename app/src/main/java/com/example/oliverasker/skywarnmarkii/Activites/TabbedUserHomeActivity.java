@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.oliverasker.skywarnmarkii.Callbacks.UserAttributesCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
-import com.example.oliverasker.skywarnmarkii.Fragments.SearchDBFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.QueryReportAttributesFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.UserInfoHomeFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.ViewReportsFromSingleDayFragment;
 import com.example.oliverasker.skywarnmarkii.Managers.CognitoManager;
@@ -243,27 +243,22 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                 //Query Report
                 case 1:
                     Log.d(TAG, "Query Report frag");
-                    return new SearchDBFragment();
+//                    return new SearchDBFragment();
+                    
+                    return new QueryReportAttributesFragment();
 
                 //Relevant reports
                 case 2:
                     Log.d(TAG, "Relevant report frag");
-
                     Intent i = new Intent();
-                   // i.putExtra("date", "02/12/2017");
                     Bundle b = i.getExtras();
-
                     ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     viewRep.setArguments(b);
                     return  viewRep;
 
-//                case 3:
-//                    Log.d(TAG, "Submit Report TAB");
-//                    return new SubmitReportActivity();
                 default:
-                    Log.d(TAG, "Default placeholder fragment");
+                    Log.d(TAG, "Default: UsereInfoHomeFragment");
                     return new UserInfoHomeFragment();
-                    //return new ReportListViewFragment();
             }
         }
 

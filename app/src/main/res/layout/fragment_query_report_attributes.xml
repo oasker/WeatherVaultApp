@@ -1,0 +1,414 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.oliverasker.skywarnmarkii.Fragments.QueryReportAttributesFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="UselessParent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:id="@+id/dateLabelTR"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimaryDark"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:padding="5dp"
+                            android:text="@string/date_and_time"
+                            android:textAlignment="center"
+                            android:textColor="@color/textColor"
+                            android:textSize="20sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:padding="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="fill_vertical|fill_horizontal"
+                                android:gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <Button
+                                    android:id="@+id/set_date_button"
+                                    android:layout_width="99dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:text="@string/set_date" />
+
+                                <TextView
+                                    android:id="@+id/textView13"
+                                    android:layout_width="87dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:text="@string/search_date_range"
+                                    android:textColor="@color/wallet_dim_foreground_inverse_holo_dark" />
+
+                                <ToggleButton
+                                    android:id="@+id/single_or_range_date_search"
+                                    android:layout_width="113dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="5dp"
+                                    android:text="@string/date_range" />
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/date_range_table_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                        </FrameLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/Location_Label_TableRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimaryDark"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:padding="5dp"
+                            android:text="@string/location"
+                            android:textAlignment="center"
+                            android:textColor="@color/textColor"
+                            android:textSize="20sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView33"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_weight="1"
+                                android:padding="3dp"
+                                android:text="@string/use_current_gps_location"
+                                android:textAlignment="center"
+                                android:textColor="@color/common_google_signin_btn_text_light_pressed"
+                                android:textSize="16sp" />
+
+                            <ToggleButton
+                                android:id="@+id/toggleButton2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/togglebutton" />
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView32"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="@string/street"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/street_input_field"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:ems="10"
+                                android:inputType="textPersonName"
+                                android:padding="5dp"
+                                android:layout_weight="0.34" />
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView31"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="@string/city"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/city_input_field"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:inputType="textPersonName"
+                                android:padding="5dp" />
+
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView29"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="@string/state"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/state_input_field"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:inputType="textPersonName"
+                                android:padding="5dp" />
+
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView27"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="@string/zip"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/zip_input_field"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:inputType="textPersonName"
+                                android:padding="5dp" />
+
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/textView327"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="@string/county"
+                                android:textColor="@android:color/black"
+                                android:textSize="18sp" />
+
+                            <EditText
+                                android:id="@+id/county_input_field"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:inputType="textPersonName"
+                                android:padding="5dp" />
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/AttributeLabelTableRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorPrimaryDark"
+                        android:gravity="center_horizontal">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:padding="5dp"
+                            android:text="@string/attributes"
+                            android:textAlignment="center"
+                            android:textColor="@color/textColor"
+                            android:textSize="20sp" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:descendantFocusability="blocksDescendants"
+                            android:orientation="vertical">
+
+                            <ExpandableListView
+                                android:id="@+id/winter_expandable_listview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:isScrollContainer="true"
+                                android:transcriptMode="alwaysScroll" />
+
+                            <ExpandableListView
+                                android:id="@+id/severe_expandable_listview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:isScrollContainer="true"
+                                android:transcriptMode="alwaysScroll" />
+
+                            <ExpandableListView
+                                android:id="@+id/rain_expandable_listview"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:isScrollContainer="true"
+                                android:transcriptMode="alwaysScroll" />
+
+                            <ExpandableListView
+                                android:id="@+id/coastal_expandable_listview"
+                                android:layout_width="383dp"
+                                android:layout_height="match_parent"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:isScrollContainer="true"
+                                android:transcriptMode="alwaysScroll" />
+
+                        </LinearLayout>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/SubmitButtonTableRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/submit_query_attr_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:text="@string/search" />
+                    </TableRow>
+
+                </TableLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

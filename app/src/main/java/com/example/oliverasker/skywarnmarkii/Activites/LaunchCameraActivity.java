@@ -2,7 +2,6 @@ package com.example.oliverasker.skywarnmarkii.Activites;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +26,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.TableRow;
+import android.widget.VideoView;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -60,17 +62,24 @@ public class LaunchCameraActivity extends AppCompatActivity {
     static final int REQUEST_VIDEO_CAPTURE =2;
     static final int SELECT_PICTURE =3;
     private long epoch;
-
+    File video_file;
     private static final File EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard");
     Uri photoURI;
+    Uri videoURI;
     ArrayList<Uri> bitMapPathList;
 
+    private MediaController mediaControls;
 
-    Button submitButton;
-    Button addExistingPhotostoReportButton;
-    Button takeNewPhotoButton;
-    Button continueNoPhotosButton;
+
+    private Button submitButton;
+    private Button addExistingPhotostoReportButton;
+    private Button takeNewPhotoButton;
+    private Button continueNoPhotosButton;
     private Button addPhotostoReportButton;
+    private Button takeNewVideoButton;
+    private VideoView mVideoView;
+
+    int position =0;
 
     private LinearLayout previewPhotoLayout;
 
@@ -158,7 +167,56 @@ public class LaunchCameraActivity extends AppCompatActivity {
             }
         });
 
+        takeNewVideoButton = (Button)findViewById(R.id.take_new_video_button);
+        takeNewVideoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "takeVideoButton onClick()");
+                //launchCaptureNewVideo();
+                //launchVideoCamera(v);
 
+//                String timestamp="1";
+//                timestamp = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss aa").format(Calendar.getInstance().getTime());
+//                File filepath = Environment.getExternalStorageDirectory();
+//                File dir = new File(filepath.getAbsolutePath()+ "/samplevideofolder/");
+//                dir.mkdirs();
+//                File mediaFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/samplevideofolder/Video_"+timestamp+".avi");
+//                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//                //Uri fileUri = Uri.fromFile(mediaFile);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, mediaFile);
+//                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
+//                startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
+
+//                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//                String fName = "VideoFileName.mp4";
+//                File f = new File(fName);
+//               // intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+//                startActivityForResult(intent, REQUEST_VIDEO_CAPTURE);
+//
+////                File f = new File(getCacheDir().toString()+"/testVideo1.mp4");
+//                File f = new File(Environment.getExternalStorageDirectory().toString() + "TESTVIDEO");
+//                if(!f.exists()){
+//                    f.mkdir();
+//                }
+//                video_file = new File(f, "sample_video.mp4");
+//                videoURI = Uri.fromFile(f);
+//                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//
+//
+//                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, video_file);
+//
+//                if(takeVideoIntent.resolveActivity(getPackageManager()) !=null){
+//                    startActivityForResult(takeVideoIntent,REQUEST_VIDEO_CAPTURE);
+//                }
+                dispatchTakeVideoIntent();
+            }
+        });
+        if (mediaControls == null) {
+            mediaControls = new MediaController(LaunchCameraActivity.this);
+        }
+
+        mVideoView =(VideoView)findViewById(R.id.video_view);
+        mVideoView.setMediaController(mediaControls);
         /////////////////// ///////////////////
         ////// AWS Example method
         //https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
@@ -166,15 +224,19 @@ public class LaunchCameraActivity extends AppCompatActivity {
         transferUtility = Utility.getTransferUtility(this);
     }
 
+    public void launchCaptureNewVideo(){
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if(takeVideoIntent.resolveActivity(getPackageManager()) != null){
+            startActivityForResult(takeVideoIntent,REQUEST_VIDEO_CAPTURE);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         fragmentCount++;
 
-        //New Photo
-       // if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_TAKE_PHOTO){
-        if(requestCode == REQUEST_TAKE_PHOTO) {
+        if(resultCode == RESULT_OK && requestCode == REQUEST_TAKE_PHOTO) {
 
             Log.d(TAG, "requestCode == REQUEST_TAKE_PHOTO: resultCode: " + resultCode);
             Log.i(TAG, "photo saved to: " + photoURI.getPath());
@@ -224,23 +286,61 @@ public class LaunchCameraActivity extends AppCompatActivity {
         }
 
         //For Videos
-        if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
-            // Log.d(TAG, "Uri: " + data.getData().toString());
-            // Uri uri = data.getData();
-            Log.i(TAG, "Result Code: " + resultCode);
-            Log.i(TAG, "Video saved to: " + photoURI.toString());
-            Log.i(TAG, "Video saved to: " + photoURI.toString());
-            try {
-                String path = getPath(photoURI);
-                //beginUpload(path);
-                //beginUpload(mCurrentPhotoPath);
-                 photoPaths.add(mCurrentPhotoPath);
-            }catch (URISyntaxException e){}
+        //if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
+        if(requestCode == REQUEST_VIDEO_CAPTURE) {
+//            Log.i(TAG, "REQUEST_VIDEO_CAPTURE");
+//            //File f = new File(Environment.getExternalStorageDirectory().toString() + "/samplevideofolder/VideoFileName.mp4");
+//            //Log.i(TAG,"f.getPath(): " +f.getPath());
+//            Uri videoUri = data.getData();
+//            Log.d(TAG, videoUri.getPath());
+//            mVideoView.setVideoURI(videoUri);
+//            //mVideoView.setVideoPath(f.getAbsolutePath());
+//            for (File temp : f.listFiles()) {
+//                Log.i(TAG, temp.getPath());
+//                if (temp.getName().equals("VideoFileName.mp4")) {
+//                    f = temp;
+//                   // videoUri = f.getAbsoluteFile()
+//                    Log.i(TAG, "VIDEO FILE Path: " + f.getAbsolutePath() );
+//                    break;
+//                }
+//            }
+            //mVideoView.setVideoURI(Uri.fromFile(new File(Environment.getExternalStorageDirectory().toString() + "/samplevideofolder/VideoFileName.mp4")));                    m
+//            //Log.i(TAG, "videoURI.getPath(): " + getRealPathFromURI(videoURI));
+//            //Log.i(TAG, "data.getData(): " + data.getData().getPath());
+//            //mVideoView.setVideoURI(data.getData());
+//           // mVideoView.setVideoPath(getRealPathFromURI(videoURI));
+//            String path = getCacheDir().toString();
+//            Log.i(TAG,"path: " + path);
+//            File directory = new File(path);
+//            File[] files = directory.listFiles();
+//            for(File f :files)
+//                Log.i(TAG, "file name: " + f.getName() + " path: " + f.getPath());
+//           // videoURI = Uri.fromFile(new File("));
+//            mVideoView.setVideoURI(videoURI);
+            if (requestCode == REQUEST_VIDEO_CAPTURE ){//&& resultCode == RESULT_OK) {
+                Uri videoUri = data.getData();
+               // mVideoView.setVideoURI(videoUri);
+                mVideoView.setVideoURI(data.getData());
+                mVideoView.requestFocus();
+                mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        // close the progress bar and play the video
+                        //progressDialog.dismiss();
+                        //if we have a position on savedInstanceState, the video playback should start from here
+                        mVideoView.seekTo(position);
+                        if (position == 0) {
+                            mVideoView.start();
+                        } else {
+                            //if we come from a resumed activity, video playback will be paused
+                            //mVideoView.pause();
+                        }
+                    }
+                });
 
-           // mVideoView.setVideoURI(photoURI);
+            }
         }
-    }
 
+    }
 
     // I COPIED AND PASTED THIS METOHD AND HEAVILY REFERENCED OTHER METHODS FROM
     // EXAMPLE CODE FOUND AT THIS LINK:
@@ -253,13 +353,29 @@ public class LaunchCameraActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    /*
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
+*/
 
+    private void dispatchTakeVideoIntent() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Video.Media.DATA };
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
     private void beginUpload(String filePath) {
         Log.d(TAG, "beginUpload()");
         Log.d(TAG, "beginUpload(): filepath: " + filePath);
@@ -542,4 +658,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
         float density = getApplicationContext().getResources().getDisplayMetrics().density;
         return Math.round((float)dp*density);
     }
+
+
 }

@@ -15,7 +15,7 @@ public class CameraActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstace){
         super.onCreate(savedInstace);
-        setContentView(R.layout.camera_activity_layout);
+        setContentView(R.layout.activity_camera_activity);
 
 
     }

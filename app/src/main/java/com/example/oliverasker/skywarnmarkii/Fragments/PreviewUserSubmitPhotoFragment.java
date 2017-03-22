@@ -50,7 +50,7 @@ public class PreviewUserSubmitPhotoFragment extends Fragment implements LaunchCa
       //  userSubmittedImage.setBackground(getResources().getDrawable(R.drawable.cloud));
 
         Log.d(TAG, "inflate view has been called");
-        return inflater.inflate(R.layout.add_photo_to_report_fragment,container, false);
+        return inflater.inflate(R.layout.fragment_add_photo_to_report,container, false);
     }
 
     public Bitmap getUserImagePreview() {

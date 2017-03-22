@@ -39,7 +39,7 @@ public class UserDetailsFragment extends Fragment {
     private ImageView profileImageView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstsance ){
-        View v = inflater.inflate(R.layout.user_info_home_fragment_layout,container,false);
+        View v = inflater.inflate(R.layout.fragment_user_info_home,container,false);
         profileImageView =(ImageView) v.findViewById(R.id.user_profile_picture_imageview);
         downloadPhoto();
         return v;

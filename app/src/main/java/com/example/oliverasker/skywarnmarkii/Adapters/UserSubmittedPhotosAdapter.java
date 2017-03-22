@@ -57,8 +57,8 @@ public class UserSubmittedPhotosAdapter extends BaseAdapter {
         SubmittedPhotoModel report = getItem(position);
 
         if(convertView == null){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.user_submitted_photo_list_item, parent,false);
-            //convertView = inflater.inflate(R.layout.user_submitted_photo_list_item, parent,false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_user_submitted_photo, parent,false);
+            //convertView = inflater.inflate(R.layout.list_item_user_submitted_photo, parent,false);
         }
 
         SubmittedPhotoModel report2 = getItem(position);
