@@ -11,6 +11,10 @@ import java.util.ArrayList;
 
 public interface BitmapCallback {
     void processFinish(ArrayList<Bitmap> result);
+    void processFinish(Bitmap result, String path);
+    void processFinish(Bitmap result, ArrayList<String> path);
+
     void processFinish(Bitmap result);
     void processFinish(Uri result);
+
 }

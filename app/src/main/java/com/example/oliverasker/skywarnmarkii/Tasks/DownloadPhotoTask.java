@@ -154,14 +154,6 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
     }
 //
 
-    //////// For storing in cache eventually \\\\\\\\\\\\\\\\\\
-//    mMemoryCache = new LruCache<String,Bitmap>(cacheSize){
-//        @Override
-//        protected int sizeOf(String key, Bitmap bitmap){
-//            return bitmap.getByteCount()/1024;
-//        }
-//    };
-
     public void addBitMapToMemoryCache(String key, Bitmap b){
         if(getBitmapFromMemCache(key)==null)
             mMemoryCache.put(key,bitmap);

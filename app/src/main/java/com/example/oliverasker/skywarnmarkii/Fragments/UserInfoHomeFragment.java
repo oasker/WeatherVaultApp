@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -29,7 +28,6 @@ import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
-import com.example.oliverasker.skywarnmarkii.Tasks.GetUserSubmittedPhotosTask;
 
 import java.io.File;
 import java.io.Serializable;
@@ -42,11 +40,6 @@ import java.util.Map;
 
 public class UserInfoHomeFragment extends Fragment implements BitmapCallback, UserAttributesCallback {
     private final static String TAG = "UserInfoHomeFragment";
-    private TextView usernameTV;
-    private TextView lastActiveTV;
-    private TextView numberReportsSubmittedTV;
-    private TextView emailTV;
-    private TextView nameTV;
     private ImageView profileImage;
     private Button viewUserPhotosButton;
     private Button viewUserReportsButton;
@@ -85,10 +78,17 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
             @Override
             public void onClick(View v) {
                // showUserPhotosFragment();
-                GetUserSubmittedPhotosTask task = new GetUserSubmittedPhotosTask();
-                task.setmContext(getContext());
-                task.setBitmapCallback(UserInfoHomeFragment.this);
-                task.execute();
+//                GetUserSubmittedPhotosTask task = new GetUserSubmittedPhotosTask();
+//                task.setmContext(getContext());
+//                task.setBitmapCallback(UserInfoHomeFragment.this);
+//
+//                File cache = getContext().getCacheDir();
+//                File appDir= new File(cache+"/bingo.jpg");
+//                task.setFile(appDir);
+//                task.setFilePath(cache+"/bingo.jpg");
+//                task.execute();
+                showUserPhotosFragment();
+
             }
         });
         viewUserReportsButton.setOnClickListener(new View.OnClickListener() {
@@ -120,12 +120,24 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         Bundle b = new Bundle();
         b.putSerializable("bitmapArrayList",bitmapArrayList);
         showUserPhotoFragment.setArguments(b);
-
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
         ft.commit();
     }
 
+
+    private void showUserPhotosFragment(){
+        Log.i(TAG, "showUserPhotosFragment");
+        Fragment showUserPhotoFragment = new UserHomeUserSubmittedPhotosFragment();
+
+        Bundle b = new Bundle();
+        //b.putSerializable("bitmapArrayList",bitmapArrayList);
+        //showUserPhotoFragment.setArguments(b);
+
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
+        ft.commit();
+    }
     private void showUserReportsFragment(){
         Log.i(TAG, "showUserReportsFragment()");
         Fragment showUserPhotoFragment = new WeatherListViewFragment();
@@ -138,42 +150,20 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         ft.commit();
     }
 
-    public TextView getUsernameTV() {
-        return usernameTV;
-    }
+    @Override
+    public void processFinish(ArrayList<Bitmap> result) {
 
-    public void setUsernameTV(TextView usernameTV) {
-        this.usernameTV = usernameTV;
-    }
-
-    public TextView getLastActiveTV() {
-        return lastActiveTV;
-    }
-
-    public void setLastActiveTV(TextView lastActiveTV) {
-        this.lastActiveTV = lastActiveTV;
-    }
-
-    public TextView getNumberReportsSubmittedTV() {
-        return numberReportsSubmittedTV;
-    }
-
-    public void setNumberReportsSubmittedTV(TextView numberReportsSubmittedTV) {
-        this.numberReportsSubmittedTV = numberReportsSubmittedTV;
-    }
-
-    public ImageView getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(ImageView profileImage) {
-        this.profileImage = profileImage;
+        showUserPhotosFragment(result);
     }
 
     @Override
-    public void processFinish(ArrayList<Bitmap> result) {
-        //Pass bitmaps to fragment
-        showUserPhotosFragment(result);
+    public void processFinish(Bitmap result, String path) {
+
+    }
+
+    @Override
+    public void processFinish(Bitmap result, ArrayList<String> path) {
+
     }
 
     @Override
@@ -211,10 +201,12 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         //Log.d(TAG, "onProceessFinised(): " + vals.get("phone_number"));
     }
 
+
+    //
     public void downloadPhoto(){
         Log.d(TAG, "downloadPhoto()");
-//        String filename = UserInformationModel.getInstance().getUsername()+".png";
-         String filename = "oasker.png";
+        // String filename = "oasker.jpg";
+        String filename = UserInformationModel.getInstance().getUsername()+".jpg";
 
         String externalStorage = getContext().getCacheDir().toString()+"/";
         final String filePath = externalStorage+filename;

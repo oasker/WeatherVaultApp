@@ -1,15 +1,20 @@
 package com.example.oliverasker.skywarnmarkii.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.oliverasker.skywarnmarkii.R;
+import com.example.oliverasker.skywarnmarkii.Utility;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +28,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private List<String> listDataHeader;
     private HashMap<String, List<String>> listDataChild;
+    private HashMap<String, String> allAttributesToSearchFor = new HashMap<>();
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String> >listChildData) {
         Log.d(TAG, "listdataHeader size: " + listDataHeader.size() + " listChildData size: " + listChildData.size());
@@ -39,7 +45,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         return this.listDataChild.get(this.listDataHeader.get(groupPosition)).size();
-//        return 1;
     }
 
 
@@ -81,9 +86,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
+
+        View currentFocus = ((Activity)mContext).getCurrentFocus();
+        if (currentFocus != null) {
+            currentFocus.clearFocus();
+        }
         return convertView;
     }
-
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final  String childText = (String) getChild(groupPosition, childPosition);
@@ -93,13 +102,49 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
         TextView txListChild = (TextView)convertView.findViewById(R.id.lblListItem);
         txListChild.setText(childText);
-//        Log.d(TAG, "childText: " + childText + " groupPosition: " + groupPosition + " childPosition:  " + childPosition);
-        //convertView.setFocusableInTouchMode(true);
+        final EditText eTChild = (EditText)convertView.findViewById(R.id.input_text);
+        eTChild.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.i(TAG, s.toString());
+                eTChild.getText().toString();
+                if (!eTChild.getText().toString().equals("")) ;
+                Log.i(TAG, "textField Value:" + eTChild.getText().toString());
+               // if (!allAttributesToSearchFor.containsKey(childText))
+                    allAttributesToSearchFor.put(childText, eTChild.getText().toString());
+//                else {
+//                    allAttributesToSearchFor.remove(childText);
+//                    allAttributesToSearchFor.put(childText, eTChild.getText().toString());
+//                }
+            }
+        });
+        View currentFocus = ((Activity)mContext).getCurrentFocus();
+        if (currentFocus != null) {
+            currentFocus.clearFocus();
+        }
         return convertView;
+    }
+
+    public HashMap<String, List<String>> getAllKeyValuePair(){
+        return listDataChild;
+    }
+
+    public void printAllKeyValuePairs(){
+        Utility.printMap(allAttributesToSearchFor);
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
+
+
 }

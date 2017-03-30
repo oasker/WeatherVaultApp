@@ -3,9 +3,12 @@ package com.example.oliverasker.skywarnmarkii.Tasks;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
@@ -23,19 +26,17 @@ import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.example.oliverasker.skywarnmarkii.Callbacks.BitmapCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
-import com.google.android.gms.internal.zzs;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by oliverasker on 2/20/17.
  */
 
 public class GetUserSubmittedPhotosTask extends AsyncTask {
-
+    private static final String TAG = "GetUserPhotosTask";
     Context mContext;
     ListObjectsV2Request req = new ListObjectsV2Request();
     ListObjectsV2Result result;
@@ -44,6 +45,11 @@ public class GetUserSubmittedPhotosTask extends AsyncTask {
     BitmapCallback bitmapCallback;
     ArrayList<Bitmap> bitmapArrayList;
     ArrayList<String> fileArrayList;
+    String filePath;
+    File file;
+    String tempFilePath;
+    LinearLayout photoLayout;
+    ArrayList<String> bitMapPaths;
 
 
     @Override
@@ -60,12 +66,12 @@ public class GetUserSubmittedPhotosTask extends AsyncTask {
         );
         bitmapArrayList = new ArrayList<>();
         matchingFilesList = new ArrayList<>();
-        ArrayList<String> fileArrayList = new ArrayList<>();
+        bitMapPaths = new ArrayList<>();
 
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setSignerOverride("AWSS3V4SignerType");
 
-        AmazonS3 s3Client = new AmazonS3Client(credentialsProvider,clientConfiguration);
+        AmazonS3 s3Client = new AmazonS3Client(credentialsProvider, clientConfiguration);
         try {
             ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(Constants.BUCKET_NAME);
             ListObjectsV2Result result;
@@ -76,7 +82,7 @@ public class GetUserSubmittedPhotosTask extends AsyncTask {
                     Log.i(TAG, "Object Summaries: key: " + objectSummary.getKey()
                             + " size: " + objectSummary.getSize());
                     if (objectSummary.getKey().toString().contains(username)) {
-                        Log.i(TAG, "User Submitted: " + objectSummary.getKey());
+                        Log.i(TAG, "User Submitted Photos Task: " + objectSummary.getKey());
                         matchingFilesList.add(objectSummary.getKey().toString());
                     }
                 }
@@ -85,99 +91,105 @@ public class GetUserSubmittedPhotosTask extends AsyncTask {
 
             //Download photos
             try {
-                for(String photoName : matchingFilesList) {
-                    String filename = photoName;
-                    String externalStorage = Environment.getExternalStorageDirectory().toString() + "/";
-                    String filePath = externalStorage + filename;
 
-                    File file = new File(filePath);
+                for (String photoName : matchingFilesList) {
                     TransferUtility transferUtility = new TransferUtility(s3Client, mContext);
-                    TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
+                    tempFilePath = filePath + photoName;
+                    Log.d(TAG, "matchingFileList[0]: " + photoName + " tempFilePath: " + tempFilePath);
 
+                    file = new File(tempFilePath);
 
-                    String bitmapPath = file.getPath();
-                    fileArrayList.add(bitmapPath);
-                    Log.d(zzs.TAG, "file.getPath(): " + file.getPath());
-                    File f = new File(Environment.getExternalStorageDirectory().toString());
+                    Log.d(TAG, "NEW FILEPATH: " + file.getAbsolutePath());
+                      TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, photoName, file);
+                   // TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, photoName, file);
 
-                    for (File ff : f.listFiles()) {
-                       // Log.d(zzs.TAG, "List Files: ff; " + ff);
+                    try {
+                        transferObserver.setTransferListener(new TransferListener() {
+                            @Override
+                            public void onStateChanged(int id, TransferState state) {
+                                Log.d(TAG, "onStateChanged:  state: " + state.toString());
+                                if (state == TransferState.COMPLETED) {
+                                    Log.i(TAG, "TransferStateCompleted:)");
+                                    Bitmap b = BitmapFactory.decodeFile(tempFilePath);
+                                    bitMapPaths.add(tempFilePath);
+                                   // Log.d(TAG, "onStateChanged: tempFilePath: " + tempFilePath);
+                                    bitmapArrayList.add(b);
+                                    //bitmapCallback.processFinish(b, tempFilePath);
+                                    bitmapCallback.processFinish(b, bitMapPaths);
+                                    //  return;
+                                }
+                            }
+
+                            @Override
+                            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                                Log.d(TAG, "onProgressChanged: Current: " + bytesCurrent + " Total: " + bytesTotal);
+                            }
+
+                            @Override
+                            public void onError(int id, Exception ex) {
+                                Log.e(TAG, "onError: " + ex);
+                            }
+                        });
+                    } catch (AmazonServiceException ase) {
+                        System.out.println("Caught an AmazonServiceException, " +
+                                "which means your request made it " +
+                                "to Amazon S3, but was rejected with an error response " +
+                                "for some reason.");
+                        System.out.println("Error Message:    " + ase.getMessage());
+                        System.out.println("HTTP Status Code: " + ase.getStatusCode());
+                        System.out.println("AWS Error Code:   " + ase.getErrorCode());
+                        System.out.println("Error Type:       " + ase.getErrorType());
+                        System.out.println("Request ID:       " + ase.getRequestId());
+                    } catch (AmazonClientException ase) {
+                        System.out.println("Caught an AmazonClientException, " +
+                                "which means the client encountered " +
+                                "an internal error while trying to communicate" +
+                                " with S3, " +
+                                "such as not being able to access the network.");
                     }
-
-//            bitmap = BitmapFactory.decodeFile(file.getPath());
-//            Log.d(TAG ,"doInBackground(): bitmapExists?: " + (bitmap != null));
-//            Log.d(TAG,"bitmap: " + bitmap.getByteCount() + " width: "  + bitmap.getWidth());
-
-
-                    transferObserver.setTransferListener(new TransferListener() {
-                        @Override
-                        public void onStateChanged(int id, TransferState state) {
-                            Log.d(zzs.TAG, "onStateChanged: + state: " + state.toString());
-                        }
-
-                        @Override
-                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                            int percentage = (int) (bytesCurrent / (bytesTotal + 1) * 100);
-                            Log.d(zzs.TAG, "onStateChanged(); bytesTotal: " + bytesTotal + " bytesCurrent: " + bytesCurrent);
-                        }
-
-                        @Override
-                        public void onError(int id, Exception ex) {
-                            Log.e(zzs.TAG, "onError", ex);
-                        }
-                    });
+                }
+            }
+            catch(Exception e){
+                    e.printStackTrace();
                 }
 
-            } catch (AmazonServiceException ase) {
-                System.out.println("Caught an AmazonServiceException, " +
-                        "which means your request made it " +
-                        "to Amazon S3, but was rejected with an error response " +
-                        "for some reason.");
-                System.out.println("Error Message:    " + ase.getMessage());
-                System.out.println("HTTP Status Code: " + ase.getStatusCode());
-                System.out.println("AWS Error Code:   " + ase.getErrorCode());
-                System.out.println("Error Type:       " + ase.getErrorType());
-                System.out.println("Request ID:       " + ase.getRequestId());
-            } catch (AmazonClientException ace) {
-                System.out.println("Caught an AmazonClientException, " +
-                        "which means the client encountered " +
-                        "an internal error while trying to communicate" +
-                        " with S3, " +
-                        "such as not being able to access the network.");
-                System.out.println("Error Message: " + ace.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return null;
-
-        } catch (AmazonServiceException ase) {
-
-        }
         return null;
     }
 
     @Override
-    protected void onProgressUpdate (Object[]values){
-        super.onProgressUpdate(values);
-    }
-    @Override
     protected void onPostExecute (Object o){
-                    File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/bingo.png");
+        //File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/bingo.png");
+        File file = new File(tempFilePath);
         Bitmap b = BitmapFactory.decodeFile(file.getPath());
-        bitmapArrayList.add(b);
-//        Log.d(zzs.TAG, "onPostExecute");
-//        for(String s : fileArrayList) {
-////            File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/bingo.png");
-//            File file = new File(s);
-//            Bitmap b = BitmapFactory.decodeFile(file.getPath());
-//            bitmapArrayList.add(b);
+
+        for(Bitmap bitmap: bitmapArrayList) {
+            ImageView bitMapIV = new ImageView(mContext);
+            bitMapIV.setImageBitmap(bitmap);
+           // photoLayout.addView(bitMapIV);
+        }
+        for (String photoName : matchingFilesList) {
+            Log.d(TAG, "matcingFileList: "+ photoName);
+        }
+
+//        for(String s: bitMapPaths) {
+//            File file2 = new File(s);
+//            Bitmap b2 = BitmapFactory.decodeFile(file2.getPath());
+//            ImageView bitMapIV = new ImageView(mContext);
+//            bitMapIV.setImageBitmap(b2);
+//            photoLayout.addView(bitMapIV);
 //        }
-
-        // Log.d(zzs.TAG ,"onPostExecute(): bitmapExists?: " + (bitmap != null));
-
-        bitmapCallback.processFinish(bitmapArrayList);
-        super.onPostExecute(o);
+        //bitmapCallback.processFinish(bitmapArrayList);
     }
 
-
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
     //////////////////////////////////////
     //          Setters and Getters     //
@@ -198,12 +210,16 @@ public class GetUserSubmittedPhotosTask extends AsyncTask {
         this.username = username;
     }
 
-    public BitmapCallback getBitmapCallback() {
-        return bitmapCallback;
-    }
-
     public void setBitmapCallback(BitmapCallback bitmapCallback) {
         this.bitmapCallback = bitmapCallback;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
 }

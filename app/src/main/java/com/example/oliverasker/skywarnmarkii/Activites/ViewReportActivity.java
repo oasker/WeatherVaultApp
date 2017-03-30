@@ -119,7 +119,7 @@ public class ViewReportActivity extends Activity implements UriCallback{
         }
 
         @Override
-        public void processFinish(Bitmap result) {
+        public void processFinish(Bitmap result,String s) {
             if(result !=null) {
                 Log.i(TAG, "processFinished(bitmap)");
 
@@ -140,6 +140,24 @@ public class ViewReportActivity extends Activity implements UriCallback{
                 horizontalLinearLayout.addView(createImageView(b));
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+        public void processFinish(Bitmap result) {
+            if(result !=null) {
+                Log.i(TAG, "processFinished(bitmap)");
+
+                ImageView iV = new ImageView(getApplicationContext());
+                iV.setImageBitmap(result);
+                horizontalLinearLayout.addView(createImageView(result));
+            }
+        }
+        public void processFinish(Bitmap result, ArrayList<String> pathList) {
+            if(result !=null) {
+                Log.i(TAG, "processFinished(bitmap)");
+
+                ImageView iV = new ImageView(getApplicationContext());
+                iV.setImageBitmap(result);
+                horizontalLinearLayout.addView(createImageView(result));
             }
         }
     };
@@ -420,7 +438,14 @@ public class ViewReportActivity extends Activity implements UriCallback{
             photoTask.setmContext(this);
             photoTask.setCallback(callback);
             photoTask.setFilename(filename);
-            photoTask.setfilePath(getCacheDir() + "/"+filename);
+            photoTask.setfilePath(getCacheDir() + "/");
+
+            File cache = this.getCacheDir();
+            File appDir= new File(cache+"/bingo.jpg");
+           // p.setFile(appDir);
+
+            photoTask.setfilePath(cache+"/bingo.jpg");
+
             photoTask.setNumPhotos(map.getNumberOfImages());
             photoTask.setLinearLayout(horizontalLinearLayout);
             photoTask.execute();
@@ -481,20 +506,7 @@ public class ViewReportActivity extends Activity implements UriCallback{
         });
         return IV;
     }
-
-    public ImageView createImageView(int resourceID) {
-        ImageView IV = new ImageView(getApplicationContext());
-        IV.setId(0);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth, reportImageHeight);
-        IV.setLayoutParams(layoutParams);
-        IV.setPadding(15, 15, 15, 15);
-        IV.setImageResource(resourceID);
-        // IV.setScaleType(ImageView.ScaleType.FIT_XY);
-        return IV;
-    }
-
 }
-
 
 class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
      private static final String TAG = "download";
@@ -539,7 +551,6 @@ class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
                          return;
                      }
                  }
-
                  @Override
                  public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                      int percentage = (int) ((bytesCurrent + 1) / (bytesTotal + 1) * 100);
@@ -591,21 +602,22 @@ class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
      //////////////// setters and getters //////////////////////////
      public void setFilename(String filename) {
          this.filename = filename;
-     }public void setFilePath(String filePath) {
+     }
+     public void setFilePath(String filePath) {
          this.filePath = filePath;
-     }public void setmContext(Context mContext) {
+     }
+     public void setmContext(Context mContext) {
          this.mContext = mContext;
      }public void setNumPhotos(int numPhotos) {
          this.numPhotos = numPhotos;
-     }public void setfilePath(String Path){
+     }
+     public void setfilePath(String Path){
          filePath = Path;
      }
-
-    public void setCallback(BitmapCallback callback) {
+     public void setCallback(BitmapCallback callback) {
         this.callback = callback;
     }
-
-    public void setLinearLayout(LinearLayout ll){
+     public void setLinearLayout(LinearLayout ll){
         linearLayout = ll;
     }
 }

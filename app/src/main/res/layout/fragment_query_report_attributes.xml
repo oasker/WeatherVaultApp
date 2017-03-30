@@ -23,6 +23,27 @@
 
                 <TableLayout
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </TableLayout>
+
+                <TableLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TableRow
@@ -144,7 +165,7 @@
                                 android:textSize="16sp" />
 
                             <ToggleButton
-                                android:id="@+id/toggleButton2"
+                                android:id="@+id/toggle_button_use_gps_location"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -234,41 +255,27 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:layout_weight="1"
                                 android:padding="5dp"
                                 android:text="@string/state"
                                 android:textColor="@android:color/black"
                                 android:textSize="18sp" />
 
-                            <EditText
-                                android:id="@+id/state_input_field"
+                            <Spinner
+                                android:id="@+id/spinner_state_select"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:layout_weight="1"
-                                android:ems="10"
-                                android:inputType="textPersonName"
-                                android:padding="5dp" />
-
-                        </LinearLayout>
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.01"
+                                android:background="@color/cast_expanded_controller_ad_label_background_color"
+                                android:popupBackground="@color/cast_expanded_controller_ad_label_background_color"
+                                android:spinnerMode="dialog"
+                                android:entries="@array/states_array"/>
 
                             <TextView
                                 android:id="@+id/textView27"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:layout_weight="1"
+                                android:layout_weight="0.01"
                                 android:padding="5dp"
                                 android:text="@string/zip"
                                 android:textColor="@android:color/black"
@@ -276,12 +283,11 @@
 
                             <EditText
                                 android:id="@+id/zip_input_field"
-                                android:layout_width="wrap_content"
+                                android:layout_width="135dp"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
-                                android:layout_weight="1"
                                 android:ems="10"
-                                android:inputType="textPersonName"
+                                android:inputType="number"
                                 android:padding="5dp" />
 
                         </LinearLayout>

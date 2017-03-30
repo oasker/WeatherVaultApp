@@ -8,10 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.oliverasker.skywarnmarkii.Adapters.ExpandableListAdapter;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
@@ -40,10 +44,12 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     private static final String ARG_PARAM2 = "param2";
 
     private Button submitSearchButton;
-    private ExpandableListView winterExpandableListView;
-    private ExpandableListView severeExpandableListView;
-    private ExpandableListView rainExpandableListView;
-    private ExpandableListView coastalExpandableListView;
+    private ExpandableListView expandableListView;
+    private Spinner stateSpinner;
+    private ToggleButton useGPSLocationToggle;
+    private EditText streetField;
+    private EditText cityField;
+    private EditText zipField;
 
     private HashMap<String, List<String>> listDataChild;
 
@@ -55,6 +61,8 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     private ExpandableListAdapter expandableListAdapter;
 
     private OnFragmentInteractionListener mListener;
+
+
 
     public QueryReportAttributesFragment() {
         // Required empty public constructor
@@ -68,7 +76,6 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
      * @param param2 Parameter 2.
      * @return A new instance of fragment QueryReportAttributesFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static QueryReportAttributesFragment newInstance(String param1, String param2) {
         QueryReportAttributesFragment fragment = new QueryReportAttributesFragment();
         Bundle args = new Bundle();
@@ -89,10 +96,9 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_query_report_attributes,container,false );
+        View v = inflater.inflate(R.layout.fragment_query_report_attributes2,container,false );
 
 
         // Begin query button
@@ -104,115 +110,126 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
             }
         });
 
+        useGPSLocationToggle = (ToggleButton)v.findViewById(R.id.toggle_button_use_gps_location);
+        ArrayAdapter<CharSequence> stateSpinnerAdapter =  ArrayAdapter.createFromResource(getContext(), R.array.states_array, android.R.layout.simple_spinner_item);
+
+        stateSpinnerAdapter.setDropDownViewResource(R.layout.multiline_spinner_dropdown_item);
+       // stateSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //stateSpinner = (Spinner)v.findViewById(R.id.spinner_state_select);
+      //  stateSpinner.setAdapter(stateSpinnerAdapter);
+
+        streetField = (EditText)v.findViewById(R.id.street_input_field);
+        zipField = (EditText)v.findViewById(R.id.zip_input_field);
+        cityField =(EditText)v.findViewById(R.id.city_input_field);
+
         initData();
+
         expandableListAdapter = new ExpandableListAdapter(getContext(), expandableHeaders, listDataChild);
 
-        
         ////////////WINTER EXPANDABLE SCROLLVIEW//////////
-        winterExpandableListView = (ExpandableListView)v.findViewById(R.id.winter_expandable_listview);
-        setListViewHeightBasedOnChildren(winterExpandableListView);
+        expandableListView = (ExpandableListView)v.findViewById(R.id.winter_expandable_listview);
+        setListViewHeightBasedOnChildren(expandableListView);
         //Init data before attaching adapter
-        winterExpandableListView.setAdapter(expandableListAdapter);
-        winterExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        winterExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        expandableListView.setOnChildClickListener(myListItemClicked);
+        expandableListView.setAdapter(expandableListAdapter);
+        expandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
             public void onGroupExpand(int groupPosition) {
                 Log.d(TAG, "onGroupExpand() winter");
             }
         });
-        winterExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
                 Log.d(TAG, "onGroupCollpase() winter");
             }
         });
-        winterExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
-
-
-        ////////////SEVERE EXPANDABLE SCROLLVIEW//////////
-        severeExpandableListView = (ExpandableListView)v.findViewById(R.id.severe_expandable_listview);
-        setListViewHeightBasedOnChildren(severeExpandableListView);
-        severeExpandableListView.setAdapter(expandableListAdapter);
-        severeExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        severeExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Log.d(TAG, "onGroupExpand() severe");
-            }
-        });
-        severeExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Log.d(TAG, "onGroupCollpase() severe");
-            }
-        });
-        severeExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-
-
-        ////////////RAIN/FLOOD EXPANDABLE SCROLLVIEW//////////
-        rainExpandableListView = (ExpandableListView)v.findViewById(R.id.rain_expandable_listview);
-        setListViewHeightBasedOnChildren(rainExpandableListView);
-        rainExpandableListView.setAdapter(expandableListAdapter);
-        rainExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        rainExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Log.d(TAG, "onGroupExpand() rain");
-            }
-        });
-        rainExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Log.d(TAG, "onGroupCollpase() rain");
-            }
-        });
-        rainExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-
-
-
-        ////////////COASTAL EXPANDABLE SCROLLVIEW//////////
-        coastalExpandableListView = (ExpandableListView)v.findViewById(R.id.coastal_expandable_listview);
-        setListViewHeightBasedOnChildren(coastalExpandableListView);
-        coastalExpandableListView.setAdapter(expandableListAdapter);
-        coastalExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-        coastalExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                Log.d(TAG, "onGroupExpand() coastal");
-            }
-        });
-        coastalExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Log.d(TAG, "onGroupCollpase() coastal");
-            }
-        });
-        coastalExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+//        ////////////SEVERE EXPANDABLE SCROLLVIEW//////////
+//        severeExpandableListView = (ExpandableListView)v.findViewById(R.id.severe_expandable_listview);
+//        setListViewHeightBasedOnChildren(severeExpandableListView);
+//        severeExpandableListView.setAdapter(expandableListAdapter);
+//        severeExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+//        severeExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+//            @Override
+//            public void onGroupExpand(int groupPosition) {
+//                Log.d(TAG, "onGroupExpand() severe");
+//            }
+//        });
+//        severeExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//            @Override
+//            public void onGroupCollapse(int groupPosition) {
+//                Log.d(TAG, "onGroupCollpase() severe");
+//            }
+//        });
+//        severeExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//                Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
+//
+//
+//
+//        ////////////RAIN/FLOOD EXPANDABLE SCROLLVIEW//////////
+//        rainExpandableListView = (ExpandableListView)v.findViewById(R.id.rain_expandable_listview);
+//        setListViewHeightBasedOnChildren(rainExpandableListView);
+//        rainExpandableListView.setAdapter(expandableListAdapter);
+//        rainExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+//        rainExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+//            @Override
+//            public void onGroupExpand(int groupPosition) {
+//                Log.d(TAG, "onGroupExpand() rain");
+//            }
+//        });
+//        rainExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//            @Override
+//            public void onGroupCollapse(int groupPosition) {
+//                Log.d(TAG, "onGroupCollpase() rain");
+//            }
+//        });
+//        rainExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//                Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
+//
+//
+//
+//        ////////////COASTAL EXPANDABLE SCROLLVIEW//////////
+//        coastalExpandableListView = (ExpandableListView)v.findViewById(R.id.coastal_expandable_listview);
+//        setListViewHeightBasedOnChildren(coastalExpandableListView);
+//        coastalExpandableListView.setAdapter(expandableListAdapter);
+//        coastalExpandableListView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+//        coastalExpandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+//            @Override
+//            public void onGroupExpand(int groupPosition) {
+//                Log.d(TAG, "onGroupExpand() coastal");
+//            }
+//        });
+//        coastalExpandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//            @Override
+//            public void onGroupCollapse(int groupPosition) {
+//                Log.d(TAG, "onGroupCollpase() coastal");
+//            }
+//        });
+//        coastalExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+//                Toast.makeText(getContext(), listDataChild.get(expandableHeaders.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
         return v;
     }
 
@@ -225,18 +242,44 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         List winterAttributesList = new ArrayList<String>();
         winterAttributesList.add("Snowfall Depth");
         winterAttributesList.add("Snowfall Rate");
+        winterAttributesList.add("Water Equivalent");
+        winterAttributesList.add("Sleet");
+        winterAttributesList.add("Freezing Rain");
+        winterAttributesList.add("Freezing Rain Accumulation");
+        winterAttributesList.add("Blow Drift");
+        winterAttributesList.add("Whiteout");
+        winterAttributesList.add("Thudersnow");
+        winterAttributesList.add("Winter Comments");
+        winterAttributesList.add("Winter Injuries");
+        winterAttributesList.add("Winter Fatalities");
 
         List severeAttributesList = new ArrayList<String>();
+        severeAttributesList.add("Severe Weather Type");
         severeAttributesList.add("Wind Gust");
         severeAttributesList.add("Wind Speed");
+        severeAttributesList.add("Wind Direction");
+        severeAttributesList.add("Hail Size");
+        severeAttributesList.add("Tornado");
+        severeAttributesList.add("Barometer");
+        severeAttributesList.add("Wind Damage");    //boolean
+        severeAttributesList.add("Wind Damage Comments");
+        severeAttributesList.add("Lightning Damage");
+        severeAttributesList.add("Lightning Damage Comments");
+        severeAttributesList.add("Severe Weather Injuries");
+        severeAttributesList.add("Severe Weather Fatalities");
 
         List rainAttributesList = new ArrayList<String>();
-        rainAttributesList.add("Water Equivalent");
-        rainAttributesList.add("Snowfall Rate");
+        rainAttributesList.add("Rain Comments");
+        rainAttributesList.add("Precipitation Rate");
+        rainAttributesList.add("Flood Comments");
+        rainAttributesList.add("Rain/Flood Injuries");
+        rainAttributesList.add("Rain/Flood Fatalities");
 //
         List coastalAttributesList = new ArrayList<String>();
         coastalAttributesList.add("Storm Surge");
-
+        coastalAttributesList.add("Coastal Event Comments");
+        coastalAttributesList.add("Coastal Injuries");
+        coastalAttributesList.add("Coastal Fatalities");
 
         //Set Headers
         expandableHeaders.add("Winter Attributes");
@@ -248,12 +291,13 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 
         listDataChild.put(expandableHeaders.get(0), winterAttributesList);
         listDataChild.put(expandableHeaders.get(1), severeAttributesList);
-        listDataChild.put(expandableHeaders.get(2),coastalAttributesList);
+        listDataChild.put(expandableHeaders.get(2), coastalAttributesList);
         listDataChild.put(expandableHeaders.get(3), rainAttributesList);
-
     }
 
     private void launchQueryReportAttributesTask(){
+
+        expandableListAdapter.printAllKeyValuePairs();
         QueryReportAttributesTask queryTask = new QueryReportAttributesTask();
         queryTask.setContext(getContext());
         queryTask.setDelegate(this);
@@ -262,7 +306,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //        attributesToQuery.put("CallSign", "KD1CY");
 //        attributesToQuery.put("City","Peabody");
         queryTask.setAttributesToQuery(attributesToQuery);
-        queryTask.execute();
+        //queryTask.execute();
     }
 
     @Override
@@ -321,5 +365,25 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         listView.setLayoutParams(params);
         listView.requestLayout();
     }
+
+    private ExpandableListView.OnChildClickListener myListItemClicked =  new ExpandableListView.OnChildClickListener() {
+
+        public boolean onChildClick(ExpandableListView parent, View v,
+                                    int groupPosition, int childPosition, long id) {
+
+            Log.i(TAG, "onChildClick()");
+//            //get the group header
+//            HeaderInfo headerInfo = SectionList.get(groupPosition);
+//            //get the child info
+//            DetailInfo detailInfo =  headerInfo.getProductList().get(childPosition);
+
+            String header= expandableHeaders.get(groupPosition);
+            Log.i(TAG, "Header: " + header);
+            //display it or do something with it
+//            Toast.makeText(getContext(), "Clicked on Detail " + f.getName()
+//                    + "/" + detailInfo.getName(), Toast.LENGTH_LONG).show();
+            return false;
+        }
+    };
 
 }

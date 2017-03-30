@@ -35,6 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -475,6 +476,11 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         else{
             Toast.makeText(this, "Please enter all fields",Toast.LENGTH_SHORT);
         }
+    }
+
+    @Override
+    public void onProcessComplete(ArrayList<String> s) {
+
     }
     // This class simply holds the widget instances for each table item
         // so it is not lost when switching between activities.
