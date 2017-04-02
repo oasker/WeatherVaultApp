@@ -1,7 +1,9 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,17 +30,15 @@ import static android.content.ContentValues.TAG;
  */
 
 public class WeatherListViewFragment extends Fragment implements ICallback {
-    ListView listView;
-//    MyAsyncTask myAsync = new MyAsyncTask(this);
-    GetAllUserReportsTask getUserReportsTask;
-    Button mapViewButton;
-    SkywarnWSDBMapper[] data=null;
-
+    private ListView listView;
+    private GetAllUserReportsTask getUserReportsTask;
+    private Button mapViewButton;
+    private SkywarnWSDBMapper[] data=null;
+    private Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         Log.d(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_home_weather_list_view, container, false);
-        //GetAllRecordsForDayTask getRecordsForDayTask = null;
         ArrayList<SkywarnWSDBMapper> data = new ArrayList<>();
 //        SkywarnWSDBMapper testReport = new SkywarnWSDBMapper();
 //        testReport.setDateSubmittedEpoch((long) 3442311);
@@ -54,17 +54,25 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         });
 
         getUserReportsTask = new GetAllUserReportsTask();
-        getUserReportsTask.setContext(getContext());
+        getUserReportsTask.setContext(getActivity());
         getUserReportsTask.delegate = this;
         getUserReportsTask.execute();
 
         listView = null;
         listView = (ListView)v.findViewById(R.id.weather_list_view);
-        //listView = (ListView) findViewById(R.id.listView);
         SkywarnWSDBMapper[]reportArray = data.toArray(new SkywarnWSDBMapper[data.size()]);
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), reportArray);
-
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getUserReportsTask = new GetAllUserReportsTask();
+        getUserReportsTask.setContext(getContext());
+        getUserReportsTask.delegate = this;
+       // getUserReportsTask.execute();
+
     }
 
     public void launchMapActivity(){
@@ -93,7 +101,7 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
             Log.d(TAG,"processFinished(): "+ String.valueOf(result.get(i).getDateSubmittedEpoch()));
         }
 
-        SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), data);
+        SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getActivity(), data);
 
         //for(int i=0; i< data.length; i++)
         // System.out.println("Received in QueryLauncherActivity: "+data[i].getEventCity() + " " + data[i].getComments());
@@ -109,4 +117,9 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         });
         result = null;
     }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
 }

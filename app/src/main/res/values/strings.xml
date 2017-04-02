@@ -200,6 +200,9 @@
     <string name="winter_event">Winter Event</string>
     <string name="rain_flood_event">Rain/Flood Event</string>
     <string name="coastal_event">Coastal Event</string>
+    <string name="downvote">Downvote</string>
+    <string name="upvote">Upvote</string>
+    <string name="submited__">Submitted:</string>
 
     <string-array name="ItemsArray">
         <item name="Item1" />

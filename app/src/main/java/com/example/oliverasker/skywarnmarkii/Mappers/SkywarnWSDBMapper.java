@@ -54,8 +54,8 @@ public class SkywarnWSDBMapper implements Serializable {
     private String City="|";
     private String State="|";
     private String ZipCode="|";
-    private long Longitude=9999;
-    private long Latitude=9999;
+    private double Longitude=9999;
+    private double Latitude=9999;
 
 
     ///////////////////////////////////////////////////////////////
@@ -81,6 +81,8 @@ public class SkywarnWSDBMapper implements Serializable {
     private String DamageComments="|";
     private String SevereInjuries = "|";
     private String SevereFatalities="|";
+    private String LightningDamageComments="|";
+    private String WindDamageComments="|";
 
     ///////////////////////////////////////////////////////////////
     //                  Winter Weather                          //
@@ -311,18 +313,18 @@ public class SkywarnWSDBMapper implements Serializable {
     }
 
     @DynamoDBAttribute(attributeName = "Longitude")
-    public long getLongitude() {
+    public double getLongitude() {
         return Longitude;
     }
-    public void setLongitude(long rep) {
+    public void setLongitude(double rep) {
         Longitude = rep;
     }
 
     @DynamoDBAttribute(attributeName = "Latitude")
-    public long getLatitude() {
+    public double getLatitude() {
         return Latitude;
     }
-    public void setLatitude(long rep) {
+    public void setLatitude(double rep) {
         Latitude = rep;
 
     }
@@ -779,6 +781,22 @@ public class SkywarnWSDBMapper implements Serializable {
 
     public void setNetVote(int netVote) {
         NetVote = netVote;
+    }
+
+    public String getLightningDamageComments() {
+        return LightningDamageComments;
+    }
+
+    public void setLightningDamageComments(String lightningDamageComments) {
+        LightningDamageComments = lightningDamageComments;
+    }
+
+    public String getWindDamageComments() {
+        return WindDamageComments;
+    }
+
+    public void setWindDamageComments(String windDamageComments) {
+        WindDamageComments = windDamageComments;
     }
 }
 

@@ -141,6 +141,8 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     private void showUserReportsFragment(){
         Log.i(TAG, "showUserReportsFragment()");
         Fragment showUserPhotoFragment = new WeatherListViewFragment();
+
+
         Bundle b = new Bundle();
         String[] cognitoVals = {"SpotterIDTEST", "CALLSIGNTEST","AffilliationTEST","USERNAMETST"};
         b.putStringArray("cognitoVals" ,cognitoVals);
@@ -187,18 +189,20 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     @Override
     public void onProcessFinished(Map<String,String> vals) {
         //showUserInfoFragment(mapVals);
-        UserInformationModel.getInstance().setPhone(vals.get("phone_number"));
-        UserInformationModel.getInstance().setAffiliation(vals.get("custom:Affiliation"));
-        UserInformationModel.getInstance().setCallsign(vals.get("custom:CallSign"));
-        UserInformationModel.getInstance().setSpotterID(vals.get("custom:SpotterID"));
-        UserInformationModel.getInstance().setEmail(vals.get("email"));
-        UserInformationModel.setFirstName(vals.get("given_name"));
-        UserInformationModel.setLastName(vals.get("family_name"));
-        //Log.d(TAG, "phoneAFF " + UserInformationModel.getInstance().getAffiliation());
+        if(vals!=null) {
+            UserInformationModel.getInstance().setPhone(vals.get("phone_number"));
+            UserInformationModel.getInstance().setAffiliation(vals.get("custom:Affiliation"));
+            UserInformationModel.getInstance().setCallsign(vals.get("custom:CallSign"));
+            UserInformationModel.getInstance().setSpotterID(vals.get("custom:SpotterID"));
+            UserInformationModel.getInstance().setEmail(vals.get("email"));
+            UserInformationModel.setFirstName(vals.get("given_name"));
+            UserInformationModel.setLastName(vals.get("family_name"));
+            //Log.d(TAG, "phoneAFF " + UserInformationModel.getInstance().getAffiliation());
 
-        showUserInfoFragment(vals);
-        Log.i(TAG, "onProcessFinished() : CALLSIGN: " + UserInformationModel.getInstance().getCallsign());
-        //Log.d(TAG, "onProceessFinised(): " + vals.get("phone_number"));
+            showUserInfoFragment(vals);
+            Log.i(TAG, "onProcessFinished() : CALLSIGN: " + UserInformationModel.getInstance().getCallsign());
+            //Log.d(TAG, "onProceessFinised(): " + vals.get("phone_number"));
+        }
     }
 
 

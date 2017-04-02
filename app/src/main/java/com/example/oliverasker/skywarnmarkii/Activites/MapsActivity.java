@@ -39,7 +39,7 @@ public class MapsActivity extends FragmentActivity implements
     private SkywarnWSDBMapper report;
 
     //  For multiple reports
-         // Resource: http://stackoverflow.com/questions/13855049/how-to-show-multiple-markers-on-mapfragment-in-google-map-api-v2
+    // Resource: http://stackoverflow.com/questions/13855049/how-to-show-multiple-markers-on-mapfragment-in-google-map-api-v2
     private List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
     //For Single report
     private LatLng pos;
@@ -75,22 +75,23 @@ public class MapsActivity extends FragmentActivity implements
                 for (int i = 0; i < receivedData.length; i++) {
                     String title = createMarkerTitle(receivedData[i]);
 
-                   //  LatLng ll = MapUtility.getLocationFromAddress(this,title);
+                    //  LatLng ll = MapUtility.getLocationFromAddress(this,title);
 
-                   // if(report.getLongitude()== "")
-                    LatLng ll = new LatLng(report.getLatitude(),report.getLongitude());
+                    if (report.getLongitude() != 9999 && report.getLatitude() != 9999) {
+                        LatLng ll = new LatLng(report.getLatitude(), report.getLongitude());
 
-                    if (ll != null) {
-                        Log.d(TAG, "ll: " + ll.toString());
-                        // Read more: http://www.androidhub4you2.com/2015/06/android-maximum-zoom-in-google-map.html#ixzz4WXzS6wh6
-                        markerOptions = new MarkerOptions()
-                                .position(ll)
-                                .title(createMarkerTitle(receivedData[i]));
-                        markerOptionsList.add(markerOptions);
+                        if (ll != null) {
+                            Log.d(TAG, "ll: " + ll.toString());
+                            // Read more: http://www.androidhub4you2.com/2015/06/android-maximum-zoom-in-google-map.html#ixzz4WXzS6wh6
+                            markerOptions = new MarkerOptions()
+                                    .position(ll)
+                                    .title(createMarkerTitle(receivedData[i]));
+                            markerOptionsList.add(markerOptions);
                     }
                 }
-
             }
+
+        }
 
             ///////////////////////////////////////////////////
             //       Single Item from ViewReportActivity    //

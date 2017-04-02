@@ -51,7 +51,8 @@
                         android:text="@string/weatherevent"
                         android:textAlignment="textStart"
                         android:textColor="@color/textColor"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        tools:ignore="RtlSymmetry" />
                 </TableRow>
 
                 <TableRow
@@ -72,11 +73,12 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/view_report_activity_location"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="3dp"
                         android:layout_weight="0.03"
@@ -85,6 +87,7 @@
                         android:text="@string/location"
                         android:textColor="@color/textColor"
                         android:textSize="16sp" />
+
                 </TableRow>
 
                 <TableRow
@@ -138,16 +141,44 @@
                 android:textColor="@color/textColor" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/view_report_on_map_button"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_weight="0.03"
-            android:padding="10dp"
-            android:text="@string/view_on_map"
-            android:textAlignment="center"
-            tools:layout_width="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/cast_intro_overlay_background_color"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/up_vote_button"
+                style="@android:style/Widget.Button"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@string/upvote" />
+
+            <Button
+                android:id="@+id/down_vote_button"
+                style="@android:style/Widget.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+                android:text="@string/downvote" />
+
+            <Button
+                android:id="@+id/view_report_on_map_button"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="3.08"
+                android:padding="10dp"
+                android:text="@string/view_on_map"
+                android:textAlignment="center"
+                tools:layout_width="wrap_content" />
+
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -168,7 +199,8 @@
                 android:id="@+id/view_report_activity_tablelayout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.03">
+                android:layout_weight="0.03"
+                tools:ignore="NestedWeights">
 
             </TableLayout>
         </LinearLayout>

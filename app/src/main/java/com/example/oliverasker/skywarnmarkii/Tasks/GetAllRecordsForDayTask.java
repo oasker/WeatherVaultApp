@@ -32,13 +32,11 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
     private String[] reportAttributes;
     private static final String TAG = "GetAllRecordsForDayTask";
     ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
-    SkywarnWSDBMapper testReport;
-    AmazonDynamoDBClient ddb;
+    private AmazonDynamoDBClient ddb;
     Context mContext;
     private String date;
 
     public ICallback delegate = null;
-    ArrayList<SkywarnWSDBMapper> weatherList = null;
 
     public void setDelegate(ICallback delegate){
         this.delegate=delegate;
@@ -74,9 +72,6 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
         ddb.setRegion(Region.getRegion(Regions.US_EAST_1));
         DynamoDBMapper mapper = new DynamoDBMapper(ddb);
 
-       // DynamoDBManager.query();
-
-
         //FINALLY WORKS
         //https://aws.amazon.com/blogs/mobile/amazon-dynamodb-on-mobile-part-4-local-secondary-indexes/
         Map keyCondition = new HashMap();
@@ -84,7 +79,6 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
         //Create condition for hashkey
         Condition hashKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.EQ.toString())
-//                .withAttributeValueList(new AttributeValue().withS("02/12/2017"));
                 .withAttributeValueList(new AttributeValue().withS(date));
 
         keyCondition.put("DateSubmittedString", hashKeyCondition);
@@ -124,7 +118,7 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
 
             //if(reportEntry.getStreet() != null &&  !reportEntry.getStreet().equals(""))
             reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
-                Log.i(TAG, "Streettt: " + item.get("Street").toString());
+                Log.i(TAG, "Street: " + item.get("Street").toString());
 
             if(reportEntry.getFirstName() != null && !reportEntry.getFirstName().equals(""))
                 reportEntry.setFirstName(Utility.parseDynamoDBResultValuesToString(item.get("FirstName").toString()));
@@ -132,15 +126,17 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             if(reportEntry.getLastName() != null && !reportEntry.getLastName().equals(""))
                 reportEntry.setLastName(Utility.parseDynamoDBResultValuesToString(item.get("LastName").toString()));
 
-            if(reportEntry.getZipCode() != null && !reportEntry.getZipCode().equals(""))
+
+            if(item.containsKey("ZipCode") && reportEntry !=null && !reportEntry.getZipCode().equals("") && reportEntry.getZipCode().toString() != null)
                 reportEntry.setZipCode(Utility.parseDynamoDBResultValuesToString(item.get("ZipCode").toString()));
 
             //if(reportEntry.getUsername() != null &&  !reportEntry.getUsername().equals(""))
                 reportEntry.setUsername(Utility.parseDynamoDBResultValuesToString(item.get("Username").toString()));
-//            if(!item.get("Latitude").toString().equals(""))
-//                reportEntry.setLatitude(Utility.parseDynamoDBResultValuesToLong((item.get("Latitude").toString())));
-//            if(!item.get("Longitude").toString().equals(""))
-//                reportEntry.setLongitude(Utility.parseDynamoDBResultValuesToLong(item.get("Longitdue").toString()));
+
+            if(item.containsKey("Latitude") && !item.get("Latitude").toString().equals(""))
+               // reportEntry.setLatitude(Utility.parseDynamoDBResultValuesToLong((item.get("Latitude").toString())));
+            if(item.get("Longitude")!=null && item.containsKey("Longitude")  && !item.get("Longitude").toString().equals(""))
+               // reportEntry.setLongitude(Utility.parseDynamoDBResultValuesToLong(item.get("Longitdue").toString()));
 
 
             ////////// WeatherSpotter Attributes //////////
@@ -200,10 +196,8 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
                 reportEntry.setFloodComments(Utility.parseDynamoDBResultValuesToString(item.get("FloodComments").toString()));
             if(item.containsKey("PrecipRate"))
                 reportEntry.setPrecipRate(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("PrecipRate").toString())));
-
             if(item.containsKey("Rain"))
                 reportEntry.setRain(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("Rain").toString())));
-
             if(item.containsKey("RainEventComments"))
                 reportEntry.setRainEventComments(Utility.parseDynamoDBResultValuesToString(item.get("RainEventComments").toString()));
 
@@ -225,6 +219,19 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             if(item.containsKey("WindSpeed"))
                 reportEntry.setWindSpeed(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("WindSpeed").toString())));
 
+            if(item.containsKey("WindDamage"))
+                reportEntry.setWindDamage(Utility.parseDynamoDBResultValuesToString(item.get("WindDamage").toString()));
+
+            if(item.containsKey("LightningDamage"))
+                reportEntry.setLightningDamage(Utility.parseDynamoDBResultValuesToString(item.get("LightningDamage").toString()));
+
+            if(item.containsKey("WindDamageComments"))
+                reportEntry.setWindDamageComments(Utility.parseDynamoDBResultValuesToString(item.get("WindDamageComments").toString()));
+
+            if(item.containsKey("LightningDamageComments"))
+                reportEntry.setLightningDamageComments(Utility.parseDynamoDBResultValuesToString(item.get("LightningDamageComments").toString()));
+
+
 
             //////////  Report Rating Fiels //////////
             if(item.containsKey("NetVote"))
@@ -235,41 +242,48 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
                 reportEntry.setDownVote(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("DownVote").toString())));
 
 
-
             ////////// Severe Attributes //////////
             if(item.containsKey("NumberOfInjuries"))
                 reportEntry.setInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
 
+            if(item.containsKey("SevereType"))
+                reportEntry.setSevereType(Utility.parseDynamoDBResultValuesToString(item.get("SevereType").toString()));
+
             if(item.containsKey("NumberOfFatalities"))
                 reportEntry.setFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
+
             if(item.containsKey("NumberOfInjuries"))
                 reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
 
+//            if(item.containsKey("WindSpeed"))
+//                reportEntry.setWindSpeed(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("WindSpeed").toString())));
+//
+//            if(item.containsKey("WindGust"))
+//                reportEntry.setWindGust(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("WindGust").toString())));
+//
+//            if(item.containsKey("WindDirection"))
+//                reportEntry.setWindDirection(Utility.parseDynamoDBResultValuesToString(item.get("WindDirection").toString()));
+//
+//            if(item.containsKey("HailSize"))
+//                reportEntry.setHailSize(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("HailSize").toString())));
+//
+//            if(item.containsKey("Tornado"))
+//                reportEntry.setTornado(Utility.parseDynamoDBResultValuesToString(item.get("Tornade").toString()));
+//
+//            if(item.containsKey("SevereType"))
+//                reportEntry.setSevereType(Utility.parseDynamoDBResultValuesToString(item.get("SevereType").toString()));
+//
+//
+//            if(item.containsKey("SevereType"))
+//                reportEntry.setSevereType(Utility.parseDynamoDBResultValuesToString(item.get("SevereType").toString()));
+
             reportList.add(reportEntry);
             reportEntry = null;
-            //Log.d(TAG, "report: " + item.values());
             for(Object items: item.values())
                 Log.d(TAG, items.toString());
         }
-
-
         int counter = 0;
         Log.d(TAG, "QueryResultSize: "+ queryResult.getCount());
-//        for(Map item : queryResult.getItems()) {
-//            SkywarnWSDBMapper report = new SkywarnWSDBMapper();
-//            //Prints all report attributes
-//            //Log.d(TAG, "All report Attributes: " + item.toString());
-//            //Gets attribute values
-//            //AttributeValue val = (AttributeValue)  item.get("DateSubmittedEpoch");
-//            //AttributeValue val  = (AttributeValue) item.get(reportAttributes[counter]);
-//            //if(((AttributeValue) item.get(reportAttributes[counter])).getS() == null) {
-//          //for(int i =0; i < reportAttributes.length-1; i++){
-//              //Log.i(TAG, "attribute: " + reportAttributes[i] + " report: " + item.get("DateSubmittedEpoch")+ " has: " +  item.get(reportAttributes[i]).toString());
-//             // if(item.get("WaterEquivalent")!= null)
-//              //Log.d(TAG)
-//
-//         // }
-//        }
         return null;
     }
 

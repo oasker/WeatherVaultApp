@@ -42,19 +42,7 @@ public class AsyncInsertTask extends AsyncTask<String[], Void, Void> implements 
     @Override
     protected Void doInBackground(String[]... params) {
             try {
-
-                 //Each attribute will be an AttributeValue
-//                report.put("DateSubmittedEpoch",
-//                        new AttributeValue().withN("11111111"));
-//                report.put("DateSubmittedString",
-//                        new AttributeValue().withS("4/999/2017"));
-                //Log.d(TAG, "_____ map received in doInBackground()__params[0]");
-
-
                 String[] keyArray = params[0];
-                //String[] valArray =params[1];
-                //String[] numberOrStringArray = params[2];
-
                 for(int i =0; i < keyArray.length-1;i++) {
                     Log.d(TAG, "Key: " + keyArray[i] + " Value: " + attributeValues[i].getS().toString() + " N/S: " );// numberOrStringArray[i]);
                 }

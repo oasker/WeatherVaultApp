@@ -11,8 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +39,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.oliverasker.skywarnmarkii.Callbacks.BitmapCallback;
+import com.example.oliverasker.skywarnmarkii.Callbacks.BooleanCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.UriCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Fragments.CoastalFloodingViewReportFragment;
@@ -49,12 +48,15 @@ import com.example.oliverasker.skywarnmarkii.Fragments.RainFloodViewReportFragme
 import com.example.oliverasker.skywarnmarkii.Fragments.SevereViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.WinterViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
+import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
+import com.example.oliverasker.skywarnmarkii.Tasks.RateReportTask;
 import com.example.oliverasker.skywarnmarkii.Utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -65,7 +67,7 @@ import java.util.concurrent.ExecutionException;
  *  Activity for viewing report selected from listview
  */
 
-public class ViewReportActivity extends Activity implements UriCallback{
+public class ViewReportActivity extends Activity implements UriCallback,BooleanCallback{
     private static final String TAG = "ViewReportActivity";
 
     private WinterViewReportFragment winterFrag;
@@ -87,6 +89,8 @@ public class ViewReportActivity extends Activity implements UriCallback{
     private TextView photoLabelTV;
     public  LinearLayout horizontalLinearLayout;
     private Layout layout;
+    private Button upVoteButton;
+    private Button downVoteButton;
 
     private Button viewOnMapButton;
 
@@ -107,6 +111,20 @@ public class ViewReportActivity extends Activity implements UriCallback{
            Log.e(TAG, "onOnProcess complete:", e);
        }
     }
+
+    @Override
+    public void UserHasRatedReport(Boolean b, int netVote) {
+        Log.d(TAG, "UserHasRatedReportBefore? " + b);
+        //reportRating.setText(String.valueOf(map.getNetVote()));
+        if(b!=null) {
+            upVoteButton.setEnabled(false);
+            downVoteButton.setEnabled(false);
+
+            Log.d(TAG, "serHasRatedReportBefore: netVote"+String.valueOf(netVote));
+            reportRating.setText("Rating: " +String.valueOf(netVote));
+            }
+        }
+
 
     public interface bitmapCallback{
         void onFinishedString(String s);
@@ -176,6 +194,56 @@ public class ViewReportActivity extends Activity implements UriCallback{
         map = (SkywarnWSDBMapper) weatherReport.get("selectedReport");
         initGUI(map);
 
+        //Rating system widgets
+        upVoteButton = (Button)findViewById(R.id.up_vote_button);
+        downVoteButton = (Button)findViewById(R.id.down_vote_button);
+
+        upVoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "upVoteButton.OnClick()");
+                //text files hold all reports that the user has rated
+                RateReportTask rateTask = new RateReportTask();
+                rateTask.setmContext(ViewReportActivity.this);
+                rateTask.setUrl(UserInformationModel.getInstance().getUsername());
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                rateTask.setReportName(sdf.format(map.getDateOfEvent()*1000)+"_"+String.format("%.0f",map.getDateSubmittedEpoch()));
+                rateTask.setFilePath(getCacheDir()+"/");
+                rateTask.setUsername(UserInformationModel.getInstance().getUsername());
+                rateTask.setCallback(ViewReportActivity.this);
+
+                rateTask.setReportRating(map.getNetVote());
+                rateTask.setReportPrimaryKey(map.getDateSubmittedString());
+                rateTask.setRangeKey(String.valueOf(map.getDateSubmittedEpoch()));
+                rateTask.setVote("-U");
+                rateTask.execute();
+            }
+        });
+
+        downVoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "downVote Button onClick()");
+                RateReportTask rateTask = new RateReportTask();
+                rateTask.setmContext(ViewReportActivity.this);
+                rateTask.setCallback(ViewReportActivity.this);
+
+                //Url to S3 text file
+                rateTask.setUrl(UserInformationModel.getInstance().getUsername());
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                rateTask.setReportName(sdf.format(map.getDateOfEvent()*1000)+"_"+String.format("%.0f",map.getDateSubmittedEpoch()));
+                rateTask.setFilePath(getCacheDir()+"/");
+                rateTask.setUsername(UserInformationModel.getInstance().getUsername());
+
+                rateTask.setReportRating(map.getNetVote());
+                rateTask.setReportPrimaryKey(map.getDateSubmittedString());
+                rateTask.setRangeKey(String.valueOf(map.getDateSubmittedEpoch()));
+                rateTask.setVote("-D");
+                rateTask.execute();
+            }
+        });
+
+
         FragmentManager fragManager = getFragmentManager();
         FragmentTransaction fragTransaction = fragManager.beginTransaction();
 
@@ -209,7 +277,7 @@ public class ViewReportActivity extends Activity implements UriCallback{
         valueMap.put("Sleet", String.valueOf(map.getSnowFallSleet()));
         valueMap.put("BlowDrift", map.getBlowDrift());
         valueMap.put("Whiteout", map.getWhiteout());
-        valueMap.put("ThunderSnow", map.getThundersnow());
+        valueMap.put("Thundersnow", map.getThundersnow());
         valueMap.put("Freeing Rain Accumulation", String.valueOf(map.getFreezingRainAccum()));
 
 
@@ -246,23 +314,17 @@ public class ViewReportActivity extends Activity implements UriCallback{
         valueMap.put("Latitude", String.valueOf(map.getLatitude()));
 
         valueMap.put("Weather Event", map.getWeatherEvent());
-
         valueMap.put("Street", String.valueOf(map.getStreet()));
-        //valueMap.put("City", String.valueOf(map.getEventCity()));
-        //valueMap.put("State", String.valueOf(map.getState()));
-
         valueMap.put("Comments", map.getComments());
-
         valueMap.put("Current Temperature", String.valueOf(map.getCurrentTemperature()) + " F");
 
         Log.d(TAG, "Street: " + map.getStreet());
         //Remove unwanted views
-        //Set<String> keySet = valueMap.keySet();
         Iterator<Map.Entry<String, String>> iter = valueMap.entrySet().iterator();
         while(iter.hasNext()){
             Map.Entry<String,String> entry = iter.next();
             String value = entry.getValue();
-            if(value.equals("|") || value.trim().equals("9999") || value.equals("") | value.equals("false") | value.trim().equals("9999.0") | value.equals("0.0")|value.trim().equals("0.0 F") | value.equals("0") | value.equals("null") ) {
+            if(value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0")|| value.equals("0.0 F") || value.trim().equals("0") || value.equals("null") ) {
                 Log.i(TAG, "REMOVING DEFAULT VALUES value: " + value);
                 iter.remove();
             }
@@ -348,7 +410,7 @@ public class ViewReportActivity extends Activity implements UriCallback{
         location.setText(locationString.toString());
         reportRating = (TextView) findViewById(R.id.view_report_activity_report_rating);
 
-            reportRating.setText(getString(R.string.rating) + map.getNetVote());
+        reportRating.setText("Rating: " + String.valueOf(map.getNetVote()));
 //
 //        longitude = (TextView) findViewById(R.id.view_report_activity_long_latt);
 //        //longitude.setText("Lat/Long: " + map.getLattitude()+ (char)0x00B0 + " " + map.getLongitude()+(char)0x00B0 );
@@ -408,12 +470,6 @@ public class ViewReportActivity extends Activity implements UriCallback{
         return tr;
     }
 
-    private Drawable resize(Drawable image) {
-        Bitmap b = ((BitmapDrawable) image).getBitmap();
-        b = Bitmap.createScaledBitmap(b, reportImageWidth, reportImageHeight, false);
-        return new BitmapDrawable(getResources(), b);
-    }
-
     private void initGUI(SkywarnWSDBMapper Map) {
         map = Map;
     }
@@ -438,13 +494,13 @@ public class ViewReportActivity extends Activity implements UriCallback{
             photoTask.setmContext(this);
             photoTask.setCallback(callback);
             photoTask.setFilename(filename);
-            photoTask.setfilePath(getCacheDir() + "/");
+            photoTask.setfilePath(getCacheDir() + "/"+filename+".jpg");
 
             File cache = this.getCacheDir();
             File appDir= new File(cache+"/bingo.jpg");
            // p.setFile(appDir);
 
-            photoTask.setfilePath(cache+"/bingo.jpg");
+           // photoTask.setfilePath(cache+"/bingo.jpg");
 
             photoTask.setNumPhotos(map.getNumberOfImages());
             photoTask.setLinearLayout(horizontalLinearLayout);
@@ -508,6 +564,8 @@ public class ViewReportActivity extends Activity implements UriCallback{
     }
 }
 
+
+//////
 class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
      private static final String TAG = "download";
      String filename;

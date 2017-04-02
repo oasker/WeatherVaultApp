@@ -24,11 +24,6 @@ public class SevereViewReportFragment extends Fragment {
     TextView HailSize;
     TextView Tornado;
     TextView Barometer;
-    TextView DownedTrees;
-    TextView DownedLimbs;
-    TextView DiameterLimbs;
-    TextView DownedPoles;
-    TextView DownedWires;
     TextView WindDamage;
     TextView LightningDamage;
     TextView DamageComments;

@@ -14,41 +14,37 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_height="50dp"
-        android:layout_row="23"
-        android:layout_column="0"
         android:layout_alignParentTop="true" />
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/event_description_row_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/event_type_row_label"
-        android:layout_toEndOf="@+id/image_view"
-        android:id="@+id/event_description_row_text"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
+        android:layout_marginRight="5dp"
+        android:layout_toEndOf="@+id/image_view" />
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/date_row_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/event_type_row_label"
-        android:id="@+id/date_row_text"
+        android:layout_alignStart="@+id/event_type_row_label"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_alignStart="@+id/event_type_row_label" />
+        android:layout_toEndOf="@+id/event_type_row_label" />
 
     <TextView
-        android:text="Report Rating"
+        android:id="@+id/report_rating_row_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image_view"
-        android:layout_alignStart="@+id/image_view"
         android:layout_alignEnd="@+id/image_view"
-        android:id="@+id/report_rating_row_text"
-        android:textSize="12sp"
-        android:textAlignment="center" />
+        android:layout_alignStart="@+id/image_view"
+        android:layout_below="@+id/image_view"
+        android:text="@string/report_rating"
+        android:textAlignment="center"
+        android:textSize="12sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -58,32 +54,30 @@
         android:layout_toEndOf="@+id/image_view" />
 
     <TextView
-        android:text="Weather Event"
-        android:layout_height="wrap_content"
         android:id="@+id/event_type_row_label"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/event_description_row_text"
         android:layout_below="@+id/date_row_text"
-        android:layout_alignStart="@+id/event_description_row_text" />
+        android:text="@string/weather_event" />
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/event_type_row_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/event_type_row_text"
-        android:layout_toEndOf="@+id/event_type_row_label"
+        android:layout_below="@+id/location_row_text"
         android:layout_marginStart="11dp"
-        android:layout_below="@+id/location_row_text" />
+        android:layout_toEndOf="@+id/event_type_row_label" />
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/location_row_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/location_row_text"
+        android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/event_type_row_text"
-        android:layout_marginStart="22dp" />
+        android:layout_marginStart="22dp"
+        android:layout_toEndOf="@+id/event_type_row_text" />
 
     <TextView
         android:layout_width="wrap_content"
