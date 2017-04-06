@@ -37,10 +37,12 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
 
 //        ViewHolder viewHolder = (ViewHolder) view.getTag();
         ViewHolder viewHolder = null;
-        if (convertView == null) {
-            // if (viewHolder == null) {
+        //if (convertView == null) {
+             if (viewHolder == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.gridview_row, parent, false);
+
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.gridview_row, parent, false);
+
 
             //  Map layout fields to DB Result Row Widgets on listview of returned query results
 //            dateTV = (TextView) customView.findViewById(R.id.date_row_text);
@@ -104,7 +106,6 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         ViewHolder.rating.setText("Rating: " + String.valueOf(dbRow.getNetVote()));
         ViewHolder.comments.setText(dbRow.getComments());
         ViewHolder.pos = position;
-
 
         ImageView weatherEventImageView = (ImageView) convertView.findViewById(R.id.image_view);
 

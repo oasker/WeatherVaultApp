@@ -18,7 +18,7 @@ import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
-import com.example.oliverasker.skywarnmarkii.Utility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +71,6 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
         //Create condition for hashkey
         Condition hashKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.EQ.toString())
-//                .withAttributeValueList(new AttributeValue().withS("kd1cy_rob"));
                 .withAttributeValueList(new AttributeValue().withS(UserInformationModel.getInstance().getUsername()));
 
 
@@ -82,7 +81,7 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
                 .withComparisonOperator(ComparisonOperator.GT.toString())
                 .withAttributeValueList(new AttributeValue().withN("0"));
         keyCondition.put("DateSubmittedEpoch", rangeKeyCondition);
-
+//          Create QueryRequest
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName("SkywarnWSDB_rev4")
                 .withKeyConditions(keyCondition)
@@ -90,7 +89,7 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
 
         QueryResult queryResult = ddb.query(queryRequest);
         List<Map<String, AttributeValue>> valMap = queryResult.getItems();
-        Log.i(TAG, "NUMBER RETURNED REPORTS: "+queryResult.getCount().toString());
+       // Log.i(TAG, "NUMBER RETURNED REPORTS: "+queryResult.getCount().toString());
         for(Map item : queryResult.getItems()) {
             SkywarnWSDBMapper reportEntry = new SkywarnWSDBMapper();
 
@@ -120,8 +119,8 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
 
             //if(reportEntry.getUsername() != null &&  !reportEntry.getUsername().equals(""))
                 reportEntry.setUsername(Utility.parseDynamoDBResultValuesToString(item.get("Username").toString()));
-            ////////// WeatherSpotter Attributes //////////
 
+            ////////// WeatherSpotter Attributes //////////
             if(item.containsKey("CallSign"))
                 reportEntry.setCallSign(Utility.parseDynamoDBResultValuesToString(item.get("CallSign").toString()));
             if(item.containsKey("Affilliation"))
@@ -283,8 +282,4 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
         user = User;
 
     }
-
-
-
-
 }

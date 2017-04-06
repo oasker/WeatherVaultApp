@@ -29,7 +29,7 @@ import com.example.oliverasker.skywarnmarkii.Fragments.SevereWeatherSubmitReport
 import com.example.oliverasker.skywarnmarkii.Fragments.WinterSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
-import com.example.oliverasker.skywarnmarkii.Utility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;

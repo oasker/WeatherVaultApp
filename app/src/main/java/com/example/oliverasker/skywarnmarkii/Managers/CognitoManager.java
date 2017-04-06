@@ -34,7 +34,7 @@ import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Dialoges.ResetPasswordDialog;
 import com.example.oliverasker.skywarnmarkii.Dialoges.ResetPasswordEnterCodeDialog;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
-import com.example.oliverasker.skywarnmarkii.Utility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.util.HashMap;
 import java.util.Iterator;

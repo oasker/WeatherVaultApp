@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii;
+package com.example.oliverasker.skywarnmarkii.Utility;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,8 +9,11 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.example.oliverasker.skywarnmarkii.Constants;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -111,10 +114,14 @@ public class Utility {
         Calendar calendar = Calendar.getInstance();
         long d = (long) epoch;
         calendar.setTimeInMillis(d * 1000);
+
         // calendar.setTimeInMillis((long) 1491252072 *1000);
         //calendar.setTimeInMillis((long) 1491252072*1000);
         //Log.d(TAG, "Day Of Month " + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+        Date date = new Date();
+        String dateTime = sdf.format(d*1000);
+        Log.d(TAG, "dateTime: " + dateTime);
         String AMPMString = "";
         int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
@@ -132,8 +139,10 @@ public class Utility {
 
         StringBuilder s = new StringBuilder(month + "/" + day + "/" + year + " at: " + hour + ":" + minutes + " " + AMPMString);
 //        Log.d(TAG, "Year 1: " + year + " Year2: ");
-        Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
-        return s.toString();
+       // Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
+        Log.d(TAG, "old converted Date: " + s + " new convertedDate: " + dateTime);
+       // return s.toString();
+        return dateTime;
     }
 
     public static String[] AttributeHashMapKeyToArray(HashMap<String, AttributeValue> attrMap) {

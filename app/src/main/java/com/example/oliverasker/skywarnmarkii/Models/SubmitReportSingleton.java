@@ -3,7 +3,7 @@ package com.example.oliverasker.skywarnmarkii.Models;
 import android.util.Log;
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.example.oliverasker.skywarnmarkii.Utility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.util.Map;
 

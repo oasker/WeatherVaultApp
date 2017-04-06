@@ -50,7 +50,7 @@ import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.RateReportTask;
-import com.example.oliverasker.skywarnmarkii.Utility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -109,6 +109,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
        }
     }
 
+
+    //Todo: make check when user first looks at report and disable rating buttons if theyve voted or its their report
     @Override
     public void UserHasRatedReport(Boolean b, int netVote) {
         Log.d(TAG, "UserHasRatedReportBefore? " + b);
@@ -261,7 +263,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 
         //Send data to fragments
         //Stupid way to do this i think, but need to brute force it
-       // valueMap.put("Submitted", map.getDateSubmittedString());
         valueMap.put("Date Submitted Epoch", String.valueOf(map.getDateSubmittedEpoch()));
         //valueMap.put("Date Of Event", String.valueOf(map.getDateOfEvent()));
 
@@ -354,7 +355,7 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         ///////////////////////////////////////////////////////////////////////////////
         //                          General Report Details                          //
         /////////////////////////////////////////////////////////////////////////////
-        LinearLayout ll = (LinearLayout)findViewById(R.id.view_report_attribute_list);
+       // LinearLayout ll = (LinearLayout)findViewById(R.id.view_report_attribute_list);
         TableLayout tLayout = (TableLayout)findViewById(R.id.view_report_activity_tablelayout);
         valueMap.remove("NumberOfImages");
         valueMap.remove("NumberOfVideos");

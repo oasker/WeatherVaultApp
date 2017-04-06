@@ -40,7 +40,8 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
     private Button viewReportsOnMapToggle;
     private Calendar cal;
     private TextView dateTV;
-    private  SkywarnWSDBMapper[] data ;
+    private  SkywarnWSDBMapper[] data;
+    String date;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         Log.d(TAG, "onCreateView");
@@ -53,7 +54,7 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         cal = Calendar.getInstance();
         final SimpleDateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
         Log.d(TAG, "Date In ViewReports " + String.valueOf(format1.format(cal.getTime())));
-        String date = format1.format(cal.getTime());
+        date = format1.format(cal.getTime());
 
         //ToDo: Create way to switch between looking at all reports from single day and top rated
         getRecordsForDayTask = new GetAllRecordsForDayTask();
@@ -184,11 +185,21 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
 
                 SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) listView.getItemAtPosition(position);
                 launchViewReportActivity(itemValue);
-                Log.i(TAG, "STreet:::::::::::::::::" + itemValue.getStreet());
-                Log.i(TAG, "City:::::::::::::::::" + itemValue.getCity());
-                Log.i(TAG, "onItemClick()::::::::  position: "+ position);
+//                Log.i(TAG, "STreet:::::::::::::::::" + itemValue.getStreet());
+//                Log.i(TAG, "City:::::::::::::::::" + itemValue.getCity());
+//                Log.i(TAG, "onItemClick()::::::::  position: "+ position);
             }
         });
         result = null;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        GetAllRecordsForDayTask getRecordsForDayTask = new GetAllRecordsForDayTask();
+        getRecordsForDayTask.setDate(date);
+        getRecordsForDayTask.setContext(getContext());
+        getRecordsForDayTask.delegate = this;
+        getRecordsForDayTask.execute();
     }
 }

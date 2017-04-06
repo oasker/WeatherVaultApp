@@ -12,27 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.amazonaws.AmazonClientException;
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.BitmapCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.StringCallback;
-import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Models.SubmittedPhotoModel;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
-import com.example.oliverasker.skywarnmarkii.Tasks.DownloadPhotoTask;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserSubmittedPhotoNamesTask;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
+import com.koushikdutta.ion.Ion;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -44,22 +35,22 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     private static final String TAG = "PersnlPhotosFrag";
     private String username = UserInformationModel.getInstance().getUsername();
     private ArrayList<SubmittedPhotoModel> photoModelList = new ArrayList<>();
-    private ViewGroup Containter;
-    private ArrayList<Bitmap> bitmapArrayList = new ArrayList<>();
     private Context mContext;
-    private String filePath;
-    private ViewGroup container;
     private LinearLayout photoLinearLayout;
     private int imageViewWidth = 650;
     private int imageViewHeight = 650;
+
+    //FOR TESTING
+    private ImageView imageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup Container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_user_home_submitted_photos, Container, false);
         Log.d(TAG, "onCreateView()");
-        container = Container;
+       // container = Container;
         photoLinearLayout = (LinearLayout) v.findViewById(R.id.photoLinearLayout);
         photoModelList = new ArrayList<>();
+
         mContext = getContext();
 
         //ToDo:change filename to current user, not placeholder
@@ -67,6 +58,15 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         task2.setmContext(getContext());
         task2.setCallback(this);
         task2.execute();
+
+
+//        imageView = (ImageView) v.findViewById(R.id.test_image_view);
+//        BitmapUtility.resizeImageView(imageViewWidth,imageViewHeight,imageView);
+//        Ion.with(imageView)
+//                .placeholder(R.drawable.sunny)
+//                .error(R.drawable.snow_icon)
+//                .smartSize(true)
+//                .load("https://s3.amazonaws.com/skywarntestbucket/1491436650179_oasker_0.jpg");
         return v;
     }
 
@@ -125,10 +125,6 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     }
 
 
-    public void setString(String s) {
-
-    }
-
     public String getUsername() {
         return username;
     }
@@ -139,100 +135,117 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
 
 
     // STRING CALLBACKs
-
-
     @Override
     public void onProcessComplete(ArrayList<String> s) {
         Log.d(TAG, "onProcessComplete(ArrayList<String>");
-        for (String str : s) {
-            Log.d(TAG, str);
-            DownloadPhotoTask photoTask = new DownloadPhotoTask();
-            photoTask.setmContext(getContext());
-            photoTask.setcallback(this);
-            //photoTask.execute();
-            downloadPhoto(s);
+        s.remove(UserInformationModel.getInstance().getUsername()+".jpg");
+        for (String url : s) {
+            //Log.d(TAG, url);
+//            imageView = (ImageView) v.findViewById(R.id.test_image_view);
+            ImageView v = new ImageView(mContext);
+            TextView tv = new TextView(mContext);
+            LinearLayout ll = new LinearLayout(mContext);
+            ll.setOrientation(LinearLayout.HORIZONTAL);
+
+
+
+
+            //BitmapUtility.resizeImageView(imageViewWidth,imageViewHeight,v);
+            Ion.with(v)
+                    .resize(imageViewWidth,imageViewHeight)
+                    .placeholder(R.drawable.sunny)
+                    .error(R.drawable.snow_icon)
+                    .load("https://s3.amazonaws.com/skywarntestbucket/"+url);
+            Log.d(TAG,"https://s3.amazonaws.com/skywarntestbucket/"+url );
+            ll.addView(v);
+            if(url.contains("_")) {
+                String text = url.split("_")[0];
+                text=Utility.epochToDateTimeString(Long.parseLong(text)/1000);
+                tv.setText(text.toString());
+                ll.addView(tv);
+            }
+            photoLinearLayout.addView(ll);
         }
+//            DownloadPhotoTask photoTask = new DownloadPhotoTask();
+//            photoTask.setmContext(getContext());
+//            photoTask.setcallback(this);
+            //photoTask.execute();
+           // downloadPhoto(s);
+//        }
     }
 
     @Override
     public void onFinishedString(String s) {
-        File f = new File(s);
-        Bitmap b = BitmapFactory.decodeFile(s);
-        ImageView i = new ImageView(getContext());
-        i.setImageBitmap(b);
+//        File f = new File(s);
+//        Bitmap b = BitmapFactory.decodeFile(s);
+//        ImageView i = new ImageView(getContext());
+//        i.setImageBitmap(b);
 
-        photoLinearLayout.addView(i);
+//        photoLinearLayout.addView(i);
     }
 
-    public void downloadPhoto(ArrayList<String> paths) {
-        Log.d(TAG, "downloadPhoto()");
-        for(String s: paths) {
-            String filename =s;
-            String externalStorage = mContext.getCacheDir().toString() + "/";
-            final String filePath = externalStorage + filename;
-            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                    getContext(),
-                    Constants.IDENTITY_POOL_ID, // Identity Pool ID
-                    Regions.US_EAST_1           // Region
-            );
-
-            AmazonS3 s3Client = new AmazonS3Client(credentialsProvider);
-            try {
-                File file = new File(filePath);
-                TransferUtility transferUtility = new TransferUtility(s3Client, getContext());
-                TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
-                Log.d(TAG, "file.getPath(): " + file.getPath());
-
-                transferObserver.setTransferListener(new TransferListener() {
-                    @Override
-                    public void onStateChanged(int id, TransferState state) {
-                        Log.d(TAG, "onStateChanged: + state: " + state.toString());
-                        if (state == TransferState.COMPLETED) {
-                            Bitmap b = BitmapFactory.decodeFile(filePath);
-
-                            //ToDo: Add text view to user submitted photos giving date photo was taken
-                            //TextView dateTV = new TextView(mContext);
-                            //s.indexOf("_");
-                            //dateTV.setText(Utility.epochToDateTimeString());
-
-
-                            ImageView v = new ImageView(mContext);
-                            v=resizeImageView(imageViewWidth, imageViewHeight, v);
-                            v.setImageBitmap(b);
-                            photoLinearLayout.addView(v);
-                        }
-                    }
-
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                        int percentage = (int) ((bytesCurrent + 1) / (bytesTotal + 1) * 100);
-                        Log.d(TAG, "onStateChanged(); bytesTotal: " + bytesTotal + " bytesCurrent: " + bytesCurrent);
-                    }
-
-                    @Override
-                    public void onError(int id, Exception ex) {
-                        Log.e(TAG, "onError", ex);
-                    }
-                });
-
-
-            } catch (AmazonClientException ace) {
-                Log.d(TAG, "Caught an AmazonClientException, which means" +
-                        " the client encountered " +
-                        "an internal error while trying to " +
-                        "communicate with S3, " +
-                        "such as not being able to access the network.");
-                Log.d(TAG, "Error Message: " + ace.getMessage());
-            }
-        }
-    }
-
-    public ImageView resizeImageView(int width, int height, ImageView i) {
-//        final ImageView picture1 = (ImageView)findViewById(R.id.imageView1);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
-        i.setLayoutParams(layoutParams);
-        return i;
-    }
+//    public void downloadPhoto(ArrayList<String> paths) {
+//        Log.d(TAG, "downloadPhoto()");
+//        for(String s: paths) {
+//            String filename =s;
+//            String externalStorage = mContext.getCacheDir().toString() + "/";
+//            final String filePath = externalStorage + filename;
+//            CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+//                    getContext(),
+//                    Constants.IDENTITY_POOL_ID, // Identity Pool ID
+//                    Regions.US_EAST_1           // Region
+//            );
+//
+//            AmazonS3 s3Client = new AmazonS3Client(credentialsProvider);
+//            try {
+//                File file = new File(filePath);
+//                TransferUtility transferUtility = new TransferUtility(s3Client, getContext());
+//                TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
+//                Log.d(TAG, "file.getPath(): " + file.getPath());
+//
+//                transferObserver.setTransferListener(new TransferListener() {
+//                    @Override
+//                    public void onStateChanged(int id, TransferState state) {
+//                        Log.d(TAG, "onStateChanged: + state: " + state.toString());
+//                        if (state == TransferState.COMPLETED) {
+//                            Bitmap b = BitmapFactory.decodeFile(filePath);
+//
+//                            //ToDo: Add text view to user submitted photos giving date photo was taken
+//                            //TextView dateTV = new TextView(mContext);
+//                            //s.indexOf("_");
+//                            //dateTV.setText(Utility.epochToDateTimeString());
+//
+//
+//                            ImageView v = new ImageView(mContext);
+//                            v=BitmapUtility.resizeImageView(imageViewWidth, imageViewHeight, v);
+//                            v.setImageBitmap(b);
+//                            photoLinearLayout.addView(v);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+//                        int percentage = (int) ((bytesCurrent + 1) / (bytesTotal + 1) * 100);
+//                        Log.d(TAG, "onStateChanged(); bytesTotal: " + bytesTotal + " bytesCurrent: " + bytesCurrent);
+//                    }
+//
+//                    @Override
+//                    public void onError(int id, Exception ex) {
+//                        Log.e(TAG, "onError", ex);
+//                    }
+//                });
+//
+//
+//            } catch (AmazonClientException ace) {
+//                Log.d(TAG, "Caught an AmazonClientException, which means" +
+//                        " the client encountered " +
+//                        "an internal error while trying to " +
+//                        "communicate with S3, " +
+//                        "such as not being able to access the network.");
+//                Log.d(TAG, "Error Message: " + ace.getMessage());
+//            }
+//        }
+//    }
 
     @Override
     public void onProcessComplete(String county, String lat, String lng) {
@@ -241,6 +254,46 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
 
     @Override
     public void onProcessError(String error) {
+
+    }
+
+    /*
+    public ImageView createImageView(Bitmap b, ViewGroup v) {
+        Log.d(TAG, "createImageView()");
+        final Bitmap tempBitmap = b;
+        ImageView IV = new ImageView(mContext);
+        IV.setId(0);
+        IV.requestLayout();
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth, reportImageHeight);
+        IV.setLayoutParams(layoutParams);
+        IV.setPadding(15, 15, 15, 15);
+        IV.setImageBitmap(b);
+        IV.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                LayoutInflater inflater = v.getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.dialog_view_photo_layout, null);
+                TextView dateTV = (TextView) alertLayout.findViewById(R.id.dialog_dateTV);
+                ImageView imageView = (ImageView) alertLayout.findViewById((R.id.imageView));
+                imageView.setImageBitmap(tempBitmap);
+                builder.setIcon(R.drawable.sunny)
+                        .setMessage("message")
+                        .setTitle("Title");
+                builder.show();
+            }
+
+            //IV.setScaleType(ImageView.ScaleType.FIT_XY);
+            // b = Bitmap.createScaledBitmap(b,IV.getWidth(),IV.getHeight(),false);
+        });
+        return IV;
+    }
+    */
+
+    @Override
+    public void onPause(){
+        super.onPause();
 
     }
 }

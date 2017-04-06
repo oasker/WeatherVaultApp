@@ -5,7 +5,7 @@ package com.example.oliverasker.skywarnmarkii.Mappers;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIndexHashKey;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
-import com.example.oliverasker.skywarnmarkii.Utility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.io.Serializable;
 
