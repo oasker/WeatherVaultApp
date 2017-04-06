@@ -346,7 +346,7 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             iconImageView.setImageResource(R.drawable.sunny);
         }
 
-        // Instantiate frags
+        // Instantiate different weather event type frags
         rainFrag = new RainFloodViewReportFragment();
         coastalFloodingFrag = new CoastalFloodingViewReportFragment();
         severeFrag = new SevereViewReportFragment();

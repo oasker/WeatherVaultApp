@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,8 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     private ArrayList<SubmittedPhotoModel> photoModelList = new ArrayList<>();
     private Context mContext;
     private LinearLayout photoLinearLayout;
-    private int imageViewWidth = 650;
-    private int imageViewHeight = 650;
+    private int imageViewWidth = 250;
+    private int imageViewHeight = 250;
 
     //FOR TESTING
     private ImageView imageView;
@@ -143,14 +144,16 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
             //Log.d(TAG, url);
 //            imageView = (ImageView) v.findViewById(R.id.test_image_view);
             ImageView v = new ImageView(mContext);
+
             TextView tv = new TextView(mContext);
+            tv.setPadding(5,5,5,5);
+
             LinearLayout ll = new LinearLayout(mContext);
+            LinearLayout.LayoutParams lp= new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(7,7,7,7);
+
             ll.setOrientation(LinearLayout.HORIZONTAL);
-
-
-
-
-            //BitmapUtility.resizeImageView(imageViewWidth,imageViewHeight,v);
+            ll.setGravity(Gravity.CENTER_HORIZONTAL);
             Ion.with(v)
                     .resize(imageViewWidth,imageViewHeight)
                     .placeholder(R.drawable.sunny)
@@ -166,12 +169,6 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
             }
             photoLinearLayout.addView(ll);
         }
-//            DownloadPhotoTask photoTask = new DownloadPhotoTask();
-//            photoTask.setmContext(getContext());
-//            photoTask.setcallback(this);
-            //photoTask.execute();
-           // downloadPhoto(s);
-//        }
     }
 
     @Override

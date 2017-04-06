@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/weather_event_row_text">
+
+    <ImageView
+        android:layout_width="65dp"
+        app:srcCompat="@drawable/cloud"
+        android:src="@drawable/cloud"
+        android:id="@+id/image_view"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/event_description_row_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/event_type_row_label"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toEndOf="@+id/image_view" />
+
+    <TextView
+        android:id="@+id/date_row_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/event_type_row_label"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toEndOf="@+id/event_type_row_label" />
+
+    <TextView
+        android:id="@+id/report_rating_row_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/image_view"
+        android:layout_alignStart="@+id/image_view"
+        android:layout_below="@+id/image_view"
+        android:text="@string/report_rating"
+        android:textAlignment="center"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/overall_rating_row_text"
+        android:layout_below="@+id/event_description_row_text"
+        android:layout_toEndOf="@+id/image_view" />
+
+    <TextView
+        android:id="@+id/event_type_row_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/event_description_row_text"
+        android:layout_below="@+id/date_row_text"
+        android:text="@string/weather_event" />
+
+    <TextView
+        android:id="@+id/event_type_row_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/location_row_text"
+        android:layout_marginStart="11dp"
+        android:layout_toEndOf="@+id/event_type_row_label" />
+
+    <TextView
+        android:id="@+id/location_row_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginStart="22dp"
+        android:layout_toEndOf="@+id/event_type_row_text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="6dp"
+        android:id="@+id/time_row_text"
+        android:layout_alignEnd="@+id/event_type_row_text" />
+
+    <TextView
+        android:text="@string/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reporter_username_row_text"
+        android:textSize="14sp"
+        android:scrollHorizontally="false"
+        android:layout_below="@+id/image_view"
+        android:layout_alignStart="@+id/location_row_text"
+        android:layout_marginStart="0dp" />
+
+</RelativeLayout>

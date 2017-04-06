@@ -35,13 +35,11 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         SkywarnWSDBMapper dbRow = rows[position];
 
 
-//        ViewHolder viewHolder = (ViewHolder) view.getTag();
         ViewHolder viewHolder = null;
         //if (convertView == null) {
-             if (viewHolder == null) {
+        if (viewHolder == null) {
             viewHolder = new ViewHolder();
-
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.gridview_row, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.gridview_row, parent, false);
 
 
             //  Map layout fields to DB Result Row Widgets on listview of returned query results
@@ -105,12 +103,23 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         ViewHolder.weatherEvent.setText(dbRow.getWeatherEvent());
         ViewHolder.rating.setText("Rating: " + String.valueOf(dbRow.getNetVote()));
         ViewHolder.comments.setText(dbRow.getComments());
-        ViewHolder.pos = position;
+        //ViewHolder.pos = position;
 
         ImageView weatherEventImageView = (ImageView) convertView.findViewById(R.id.image_view);
 
         //  Set Icon Image Based on Weather Type
         String weatherType = dbRow.getWeatherEvent().toUpperCase();
+//
+//        if (weatherType.toUpperCase().contains("SEVERE"))
+//            weatherEventImageView.setImageResource(R.drawable.severe);
+//        if (weatherType.toUpperCase().contains("RAIN"))
+//            weatherEventImageView.setImageResource(R.drawable.rain);
+//        if (weatherType.toUpperCase().contains("WINTER"))
+//            weatherEventImageView.setImageResource(R.drawable.snow_icon);
+//        if (weatherType.toUpperCase().contains("COASTAL"))
+//            weatherEventImageView.setImageResource(R.drawable.coastal);
+//        if (weatherType.toUpperCase().contains("GENERAL"))
+//            weatherEventImageView.setImageResource(R.drawable.sunny);
 
         if (weatherType.toUpperCase().contains("SEVERE"))
             weatherEventImageView.setImageResource(R.drawable.severe);

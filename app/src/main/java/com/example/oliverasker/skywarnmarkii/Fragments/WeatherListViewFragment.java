@@ -104,7 +104,6 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getActivity(), data);
 
         //for(int i=0; i< data.length; i++)
-        // System.out.println("Received in QueryLauncherActivity: "+data[i].getEventCity() + " " + data[i].getComments());
         listView.setAdapter(skywarnAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
