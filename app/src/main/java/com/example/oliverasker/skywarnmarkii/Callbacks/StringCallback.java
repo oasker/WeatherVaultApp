@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 
 public interface StringCallback {
-    void onProcessComplete(String s);
-    void onProcessComplete(ArrayList<String> s);
+    void onProcessComplete(String county, String lat, String lng);
+    void onProcessError(String error);
+    void onProcessComplete(ArrayList<String> items);
 }

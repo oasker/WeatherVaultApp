@@ -34,6 +34,7 @@ import com.example.oliverasker.skywarnmarkii.Utility;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +45,8 @@ import java.util.Set;
  *  Dynamically set layout using information entered by user on previous screen.
  *  Retreive 'extras'passed within Intent as Boolean Hashmap.
  */
+//Todo: if user hasnt selected any specific weather event just submit report, dont make them click submit o
+    //on this activity
 
 public class SubmitReportDetailsActivity extends AppCompatActivity{
     private final String TAG = "SubmtRprtDetailsActvty";
@@ -57,6 +60,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     SevereWeatherSubmitReportFragment severeFrag;
     GeneralSubmitReportFragment generalInfoFrag;
 
+    private String dateSubmittedString;
     //Rain
     private EditText Rain;
     private EditText PrecipRate;
@@ -110,9 +114,12 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         HashMap<String, Boolean> eventBools = (HashMap<String, Boolean>)weatherEventBoolsArray.get("weatherEventBoolsMap");
 
 
-        Log.d(TAG, "AAAAAAHHHHHHHH");
+        //Log.d(TAG, "AAAAAAHHHHHHHH");
+
         String[] keyArrayTest = i.getStringArrayExtra("keyArray");
-        AttributeValue[] attrArrayTest = (AttributeValue[])i.getSerializableExtra("attrArray");
+        Object[] tempObj =(Object[])i.getSerializableExtra("attrArray");
+        AttributeValue[] attrArrayTest= Arrays.copyOf(tempObj,tempObj.length,AttributeValue[].class);
+       // AttributeValue[] attrArrayTest = (AttributeValue[])i.getSerializableExtra("attrArray");
 
         for(int j =0; j <keyArrayTest.length;j++ ){
             Log.d(TAG,"KEY: " + keyArrayTest[j] + " VALUE: " + attrArrayTest[j].toString());
@@ -123,6 +130,8 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         }
         //Get report from previous activity
         reportToSubmit = (SkywarnWSDBMapper) bundle.getSerializable("reportToSubmit");
+
+
 
         //Setup Toolbar
         Toolbar myToolbar = (Toolbar)findViewById(R.id.my_toolbar);
@@ -161,11 +170,9 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             fragTransaction.add(R.id.fourth_container, rainFrag, "rainFrag");
         }
            // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
-
-
             fragTransaction.commit();
         }
-        else {
+        if(!isWinterEvent && !isSevereEvent && !isCoastalEvent && !isRainEvent){
 
         }
    }
@@ -317,7 +324,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
 //        Log.d(TAG, "FORMATTED DATE: " + String.valueOf(cal.getTime()));
         Log.d(TAG, "FORMATTED DATE: " + String.valueOf(format1.format(cal.getTime())));
         report.put("DateSubmittedString", new AttributeValue().withS(format1.format(cal.getTime())));
-
+        dateSubmittedString = format1.format(cal.getTime());
         long epoch = System.currentTimeMillis();
         Log.d(TAG, "epoch: "+ epoch);
         report.put("DateSubmittedEpoch", new AttributeValue().withN(String.valueOf(epoch)));
@@ -326,7 +333,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         keyArray = new String[report.size()];
         attributeValArray = new AttributeValue[report.size()];
 
-       // Log.d(TAG, "Iterating through reports HMap:---END ");
         int counter = 0;
         Set<Map.Entry<String, AttributeValue>> entrySet = report.entrySet();
         for (Map.Entry entry : entrySet) {
@@ -338,16 +344,21 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
             if (counter < entrySet.size()+1)
                 counter++;
         }
-        AsyncInsertTask2 insertTask2 = new AsyncInsertTask2(attributeValArray);
-        insertTask2.execute(keyArray);
+
+//        AsyncInsertTask2 insertTask2 = new AsyncInsertTask2(attributeValArray);
+//        insertTask2.execute(keyArray);
 
         Intent intent = new Intent(this, LaunchCameraActivity.class);
-
         DecimalFormat decimalFormat= new DecimalFormat("0.0");
         String epochString = decimalFormat.format(epoch);
 
+       // Log.d(TAG, "epoch passed in intent: "+epochString + " datesubmittedSTring: " + dateSubmittedString);
+        intent.putExtra("DateSubmittedString", dateSubmittedString);
         intent.putExtra("epoch",epoch);
-        Log.d(TAG, "epoch passed in intent: "+epochString);
+
+        intent.putExtra("keyArray", keyArray);
+        intent.putExtra("attributeValArray", attributeValArray);
+
         startActivity(intent);
     }
 
@@ -374,7 +385,6 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
 

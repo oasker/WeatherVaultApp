@@ -139,9 +139,7 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
 
 
     // STRING CALLBACKs
-    @Override
-    public void onProcessComplete(String s) {
-    }
+
 
     @Override
     public void onProcessComplete(ArrayList<String> s) {
@@ -234,6 +232,16 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
         i.setLayoutParams(layoutParams);
         return i;
+    }
+
+    @Override
+    public void onProcessComplete(String county, String lat, String lng) {
+
+    }
+
+    @Override
+    public void onProcessError(String error) {
+
     }
 }
 

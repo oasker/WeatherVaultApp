@@ -255,6 +255,14 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                     ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     viewRep.setArguments(b);
                     return  viewRep;
+//                case 3:
+//                    Log.d(TAG, "Relevant report frag");
+//                    //Intent i = new Intent();
+//                    //Bundle b = i.getExtras();
+//                    ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
+//
+//                    viewRep.setArguments(b);
+//                    return  viewRep;
 
                 default:
                     Log.d(TAG, "Default: UsereInfoHomeFragment");

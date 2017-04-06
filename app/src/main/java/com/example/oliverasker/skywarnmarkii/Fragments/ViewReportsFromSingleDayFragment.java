@@ -175,12 +175,18 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id ) {
-                int itemPos = position;
+                //  SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) listView.getItemAtPosition(position);
+               // SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) parent.getItemAtPosition(position);
+                //SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) listView.getItemAtPosition(parent.getSelectedItemPosition());
+
+
+                //launchViewReportActivity(itemValue);
+
                 SkywarnWSDBMapper itemValue = (SkywarnWSDBMapper) listView.getItemAtPosition(position);
+                launchViewReportActivity(itemValue);
                 Log.i(TAG, "STreet:::::::::::::::::" + itemValue.getStreet());
                 Log.i(TAG, "City:::::::::::::::::" + itemValue.getCity());
-                launchViewReportActivity(itemValue);
-
+                Log.i(TAG, "onItemClick()::::::::  position: "+ position);
             }
         });
         result = null;

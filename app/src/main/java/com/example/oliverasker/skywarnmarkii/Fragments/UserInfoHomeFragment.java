@@ -142,7 +142,6 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         Log.i(TAG, "showUserReportsFragment()");
         Fragment showUserPhotoFragment = new WeatherListViewFragment();
 
-
         Bundle b = new Bundle();
         String[] cognitoVals = {"SpotterIDTEST", "CALLSIGNTEST","AffilliationTEST","USERNAMETST"};
         b.putStringArray("cognitoVals" ,cognitoVals);

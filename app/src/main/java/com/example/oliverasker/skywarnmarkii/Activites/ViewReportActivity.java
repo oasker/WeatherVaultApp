@@ -16,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -88,7 +87,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     private TextView reportRating;
     private TextView photoLabelTV;
     public  LinearLayout horizontalLinearLayout;
-    private Layout layout;
     private Button upVoteButton;
     private Button downVoteButton;
 
@@ -96,7 +94,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 
     private HashMap<String, String> valueMap;
     private ImageView iconImageView;
-    AmazonS3Client s3;
     private int numberOfPhotos = 0;
     private int reportImageWidth = 400;
     private int reportImageHeight = 400;
@@ -438,7 +435,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         Log.d(TAG, "Epoch:" + map.getDateOfEvent() + " NumberPhotos: " + map.getNumberOfImages());
         if (numberOfPhotos > 0) {
             Log.i(TAG, "NUMBERPHOTOS: " + numberOfPhotos);
-
         }
         fragTransaction.commit();
         try {

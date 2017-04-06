@@ -68,7 +68,6 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
         //https://aws.amazon.com/blogs/mobile/amazon-dynamodb-on-mobile-part-4-local-secondary-indexes/
         Map keyCondition = new HashMap();
 
-        //ToDo: For Update query value for individual users, not just rob
         //Create condition for hashkey
         Condition hashKeyCondition = new Condition()
                 .withComparisonOperator(ComparisonOperator.EQ.toString())
