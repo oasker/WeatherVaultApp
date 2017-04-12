@@ -16,18 +16,24 @@ import java.util.Map;
 public class UserInformationModel {
     private static final String TAG = "UserInformationModel";
 //  Provides model for cognito user
-    private static String affiliation="TEST_AFFILIATION";
-    private static String spotterID="TEST SpotterID";
-    private static String callsign="TEST CallSign";
-    private static String firstName = "TEST FirstName";
-    private static String lastName="TEST LastName";
+//    private static String affiliation="TEST_AFFILIATION";
+//    private static String spotterID="TEST SpotterID";
+//    private static String callsign="TEST CallSign";
+//    private static String firstName = "TEST FirstName";
+//    private static String lastName="TEST LastName";
+
+    private static String affiliation="|";
+    private static String spotterID="|";
+    private static String callsign="|";
+    private static String firstName = "|";
+    private static String lastName="|";
     private static String phone;
     private static String email;
     //private static String username ="oasker";
-    private static String username ="USERNAME";
+    private static String username ="|";
 
     private static String password;
-    private static String userID="TEST USERID";
+    private static String userID="|";
     private static int numberOfImages = 0;
     private static int numberOfVideos = 0;
 

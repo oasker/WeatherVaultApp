@@ -22,11 +22,11 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
 import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
-import com.example.oliverasker.skywarnmarkii.Fragments.CoastalFloodingSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.GeneralSubmitReportFragment;
-import com.example.oliverasker.skywarnmarkii.Fragments.RainFloodSubmitReportFragment;
-import com.example.oliverasker.skywarnmarkii.Fragments.SevereWeatherSubmitReportFragment;
-import com.example.oliverasker.skywarnmarkii.Fragments.WinterSubmitReportFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.WeatherEventSubmitFragments.CoastalFloodingSubmitReportFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.WeatherEventSubmitFragments.RainFloodSubmitReportFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.WeatherEventSubmitFragments.SevereWeatherSubmitReportFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.WeatherEventSubmitFragments.WinterSubmitReportFragment;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
@@ -54,11 +54,11 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     public AttributeValue[] attributeValArray;
     public String[] keyArray;
 
-    WinterSubmitReportFragment winterFrag;
-    CoastalFloodingSubmitReportFragment coastalFloodingFrag;
-    RainFloodSubmitReportFragment rainFrag;
-    SevereWeatherSubmitReportFragment severeFrag;
-    GeneralSubmitReportFragment generalInfoFrag;
+    private WinterSubmitReportFragment winterFrag;
+    private CoastalFloodingSubmitReportFragment coastalFloodingFrag;
+    private RainFloodSubmitReportFragment rainFrag;
+    private SevereWeatherSubmitReportFragment severeFrag;
+    private GeneralSubmitReportFragment generalInfoFrag;
 
     private String dateSubmittedString;
     //Rain
@@ -101,7 +101,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     private boolean isCoastalEvent;
     private boolean isRainEvent;
 
-    SkywarnWSDBMapper reportToSubmit = new SkywarnWSDBMapper();
+    private SkywarnWSDBMapper reportToSubmit = new SkywarnWSDBMapper();
     public HashMap<String, AttributeValue> report = new HashMap<>();
 
     @Override

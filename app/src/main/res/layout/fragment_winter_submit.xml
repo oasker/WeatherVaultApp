@@ -71,6 +71,33 @@
             android:inputType="number|numberDecimal" />
         </TableRow>
 
+        <!--Freezing Rain Accum-->
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/freezing_rain_accum_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_margin="5dp"
+                android:text="@string/freezing_rain_accumulation"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/freezing_rain_accumulation_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_margin="5dp"
+                android:inputType="number|numberDecimal"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp" />
+        </TableRow>
+
 
         <!--SNOW DEPTH -->
         <TableRow

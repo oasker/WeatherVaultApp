@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
-        android:padding="10dp"
         android:text="@string/rain_and_flooding_event"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse" />
@@ -78,18 +77,18 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/river_flood_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/river_flood_label_tv"
                 android:layout_column="1"
-                android:text="@string/comments"
-                android:textAlignment="viewStart"
-                android:textSize="18sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:text="@string/flood_comments"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/background_dark"
+                android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/river_flood_field_tv"
+                android:id="@+id/flood_comments_input_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="2"

@@ -1,6 +1,8 @@
 package com.example.oliverasker.skywarnmarkii.Activites;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -13,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -46,6 +49,9 @@ public class MapsActivity extends FragmentActivity implements
     MarkerOptions markerOptions;
     private boolean singleReport;
 
+    private ArrayList<SkywarnWSDBMapper> reportsWithValidCoords;
+    private ArrayList<String> snippetList;
+
     //For getting curernt location
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
 
 
+        snippetList = new ArrayList<>();
         //Convert report list into LtLng then into MarkerOptions
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -66,69 +73,113 @@ public class MapsActivity extends FragmentActivity implements
             //////////////////////////////////////////////////
             //  Checks if maps activity is being called from QueryLauncherActivity which will show all reports on map
             if (bundle.getSerializable("reportList") != null) {
-                //Log.d(TAG, "reportList!=null");
-
                 singleReport = false;
                 receivedData = (SkywarnWSDBMapper[]) bundle.getSerializable("reportList");
                 Log.d(TAG, "data.length:  " + receivedData.length);
 
-                for (int i = 0; i < receivedData.length; i++) {
-                    String title = createMarkerTitle(receivedData[i]);
+                //Todo: (USED FOR TESTING) FINISH REMOVE BELOW ITERATION
+                for (SkywarnWSDBMapper s : receivedData) {
+                    Log.d(TAG, "receivedReports?: lat: " + s.getLatitude() + " long: " + s.getLatitude());
+                }
 
-                    //  LatLng ll = MapUtility.getLocationFromAddress(this,title);
+                reportsWithValidCoords = removeReportsWithInvalidCoords(receivedData);
+                for (SkywarnWSDBMapper report : reportsWithValidCoords) {
+                    int resource = 0;
+                    switch (report.getWeatherEvent()) {
+                        case "Winter Event":
+                            resource = R.drawable.snow_icon;
+                            break;
+                        case "Severe Event":
+                            resource = R.drawable.severe;
+                            break;
+                        case "Coastal Event":
+                            resource = R.drawable.coastal;
+                            break;
+                        case "Rain/Flood Event":
+                            resource = R.drawable.rain;
+                            break;
+                        default:
+                            resource = R.drawable.sunny;
 
-                    if (report.getLongitude() != 9999 && report.getLatitude() != 9999) {
-                        LatLng ll = new LatLng(report.getLatitude(), report.getLongitude());
-
-                        if (ll != null) {
-                            Log.d(TAG, "ll: " + ll.toString());
-                            // Read more: http://www.androidhub4you2.com/2015/06/android-maximum-zoom-in-google-map.html#ixzz4WXzS6wh6
-                            markerOptions = new MarkerOptions()
-                                    .position(ll)
-                                    .title(createMarkerTitle(receivedData[i]));
-                            markerOptionsList.add(markerOptions);
                     }
-                }
-            }
-
-        }
-
-            ///////////////////////////////////////////////////
-            //       Single Item from ViewReportActivity    //
-            //////////////////////////////////////////////////
-            //  Checks if maps activity is being called from ViewReportActivity which
-            //  will show single selected report on map
-            if (bundle.getSerializable("report") != null) {
-               // Log.d(TAG, "report!=null");
-                report = (SkywarnWSDBMapper) bundle.getSerializable("report");
-                singleReport = true;
-
-                String title = createMarkerTitle(report);
-                Log.d(TAG, "title: " + title);
-                //if(report.getLatitude() !=9999  && report.getLongitude() != 9999) {
-                Log.i(TAG, "lat:: "+String.valueOf(report.getLatitude()));
-                   // LatLng ll = new LatLng(report.getLatitude(), report.getLongitude());
-
-                     LatLng ll = MapUtility.getLocationFromAddress(this,title);
-                    if (ll != null) {
-                        markerOptions = new MarkerOptions()
-                                .title(createMarkerTitle(report))
-                                .position(ll);
-                        markerOptionsList.add(markerOptions);
-                    //}
+                    LatLng ll = new LatLng(report.getLatitude(), report.getLongitude());
+                    // Read more: http://www.androidhub4you2.com/2015/06/android-maximum-zoom-in-google-map.html#ixzz4WXzS6wh6
+                    Log.d(TAG, "latlong: " + ll.toString());
+                    Bitmap icon = resizeBitmapForMarker(resource);
+                    markerOptions = new MarkerOptions()
+                            .position(ll)
+                            .snippet(report.getComments())
+//                            .icon(BitmapDescriptorFactory.fromResource(resource))
+                            .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                            .title(createMarkerTitle(report));
+                    markerOptionsList.add(markerOptions);
                 }
             }
         }
+
+
+        ///////////////////////////////////////////////////
+        //       Single Item from ViewReportActivity    //
+        //////////////////////////////////////////////////
+        //  Checks if maps activity is being called from ViewReportActivity which
+        //  will show single selected report on map
+        if (bundle.getSerializable("report") != null) {
+           // Log.d(TAG, "report!=null");
+            report = (SkywarnWSDBMapper) bundle.getSerializable("report");
+            singleReport = true;
+
+            String title = createMarkerTitle(report);
+            Log.d(TAG, "title: " + title);
+            //if(report.getLatitude() !=9999  && report.getLongitude() != 9999) {
+            Log.i(TAG, "lat:: "+String.valueOf(report.getLatitude()));
+               // LatLng ll = new LatLng(report.getLatitude(), report.getLongitude());
+
+
+            LatLng ll = MapUtility.getLocationFromAddress(this,title);
+            if (ll != null) {
+                markerOptions = new MarkerOptions()
+                        .title(createMarkerTitle(report))
+                        .position(ll);
+
+                markerOptionsList.add(markerOptions);
+                //}
+
+            }
+        }
+    }
+
+    //Remove all reports from list with invalid coordinates
+    private ArrayList<SkywarnWSDBMapper> removeReportsWithInvalidCoords(SkywarnWSDBMapper[] reportArray){
+        ArrayList<SkywarnWSDBMapper> reportsWithValidCoords = new ArrayList<>();
+        for (int i = 0; i < reportArray.length; i++) {
+            if (reportArray[i].getLatitude() != 9999 && reportArray[i].getLongitude() != 9999) {
+                Log.d(TAG, " Valid Coords: lat: " + reportArray[i].getLatitude() + " long: " + reportArray[i].getLongitude());
+                LatLng ll = new LatLng(reportArray[i].getLatitude(), reportArray[i].getLongitude());
+                reportsWithValidCoords.add(reportArray[i]);
+            }
+        }
+        return reportsWithValidCoords;
+    }
+
+    public Bitmap resizeBitmapForMarker(int resourceID) {
+        int height = 100;
+        int width = 100;
+       // BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.mipmap.marker);
+        //Bitmap b=bitmapdraw.getBitmap();
+        Bitmap b = BitmapFactory.decodeResource(getApplicationContext().getResources(), resourceID);
+        Bitmap icon = Bitmap.createScaledBitmap(b, width, height, false);
+
+        return  icon;
     }
 
     private String createMarkerTitle(SkywarnWSDBMapper report) {
         StringBuilder title = new StringBuilder("");
 
-        //if (report.getStreet() != "|" )
+        if (report.getStreet().trim() != "|" )
             title.append(report.getStreet() + ", ");
-        //if (report.getEventCity() != "|")
+        if (report.getEventCity().trim() != "|")
             title.append(report.getEventCity() + ", ");
-        //if (report.getEventState() != "|")
+        if (report.getEventState().trim() != "|")
             title.append(report.getEventState());
         Log.d(TAG, "createMarkerTitleOutput(): "+title.toString());
         return title.toString();
@@ -156,8 +207,12 @@ public class MapsActivity extends FragmentActivity implements
         mMap.getUiSettings().setCompassEnabled(true);
 
         //  Draw markers on map
-        for(MarkerOptions m : markerOptionsList){
-            drawMarker(m);
+      //  for(MarkerOptions m : markerOptionsList){
+        for(int i =0; i < markerOptionsList.size();i++){
+            String snippet = reportsWithValidCoords.get(i).getWeatherEvent() + ": "+ reportsWithValidCoords.get(i).getComments();
+            snippetList.add(snippet);
+
+            drawMarker(markerOptionsList.get(i).snippet(snippet));
         }
         Log.d(TAG, "markerOptionsList size(): " + markerOptionsList.size());
     }
@@ -185,9 +240,21 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onInfoWindowClick(Marker marker) {
         Intent intent = new Intent(this, ViewReportActivity.class);
-       // intent.putExtra("selectedReport", clickedReport);
-        startActivity(intent);
-
+        SkywarnWSDBMapper selectedReport=null;
+//        intent.putExtra("selectedReport", marker);
+//            if(marker.equals() )
+        for(int i =0; i < snippetList.size();i++){
+            if(marker.getSnippet().equals(markerOptionsList.get(i).getSnippet())){
+                selectedReport=reportsWithValidCoords.get(i);
+                Log.d(TAG, "onInfoWindowClick(): matching report: " + selectedReport.getWeatherEvent() + " numImages: "  + selectedReport.getNumberOfImages() );
+                intent.putExtra("selectedReport", selectedReport);
+                startActivity(intent);
+                break;
+            }
+        }
+//        intent.putExtra("selectedReport", selectedReport);
+//        Log.d(TAG, "onInfoWindoClick() marker ID: " + marker.getId() + " position: " + marker.getPosition());
+//            startActivity(intent);
     }
 
     @Override

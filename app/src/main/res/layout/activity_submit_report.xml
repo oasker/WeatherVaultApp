@@ -14,30 +14,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:weightSum="1"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/submit_activity_title_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="55dp"
+                android:background="@color/backgroundColor"
                 android:padding="5dp"
                 android:text="@string/submit_a_report"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-                android:textColor="@android:color/background_dark"
+                android:textColor="@color/cardview_light_background"
                 android:textSize="30sp" />
 
             <TextView
-                android:text="@string/location"
+                android:id="@+id/submit_activity_location_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/submit_activity_location_label"
-                android:textSize="24sp"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="@string/location"
                 android:textAlignment="center"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="24sp" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -81,16 +84,17 @@
                 android:layout_margin="5dp" />
 
             <TextView
-                android:text="@string/date"
+                android:id="@+id/submit_activity_date_label"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:id="@+id/submit_activity_date_label"
-                android:textSize="24sp"
                 android:layout_below="@+id/submit_activity_zip_text_field"
-                android:textColor="@android:color/black"
-                android:textAlignment="center"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:padding="5dp"
+                android:text="@string/date"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
                 tools:ignore="ObsoleteLayoutParam" />
 
             <DatePicker
@@ -180,7 +184,7 @@
                     android:id="@+id/textView6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_margin="5dp"
                     android:padding="5dp"
                     android:text="@string/general_information"
                     android:textAlignment="center"
@@ -188,7 +192,7 @@
                     android:textSize="24sp" />
 
                 <EditText
-                    android:id="@+id/submit_report_activity_temperature_field_TV"
+                    android:id="@+id/submit_report_activity_temperature_field_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -198,7 +202,7 @@
                     android:inputType="numberDecimal" />
 
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/submit_report_activity_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -206,6 +210,45 @@
                     android:ems="10"
                     android:hint="@string/comments"
                     android:inputType="textPersonName" />
+
+                <TextView
+                    android:id="@+id/textView34"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:gravity="center_horizontal|fill_horizontal"
+                    android:padding="5dp"
+                    android:text="@string/number_of_reports_to_submit"
+                    android:textAlignment="center"
+                    android:textColor="@color/cast_expanded_controller_background_color"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/increment_number_reports_button"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/plus_sign" />
+
+                <TextView
+                    android:id="@+id/number_of_reports_TV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:textColor="@color/cast_expanded_controller_background_color"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/decrement_number_reports_button"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/minus_sign" />
             </LinearLayout>
 
             <Button

@@ -21,7 +21,6 @@ import com.example.oliverasker.skywarnmarkii.Adapters.ExpandableListAdapter;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
-import com.example.oliverasker.skywarnmarkii.Tasks.QueryReportAttributesTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -298,14 +297,14 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     private void launchQueryReportAttributesTask(){
 
         expandableListAdapter.printAllKeyValuePairs();
-        QueryReportAttributesTask queryTask = new QueryReportAttributesTask();
-        queryTask.setContext(getContext());
-        queryTask.setDelegate(this);
+       // QueryReportAttributesTask queryTask = new QueryReportAttributesTask();
+       // queryTask.setContext(getContext());
+       // queryTask.setDelegate(this);
 
 
 //        attributesToQuery.put("CallSign", "KD1CY");
 //        attributesToQuery.put("City","Peabody");
-        queryTask.setAttributesToQuery(attributesToQuery);
+      //  queryTask.setAttributesToQuery(attributesToQuery);
         //queryTask.execute();
     }
 
@@ -348,7 +347,6 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     public static void setListViewHeightBasedOnChildren(ExpandableListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null) {
-            // pre-condition
             return;
         }
 

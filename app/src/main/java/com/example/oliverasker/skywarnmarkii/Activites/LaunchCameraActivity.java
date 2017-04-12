@@ -76,10 +76,14 @@ public class LaunchCameraActivity extends AppCompatActivity {
     private static final int DOWNLOAD_SELECTION_REQUEST_CODE = 1;
     private static int pictureCount;
     static final int REQUEST_TAKE_PHOTO = 1;
-    static final int REQUEST_VIDEO_CAPTURE =2;
-    static final int SELECT_PICTURE =3;
+    static final int REQUEST_VIDEO_CAPTURE = 2;
+    static final int SELECT_PICTURE = 3;
     private long epoch;
     private String dateSubmittedString;
+
+
+    //Request codes
+    private static final int MY_PERMISSIONS_REQUEST_STORE_PHOTOS = 1;
 
     private ArrayList<MyImageModel> images;
 //    File video_file;
@@ -106,7 +110,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
     private VideoView mVideoView;
 
     private Uri mCapturedImageURI;
-    int position =0;
+    int position = 0;
 
     private LinearLayout previewPhotoLayout;
 
@@ -134,24 +138,27 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
         photoPaths = new ArrayList<>();
         images = new ArrayList();
+
+        //  Setup Toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        //  Retreive Data from SubmitReportDetailsActivity to submit after user takes (or doesnt take)
+        //  a photo
         Intent i = getIntent();
-        epoch = i.getLongExtra("epoch",-1);
-
+        epoch = i.getLongExtra("epoch", -1);
         dateSubmittedString = i.getStringExtra("DateSubmittedString");
+        Object[] tempObj = (Object[]) i.getSerializableExtra("attributeValArray");
+        attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
 
-        Object[] tempObj =(Object[])i.getSerializableExtra("attributeValArray");
-        attributeValArray= Arrays.copyOf(tempObj,tempObj.length,AttributeValue[].class);
-        keyArray =i.getStringArrayExtra("keyArray");
-        for(int j=0; j < keyArray.length;j++){
+        keyArray = i.getStringArrayExtra("keyArray");
+        for (int j = 0; j < keyArray.length; j++) {
             Log.d(TAG, " onCreate(): key: " + keyArray[j] + " val: " + attributeValArray[j]);
         }
-       // Log.d(TAG, "epoch: "+epoch + " datesubmittedString: " + dateSubmittedString);
+        // Log.d(TAG, "epoch: "+epoch + " datesubmittedString: " + dateSubmittedString);
+        // epochString = String.format("%.0f", epoch);
 
-       // epochString = String.format("%.0f", epoch);
-        previewPhotoLayout = (LinearLayout)findViewById(R.id.preview_photo_holder);
+        previewPhotoLayout = (LinearLayout) findViewById(R.id.preview_photo_holder);
 
         /////////////////////////////////////////////////////
         //              TAKE NEW PHOTO                     //
@@ -161,25 +168,26 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
         takeNewPhotoButton = (Button) findViewById(R.id.take_new_photo_button);
         takeNewPhotoButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(isStoragePermissionGranted())
                         launchCamera(view);
-                    }
                 }
+            }
         );
 
         //BROWSE EXISTING PHOTOS
         addExistingPhotostoReportButton = (Button) findViewById(R.id.upload_existing_button);
         addExistingPhotostoReportButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View arg0) {
-                    // in onCreate or any event where your want the user to select a file
-                    Intent intent = new Intent();
-                  //  intent.setType("image/* video/*");
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
-                }
+            public void onClick(View arg0) {
+                // in onCreate or any event where your want the user to select a file
+                Intent intent = new Intent();
+                //  intent.setType("image/* video/*");
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+            }
         });
 
         //SEND PHOTOS TO S3
@@ -188,30 +196,32 @@ public class LaunchCameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, " AddPhotosToReport.onClick()");
-               for(int i=0; i< images.size();i++){
-                   Log.d(TAG, "addPhotosToReportButton: paths: " + images.get(i).getPath());
+                for (int i = 0; i < images.size(); i++) {
+                    Log.d(TAG, "addPhotosToReportButton: paths: " + images.get(i).getPath());
 
-                   beginUpload(images.get(i).getPath());
+                    beginUpload(images.get(i).getPath());
                 }
                 //Submit Report
-                int numberImagesIndex =Arrays.asList(keyArray).indexOf("NumberOfImages");
-                if(numberImagesIndex!=-1){
-                    attributeValArray[numberImagesIndex]=new AttributeValue().withN(valueOf(pictureCount));
+                int numberImagesIndex = Arrays.asList(keyArray).indexOf("NumberOfImages");
+                if (numberImagesIndex != -1) {
+                    attributeValArray[numberImagesIndex] = new AttributeValue().withN(valueOf(pictureCount));
                 }
                 AsyncInsertTask2 insertTask2 = new AsyncInsertTask2(attributeValArray);
                 insertTask2.execute(keyArray);
                 launchConfirmSubmitReport();
             }
         });
-        continueNoPhotosButton = (Button)findViewById(R.id.continue_no_photos_button);
+        continueNoPhotosButton = (Button) findViewById(R.id.continue_no_photos_button);
         continueNoPhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AsyncInsertTask2 insertTask2 = new AsyncInsertTask2(attributeValArray);
+                insertTask2.execute(keyArray);
                 launchConfirmReportActivity();
             }
         });
 
-        takeNewVideoButton = (Button)findViewById(R.id.take_new_video_button);
+        takeNewVideoButton = (Button) findViewById(R.id.take_new_video_button);
         takeNewVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -261,7 +271,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
             mediaControls = new MediaController(LaunchCameraActivity.this);
         }
 
-        mVideoView =(VideoView)findViewById(R.id.video_view);
+        mVideoView = (VideoView) findViewById(R.id.video_view);
         mVideoView.setMediaController(mediaControls);
         /////////////////// ///////////////////
         ////// AWS Example method
@@ -270,19 +280,19 @@ public class LaunchCameraActivity extends AppCompatActivity {
         transferUtility = Utility.getTransferUtility(this);
     }
 
-    public void launchCaptureNewVideo(){
+    public void launchCaptureNewVideo() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if(takeVideoIntent.resolveActivity(getPackageManager()) != null){
-            startActivityForResult(takeVideoIntent,REQUEST_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         fragmentCount++;
 
-        if(resultCode == RESULT_OK && requestCode == REQUEST_TAKE_PHOTO) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_TAKE_PHOTO) {
 
 //            Log.d(TAG, "requestCode == REQUEST_TAKE_PHOTO: resultCode: " + resultCode);
 //           // Log.i(TAG, "photo saved to: " + photoURI.getPath());
@@ -338,18 +348,18 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
         //Existing Photo
         //if(resultCode ==Activity.RESULT_OK && requestCode == SELECT_PICTURE){
-        if(requestCode==SELECT_PICTURE){
+        if (requestCode == SELECT_PICTURE) {
             Bitmap existingBitmap = null;
-            if(data!=null){
-                try{
-                    existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData() );
+            if (data != null) {
+                try {
+                    existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                     //bitMapPathList.add(data.getData());
                     Uri uri = getImageUri(this, existingBitmap);
                     Log.d(TAG, "URI: " + uri);
                     String path = getRealPathFromURI(uri);
                     Log.d(TAG, "path: " + path);
                     //beginUpload(path);
-                   // photoPaths.add(path);
+                    // photoPaths.add(path);
                     MyImageModel image = new MyImageModel();
                     image.setTitle("Test");
                     image.setDescription(
@@ -357,11 +367,11 @@ public class LaunchCameraActivity extends AppCompatActivity {
                     image.setDatetime(System.currentTimeMillis());
                     image.setPath(path);
                     images.add(image);
-                }catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-           // Uri pickedImage = data.getData();
+            // Uri pickedImage = data.getData();
 
             createdScaledImageView(existingBitmap);
             ImageView existingImageIV = createdScaledImageView(existingBitmap);
@@ -370,7 +380,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
         //For Videos
         //if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
-        if(requestCode == REQUEST_VIDEO_CAPTURE) {
+        if (requestCode == REQUEST_VIDEO_CAPTURE) {
 //            Log.i(TAG, "REQUEST_VIDEO_CAPTURE");
 //            //File f = new File(Environment.getExternalStorageDirectory().toString() + "/samplevideofolder/VideoFileName.mp4");
 //            //Log.i(TAG,"f.getPath(): " +f.getPath());
@@ -400,9 +410,9 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //                Log.i(TAG, "file name: " + f.getName() + " path: " + f.getPath());
 //           // videoURI = Uri.fromFile(new File("));
 //            mVideoView.setVideoURI(videoURI);
-            if (requestCode == REQUEST_VIDEO_CAPTURE ){//&& resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_VIDEO_CAPTURE) {//&& resultCode == RESULT_OK) {
                 Uri videoUri = data.getData();
-               // mVideoView.setVideoURI(videoUri);
+                // mVideoView.setVideoURI(videoUri);
                 mVideoView.setVideoURI(data.getData());
                 mVideoView.requestFocus();
                 mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -448,29 +458,23 @@ public class LaunchCameraActivity extends AppCompatActivity {
         }
     }
 
-//    public String getRealPathFromURI(Uri contentUri) {
-//        String[] proj = { MediaStore.Video.Media.DATA };
-//        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-//        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-//        cursor.moveToFirst();
-//        return cursor.getString(column_index);
-//    }
+
     private void beginUpload(String filePath) {
         Log.d(TAG, "beginUpload()");
         Log.d(TAG, "beginUpload(): filepath: " + filePath);
         //File file = new File (mCurrentPhotoPath);
-        File file = new File (filePath);
+        File file = new File(filePath);
 
 
         Log.d(TAG, "fileName: " + file.getName() + "   filePath: " + filePath + " pictureCount: " + pictureCount);
-        String filename = epoch+ "_"+UserInformationModel.getInstance().getUsername()+"_"+pictureCount+".jpg";
+        String filename = epoch + "_" + UserInformationModel.getInstance().getUsername() + "_" + pictureCount + ".jpg";
         Log.d(TAG, "beginUpload(): filename: " + filename);
         TransferObserver observer = transferUtility.upload(Constants.BUCKET_NAME, filename, file);
         observer.setTransferListener(new UploadListener());
         pictureCount++;
     }
 
-    private void launchConfirmReportActivity(){
+    private void launchConfirmReportActivity() {
         Intent i = new Intent(this, ConfirmSubmitReportActivity.class);
         startActivity(i);
     }
@@ -603,35 +607,17 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //                //photoURI = Uri.fromFile(photoFile);
 //                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 //                startActivityForResult(intent, REQUEST_TAKE_PHOTO);
-           // }
+        // }
     }
 
 
-    private void launchVideoCamera(View view){
+    private void launchVideoCamera(View view) {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if(takeVideoIntent.resolveActivity(getPackageManager())!=null){
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
         }
     }
 
-    public  boolean isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG,"Permission is granted");
-                return true;
-            } else {
-
-                Log.v(TAG,"Permission is revoked");
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAG,"Permission is granted");
-            return true;
-        }
-    }
 
     private boolean hasCamera() {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
@@ -641,24 +627,25 @@ public class LaunchCameraActivity extends AppCompatActivity {
         //Updates UI when notified
         @Override
         public void onStateChanged(int id, TransferState state) {
-            Log.d(TAG,"onStateChanged: " + id + state);
+            Log.d(TAG, "onStateChanged: " + id + state);
 
         }
 
         @Override
         public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-            Log.d(TAG, format("onProgressChanged:  %d, total %d, current: %d", id, bytesTotal,bytesCurrent));
+            Log.d(TAG, format("onProgressChanged:  %d, total %d, current: %d", id, bytesTotal, bytesCurrent));
 
         }
 
         @Override
         public void onError(int id, Exception ex) {
-            Log.d(TAG,"Error during upload: " + ex);
+            Log.d(TAG, "Error during upload: " + ex);
         }
         //
     }
+
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
     }
 
@@ -667,6 +654,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ConfirmSubmitReportActivity.class);
         startActivity(intent);
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -711,7 +699,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
                     uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
                 selection = "_id=?";
-                selectionArgs = new String[] {
+                selectionArgs = new String[]{
                         split[1]
                 };
             }
@@ -737,21 +725,24 @@ public class LaunchCameraActivity extends AppCompatActivity {
         }
         return null;
     }
+
     // Check if URI authority is ExternalStorageProvider
-    public static boolean isExternalStorageDocument(Uri uri){
+    public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
+
     // Check if URI authority is DownloadsProvider
-    public static boolean isDownloadsDocument(Uri uri){
+    public static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
+
     // Check if URI authority is DownloadsProvider
-    public static boolean isMediaDocument(Uri uri){
+    public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     //Todo: Add delete feature when submitting photos
-    private TableRow createTableRow(Bitmap bitmap){
+    private TableRow createTableRow(Bitmap bitmap) {
         TableRow tableRow = new TableRow(this);
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -769,36 +760,37 @@ public class LaunchCameraActivity extends AppCompatActivity {
         tableRow.addView(linearLayout);
         return tableRow;
     }
-    private ImageView createdScaledImageView(Bitmap bitmap){
-        int width =0;
-        int height =0;
+
+    private ImageView createdScaledImageView(Bitmap bitmap) {
+        int width = 0;
+        int height = 0;
         ImageView newImageView = new ImageView(this);
 
-        try{
+        try {
             width = bitmap.getWidth();
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             throw new NoSuchElementException("Can't find image");
         }
         height = bitmap.getHeight();
         int bounding = dpToPx(250);
 
-        float xScale = ((float) bounding/width);
-        float yScale = ((float) bounding/height);
-        float scale = (xScale <= yScale) ? xScale:yScale;
+        float xScale = ((float) bounding / width);
+        float yScale = ((float) bounding / height);
+        float scale = (xScale <= yScale) ? xScale : yScale;
 
         Matrix matrix = new Matrix();
-        matrix.postScale(scale,scale);
+        matrix.postScale(scale, scale);
 
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap,0,0,width,height,matrix,true);
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
         width = scaledBitmap.getWidth();
-        height=scaledBitmap.getHeight();
+        height = scaledBitmap.getHeight();
 
-        BitmapDrawable result = new BitmapDrawable(getApplicationContext().getResources(),scaledBitmap);
+        BitmapDrawable result = new BitmapDrawable(getApplicationContext().getResources(), scaledBitmap);
 
         newImageView.setImageDrawable(result);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50));
-        params.setMargins(10,10,10,10);
+        params.setMargins(10, 10, 10, 10);
         params.width = width;
         params.height = height;
         newImageView.setLayoutParams(params);
@@ -807,27 +799,133 @@ public class LaunchCameraActivity extends AppCompatActivity {
         // previewPhotoLayout.addView(newImageView,params);
         return newImageView;
     }
-    private int dpToPx(int dp){
-        float density = getApplicationContext().getResources().getDisplayMetrics().density;
-        return Math.round((float)dp*density);
-    }
 
+    private int dpToPx(int dp) {
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+
+        //Todo: Existing photo error rkii E/MediaStore: Failed to insert image rob error (Permissions?)
+        //java.lang.SecurityException: Permission Denial: writing com.android.providers.media.MediaProvider uri content://media/external/images/media from pid=29258, uid=10087 requires android.permission.WRITE_EXTERNAL_STORAGE, or grantUriPermission()
+//        at android.os.Parcel.readException(Parcel.java:1620)
+//        at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:183)
+//        at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:135)
+//        at android.content.ContentProviderProxy.insert(ContentProviderNative.java:476)
+//        at android.content.ContentResolver.insert(ContentResolver.java:1284)
+//        at android.provider.MediaStore$Images$Media.insertImage(MediaStore.java:986)
+//        at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.getImageUri(LaunchCameraActivity.java:819)
+//        at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.onActivityResult(LaunchCameraActivity.java:347)
+
+        //Todo: userreports newest to oldest
+
+        //Todo: take photo error
+        /* Permission Denial: writing com.android.providers.media.MediaProvider uri content://media/external/images/media from pid=32634, uid=10087 requires android.permission.WRITE_EXTERNAL_STORAGE, or grantUriPermission()
+                                                                                           at android.os.Parcel.readException(Parcel.java:1620)
+                                                                                           at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:183)
+                                                                                           at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:135)
+                                                                                           at android.content.ContentProviderProxy.insert(ContentProviderNative.java:476)
+                                                                                           at android.content.ContentResolver.insert(ContentResolver.java:1284)
+                                                                                           at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.launchCamera(LaunchCameraActivity.java:570)
+                                                                                           at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.access$000(LaunchCameraActivity.java:74)
+                                                                                           at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity$1.onClick(LaunchCameraActivity.java:167)
+        */
+
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
 
     public String getRealPathFromURI(Uri uri) {
-        Cursor cursor =  getContentResolver().query(uri, null, null, null, null);
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
 
 
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG, "Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG, "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG, "Permission is granted");
+            return true;
+        }
+    }
+
+//    public void grantPhotoStoragePermission() {
+//        // Here, thisActivity is the current activity
+//        if (ContextCompat.checkSelfPermission(LaunchCameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            Log.d(TAG, "Permission to Store Photos Not Granted");
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(LaunchCameraActivity.this,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//                Log.d(TAG, "grantPhotoStoragePermission() should we show explanation?");
+//
+//                // Show an explanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+//            }
+//            // No explanation needed, we can request the permission.
+//            Log.d(TAG, "No Explanation Needed, Request Permissions");
+//            ActivityCompat.requestPermissions(LaunchCameraActivity.this,
+//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                    MY_PERMISSIONS_REQUEST_STORE_PHOTOS);
+//
+//            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+//            // app-defined int constant. The callback method gets the
+//            // result of the request.
+//        }
+//    }
+
+
+
+//  Handles user response to request for external storage
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_STORE_PHOTOS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    Log.d(TAG, "onRequestPermissionResult(): Permission Granted By User");
+
+                } else {
+                    Log.d(TAG, "onRequestPermissionResult(): Permission Denied By User");
+                    takeNewPhotoButton.setEnabled(false);
+                    takeNewVideoButton.setEnabled(false);
+                    addExistingPhotostoReportButton.setEnabled(false);
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
+
+
+
+//
+//    Submits Users report into DynamoDB Table
+//
 class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallback {
 
     private static final String TAG = "AsyncInsertTask2";

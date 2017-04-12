@@ -81,7 +81,10 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
                 .withComparisonOperator(ComparisonOperator.GT.toString())
                 .withAttributeValueList(new AttributeValue().withN("0"));
         keyCondition.put("DateSubmittedEpoch", rangeKeyCondition);
-//          Create QueryRequest
+
+
+//          Create QueryRequest that retreives all reports a user has submitted.
+//          ProfilePageSorter is secdondary Index that groups reports by user who submitted them
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName("SkywarnWSDB_rev4")
                 .withKeyConditions(keyCondition)
@@ -105,16 +108,19 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
             if(reportEntry.getCity() != null)
                 reportEntry.setEventCity(Utility.parseDynamoDBResultValuesToString(item.get("City").toString()));
 
-            if(reportEntry.getStreet() != null)
+            //Todo: when press back at  userhome it goes to weird screen
+
+            //Todo: make street optional to put in
+            if(item.containsKey("Street"))
                 reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
 
-            if(reportEntry.getFirstName() != null)
+            if(item.containsKey("FirstName"))
                 reportEntry.setFirstName(Utility.parseDynamoDBResultValuesToString(item.get("FirstName").toString()));
 
-            if(reportEntry.getLastName() != null)
+            if(item.containsKey("LastName"))
                 reportEntry.setLastName(Utility.parseDynamoDBResultValuesToString(item.get("LastName").toString()));
 
-            if(reportEntry.getZipCode() != null)
+            if(item.containsKey("ZipCode"))
                 reportEntry.setZipCode(Utility.parseDynamoDBResultValuesToString(item.get("ZipCode").toString()));
 
             //if(reportEntry.getUsername() != null &&  !reportEntry.getUsername().equals(""))

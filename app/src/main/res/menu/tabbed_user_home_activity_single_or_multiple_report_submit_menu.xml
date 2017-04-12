@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/single_report_submit"
+        android:title="@string/single_report"/>
+
+    <item
+        android:id="@+id/multiple_report_submit"
+        android:title="@string/multiple_reports"/>
+
+
+</menu>

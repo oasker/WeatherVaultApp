@@ -126,16 +126,9 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     }
 
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-
     // STRING CALLBACKs
+    //  After finding the names of all photos submitted to S3 this callback is fired
+    //  which adds them to the UI using ion API
     @Override
     public void onProcessComplete(ArrayList<String> s) {
         Log.d(TAG, "onProcessComplete(ArrayList<String>");
@@ -293,6 +286,17 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         super.onPause();
 
     }
+
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }
 
 

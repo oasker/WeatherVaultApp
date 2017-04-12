@@ -1,7 +1,6 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,12 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -28,8 +22,9 @@ import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
+import com.example.oliverasker.skywarnmarkii.Utility.BitmapUtility;
+import com.koushikdutta.ion.Ion;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
@@ -40,10 +35,14 @@ import java.util.Map;
 
 public class UserInfoHomeFragment extends Fragment implements BitmapCallback, UserAttributesCallback {
     private final static String TAG = "UserInfoHomeFragment";
-    private ImageView profileImage;
+
     private Button viewUserPhotosButton;
     private Button viewUserReportsButton;
     private Button viewUserInfoButton;
+
+    private ImageView profileImage;
+    private int profileImageViewWidth=300;
+    private int profileImageViewHeight= 300;
 
 
     @Override
@@ -220,42 +219,50 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         );
 
         AmazonS3 s3Client = new AmazonS3Client(credentialsProvider);
-        try {
-            File file =new File(filePath);
-            TransferUtility transferUtility = new TransferUtility(s3Client, getContext());
-            TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
-
-            Log.d(TAG, "file.getPath(): " + file.getPath() );
-
-            transferObserver.setTransferListener(new TransferListener(){
-                @Override
-                public void onStateChanged(int id, TransferState state) {
-                    Log.d(TAG, "onStateChanged: + state: "+ state.toString());
-                    if(state == TransferState.COMPLETED){
-                        Bitmap b = BitmapFactory.decodeFile(filePath);
-                        //     horizontalLinearLayout.addView(createImageView(b));
-                        profileImage.setImageBitmap(b);
-                    }
-                }
-                @Override
-                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    int percentage = (int) ((bytesCurrent+1) /(bytesTotal+1) * 100);
-                    Log.d(TAG, "onStateChanged(); bytesTotal: " +bytesTotal +" bytesCurrent: "+ bytesCurrent) ;
-                }
-                @Override
-                public void onError(int id, Exception ex) {
-                    Log.e(TAG, "onError",ex);
-                }
-            });
-
-        } catch (AmazonClientException ace) {
-            Log.d(TAG, "Caught an AmazonClientException, which means" +
-                    " the client encountered " +
-                    "an internal error while trying to " +
-                    "communicate with S3, " +
-                    "such as not being able to access the network.");
-            Log.d(TAG, "Error Message: " + ace.getMessage());
-        }
+//        try {
+//            File file =new File(filePath);
+//            TransferUtility transferUtility = new TransferUtility(s3Client, getContext());
+//            TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
+//
+//            Log.d(TAG, "file.getPath(): " + file.getPath() );
+//
+//            transferObserver.setTransferListener(new TransferListener(){
+//                @Override
+//                public void onStateChanged(int id, TransferState state) {
+//                    Log.d(TAG, "onStateChanged: + state: "+ state.toString());
+//                    if(state == TransferState.COMPLETED){
+//                        Bitmap b = BitmapFactory.decodeFile(filePath);
+//                        //     horizontalLinearLayout.addView(createImageView(b));
+//                        profileImage.setImageBitmap(b);
+//                    }
+//                }
+//                @Override
+//                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+//                    int percentage = (int) ((bytesCurrent+1) /(bytesTotal+1) * 100);
+//                    Log.d(TAG, "onStateChanged(); bytesTotal: " +bytesTotal +" bytesCurrent: "+ bytesCurrent) ;
+//                }
+//                @Override
+//                public void onError(int id, Exception ex) {
+//                    Log.e(TAG, "onError",ex);
+//                }
+//            });
+//
+//        } catch (AmazonClientException ace) {
+//            Log.d(TAG, "Caught an AmazonClientException, which means" +
+//                    " the client encountered " +
+//                    "an internal error while trying to " +
+//                    "communicate with S3, " +
+//                    "such as not being able to access the network.");
+//            Log.d(TAG, "Error Message: " + ace.getMessage());
+//        }
+        //profileImage=BitmapUtility.scaleBitmap(profileImage, 400,400);
+        Ion.with(profileImage)
+                .resize(profileImageViewWidth,profileImageViewHeight)
+                //.smartSize(true)
+                .placeholder(R.drawable.sunny)
+                .error(R.drawable.snow_icon)
+                .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
+        BitmapUtility.scaleImage(getContext(),profileImage);
     }
 
 }
