@@ -26,14 +26,11 @@ import static com.amazonaws.regions.Regions.US_EAST_1;
  */
 
 public class Utility {
-    private static String delimiter = "_";
     private static final String TAG = "Utility: ";
-
-
     public static TransferUtility sTransferUtility;
     public static AmazonS3Client s3Client;
     public static CognitoCachingCredentialsProvider credPro;
-
+    private static String delimiter = "_";
 
     public static TransferUtility getTransferUtility(Context context) {
         if (sTransferUtility == null) {
@@ -98,7 +95,7 @@ public class Utility {
             Map.Entry pair = (Map.Entry) it.next();
             //System.out.println("AttrMap contains: "+pair.getKey() + " = " + pair.getValue());
             Log.d(TAG, "AttrMap contains: " + pair.getKey() + " = " + pair.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
+            // it.remove(); // avoids a ConcurrentModificationException
         }
     }
 
@@ -183,7 +180,7 @@ public class Utility {
     public static String parseDynamoDBResultValuesToString(String dynamoDBValue){
         dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
         dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
-        Log.i(TAG, "Value after parseToString: " + dynamoDBValue);
+//        Log.i(TAG, "Value after parseToString: " + dynamoDBValue);
         return dynamoDBValue;
     }
 
@@ -191,22 +188,12 @@ public class Utility {
         String s = dynamoDBValue;
         dynamoDBValue = dynamoDBValue.substring(dynamoDBValue.indexOf(" ")+1);
         dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.lastIndexOf(",")).trim();
-//        if(dynamoDBValue.length() > 10) {
-//         //   dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.length() - (dynamoDBValue.length() - 10));
-
-
-
-/*            dynamoDBValue = dynamoDBValue.substring(0, 10);
-//           if(dynamoDBValue.indexOf('.') >= 0) {
-/               dynamoDBValue = dynamoDBValue.substring(0, dynamoDBValue.indexOf('.'));
- */
-        Log.d(TAG,"dynamodbValue after parsing out of json: " +dynamoDBValue);
-        Log.d(TAG, String.valueOf(Double.parseDouble(dynamoDBValue)));
-
-        //}
-        Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
+//        Log.d(TAG,"dynamodbValue after parsing out of json: " +dynamoDBValue);
+//        Log.d(TAG, String.valueOf(Double.parseDouble(dynamoDBValue)));
+//        Log.i(TAG, "Before Parsing: " + s+ " Value after parseToLong: " + dynamoDBValue);
         double longVal = Double.parseDouble(dynamoDBValue.trim());
         return longVal;
     }
+
 
 }

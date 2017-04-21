@@ -15,7 +15,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Constants;
 
 import java.io.BufferedReader;
@@ -32,34 +32,23 @@ import static com.google.android.gms.internal.zzs.TAG;
  */
 
 public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
+    final int maxMemory = (int) (Runtime.getRuntime().maxMemory()) / 24;
+    final int cacheSize = maxMemory / 8;
     Bitmap bitmap;
     String bitmapPath;
     Context mContext;
-    final int maxMemory = (int)(Runtime.getRuntime().maxMemory())/24;
     Context getmContext;
-
     ViewReportActivity.bitmapCallback callback;
-    final int cacheSize =maxMemory/8;
-    private LruCache<String, Bitmap> mMemoryCache;
-
     String filePath;
     String[] filePaths;
     String fileName;
+    private LruCache<String, Bitmap> mMemoryCache;
 
     //get S3 images if they exist
     public DownloadPhotoTask(){
 
     }
 
-    private static void displayTextInputStream(InputStream input) throws IOException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-        while(true){
-            String line = reader.readLine();
-            if(line == null)
-                break;
-            Log.d(TAG, line);
-        }
-    }
     //Accepts context
     public DownloadPhotoTask(Context context, String filename ){
         fileName = filename;
@@ -72,6 +61,16 @@ public class DownloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
         //Log.d(TAG, "getExternalCacheDir: " + context.getExternalCacheDir().toString());
         filePath = externalStorage+filename;
         mContext = context;
+    }
+
+    private static void displayTextInputStream(InputStream input) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        while (true) {
+            String line = reader.readLine();
+            if (line == null)
+                break;
+            Log.d(TAG, line);
+        }
     }
 
     @Override

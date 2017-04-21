@@ -7,7 +7,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMappingException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.example.oliverasker.skywarnmarkii.Activites.MainActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.MainActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 
@@ -23,10 +23,10 @@ import java.util.Map;
 public class AsyncInsertTask extends AsyncTask<String[], Void, Void> implements ICallback {
 
     private static final String TAG = "AsyncInsertTask";
-    private Map<String, AttributeValue> report;
     //SkywarnWSDBMapper report;
     AmazonDynamoDBClient ddb = MainActivity.clientManager.ddb();
     AttributeValue[] attributeValues=null;
+    private Map<String, AttributeValue> report;
 
    // public AsyncInsertTask(Map<String, AttributeValue> Report){
     public  AsyncInsertTask(AttributeValue[] attributeVals){

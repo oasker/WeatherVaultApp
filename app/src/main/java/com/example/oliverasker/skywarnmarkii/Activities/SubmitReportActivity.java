@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +54,10 @@ import java.util.HashMap;
 */
 public class SubmitReportActivity extends AppCompatActivity implements StringCallback{
     private final String TAG = "SubmitReportActivity";
+    //private Map<String, AttributeValue> report;
+    HashMap<String, Boolean> weatherEventsBoolsMap = new HashMap<String, Boolean>();
+    HashMap<String, AttributeValue> report;
+    StateHolder sH;
     //  Used for determining which fragments are shown in next activity (instance bools initialized to 0 fyi)
     private Boolean severeWeatherBool = false;
     private Boolean winterWeatherBool = false;
@@ -61,31 +65,58 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
     private Boolean coastalFloodingBool = false;
     private Button proceedButton;
     private CheckBox severeWeatherCB, winterWeatherCB, rainFloodCB, coastalFloodCB;
-
     private EditText stateInput;
     private EditText streetInput;
     private EditText zipInput;
     private EditText townInput;
     private EditText commentsInput;
     private EditText currentTemperatureInput;
-
-
     // Number of reports widgets and variables
     private Button incrementNumberReportsButton;
     private Button  decrementNumberReportsButton;
-
     private int numberReportsToSubmit=1;
     private TextView numberReportsToSubmitTV;
-
-
     private TimePicker timePicker;
     private DatePicker datePicker;
     private SkywarnWSDBMapper reportToSubmit;
+    private OnClickListener cbListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            //Gather Report Type data
+            severeWeatherBool = severeWeatherCB.isChecked();
+            coastalFloodingBool = coastalFloodCB.isChecked();
+            rainAndFloodBool = rainFloodCB.isChecked();
+            winterWeatherBool = winterWeatherCB.isChecked();
 
-    //private Map<String, AttributeValue> report;
-    HashMap<String, Boolean> weatherEventsBoolsMap = new HashMap<String, Boolean>();
-    HashMap<String, AttributeValue> report;
-    StateHolder sH;
+            weatherEventsBoolsMap.put("severeBool", severeWeatherBool);
+            weatherEventsBoolsMap.put("winterBool", winterWeatherBool);
+            weatherEventsBoolsMap.put("rainFloodBool", rainAndFloodBool);
+            weatherEventsBoolsMap.put("coastalFloodBool", coastalFloodingBool);
+
+            //Add elements to row object and pass to next activity
+            datePicker = (DatePicker) findViewById(R.id.submit_report_date_picker);
+            String date = datePicker.getDayOfMonth() + "/" + datePicker.getMonth() + "/" + datePicker.getYear();
+            if (sH == null) {
+                //Add values to stateholder
+                sH = new StateHolder();
+                sH.dateP = datePicker;
+                sH.street = streetInput;
+                sH.town = townInput;
+                sH.zip = zipInput;
+                sH.WeatherEventsBoolsMap = weatherEventsBoolsMap;
+                sH.state = stateInput;
+            }
+        }
+    };
+
+    private static long getDateFromDatePicker(DatePicker datePicker) {
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year = datePicker.getYear();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        return calendar.getTimeInMillis();
+    }
 
     @Override
     public void onCreate(Bundle b) {
@@ -187,49 +218,6 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
             }
         });
 
-    }
-
-
-
-    private OnClickListener cbListener = new OnClickListener() {
-        @Override
-        public void onClick(View view) {
-        //Gather Report Type data
-        severeWeatherBool = severeWeatherCB.isChecked();
-        coastalFloodingBool = coastalFloodCB.isChecked();
-        rainAndFloodBool = rainFloodCB.isChecked();
-        winterWeatherBool = winterWeatherCB.isChecked();
-
-        weatherEventsBoolsMap.put("severeBool", severeWeatherBool);
-        weatherEventsBoolsMap.put("winterBool", winterWeatherBool);
-        weatherEventsBoolsMap.put("rainFloodBool", rainAndFloodBool);
-        weatherEventsBoolsMap.put("coastalFloodBool", coastalFloodingBool);
-
-        //Add elements to row object and pass to next activity
-        datePicker = (DatePicker) findViewById(R.id.submit_report_date_picker);
-        String date = datePicker.getDayOfMonth() + "/" + datePicker.getMonth() + "/" + datePicker.getYear();
-        if (sH == null) {
-            //Add values to stateholder
-            sH = new StateHolder();
-            sH.dateP = datePicker;
-            sH.street = streetInput;
-            sH.town = townInput;
-            sH.zip = zipInput;
-            sH.WeatherEventsBoolsMap = weatherEventsBoolsMap;
-            sH.state = stateInput;
-        }
-        }
-    };
-
-
-
-    private static long getDateFromDatePicker(DatePicker datePicker) {
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth();
-        int year = datePicker.getYear();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-        return calendar.getTimeInMillis();
     }
 
     //Todo (P2) validate userinput when submitting reports

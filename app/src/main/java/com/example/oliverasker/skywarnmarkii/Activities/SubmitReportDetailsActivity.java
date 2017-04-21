@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -53,18 +53,16 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
 
     public AttributeValue[] attributeValArray;
     public String[] keyArray;
-
+    public HashMap<String, AttributeValue> report = new HashMap<>();
     private WinterSubmitReportFragment winterFrag;
     private CoastalFloodingSubmitReportFragment coastalFloodingFrag;
     private RainFloodSubmitReportFragment rainFrag;
     private SevereWeatherSubmitReportFragment severeFrag;
     private GeneralSubmitReportFragment generalInfoFrag;
-
     private String dateSubmittedString;
     //Rain
     private EditText Rain;
     private EditText PrecipRate;
-
     //Severe
     private EditText SevereType;
     private EditText WindSpeed;
@@ -73,14 +71,11 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     private EditText HailSize;
     private EditText Tornado;
     private EditText Barometer;
-
     private EditText WindDamage;
     private EditText LightningDamage;
     private EditText DamageComments;
     private Spinner SevereWeatherTypeSpinner;
     private Spinner WindDirectionSpinner;
-
-
     //Winter
     private EditText Snowfall;
     private EditText SnowfallRate;
@@ -91,18 +86,14 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
     private EditText BlowDrift;
     private EditText Whiteout;
     private EditText Thundersnow;
-
     //Coastal
     private EditText StormSurge;
-
     //To determine which report values to scan
     private boolean isSevereEvent;
     private boolean isWinterEvent;
     private boolean isCoastalEvent;
     private boolean isRainEvent;
-
     private SkywarnWSDBMapper reportToSubmit = new SkywarnWSDBMapper();
-    public HashMap<String, AttributeValue> report = new HashMap<>();
 
     @Override
    public void onCreate(Bundle savedInstance) {
@@ -144,6 +135,7 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         rainFrag = new RainFloodSubmitReportFragment();
         coastalFloodingFrag = new CoastalFloodingSubmitReportFragment();
         severeFrag = new SevereWeatherSubmitReportFragment();
+//        severeFrag.setmContext(getApplicationContext());
         //generalInfoFrag= new GeneralSubmitReportFragment();
 
         isWinterEvent = (eventBools.containsKey("winterBool") && eventBools.get("winterBool"));

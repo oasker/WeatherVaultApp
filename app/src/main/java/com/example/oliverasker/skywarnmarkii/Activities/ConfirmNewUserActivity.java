@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;

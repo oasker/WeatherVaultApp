@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -29,12 +29,12 @@ import java.util.List;
  */
 public class DownloadSelectionActivity extends ListActivity {
 
+    TransferUtility transferUtility;
     // The S3 client used for getting the list of objects in the bucket
     private AmazonS3Client s3;
     // An adapter to show the objects
     private SimpleAdapter simpleAdapter;
     private ArrayList<HashMap<String, Object>> transferRecordMaps;
-    TransferUtility transferUtility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

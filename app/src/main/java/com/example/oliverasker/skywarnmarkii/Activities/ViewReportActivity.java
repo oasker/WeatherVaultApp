@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.Manifest;
 import android.app.Activity;
@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -43,6 +44,7 @@ import com.example.oliverasker.skywarnmarkii.Callbacks.UriCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Fragments.CoastalFloodingViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.GeneralSubmitReportFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.MediaFragments.VideoViewMediaFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.RainFloodViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.SevereViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.WinterViewReportFragment;
@@ -68,14 +70,13 @@ import java.util.concurrent.ExecutionException;
 
 public class ViewReportActivity extends Activity implements UriCallback,BooleanCallback{
     private static final String TAG = "ViewReportActivity";
-
+    public LinearLayout horizontalLinearLayout;
+    SkywarnWSDBMapper map;
     private WinterViewReportFragment winterFrag;
     private CoastalFloodingViewReportFragment coastalFloodingFrag;
     private RainFloodViewReportFragment rainFrag;
     private SevereViewReportFragment severeFrag;
     private GeneralSubmitReportFragment generalInfoFrag;
-
-    SkywarnWSDBMapper map;
     private ImageView photoIV;
     private TextView username;
     private TextView DateOfEvent;
@@ -86,9 +87,10 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     private TextView comments;
     private TextView reportRating;
     private TextView photoLabelTV;
-    public  LinearLayout horizontalLinearLayout;
     private Button upVoteButton;
     private Button downVoteButton;
+
+    private VideoView vV;
 
     private Button viewOnMapButton;
 
@@ -97,38 +99,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     private int numberOfPhotos = 0;
     private int reportImageWidth = 400;
     private int reportImageHeight = 400;
-
-    @Override
-    public void onProcessComplete(Uri returnedUri) {
-        Log.d(TAG, "onProcessComplete()");
-       try {
-           Bitmap b = MediaStore.Images.Media.getBitmap(this.getContentResolver(),returnedUri);
-           horizontalLinearLayout.addView(createImageView(b));
-       }catch (IOException e){
-           Log.e(TAG, "onOnProcess complete:", e);
-       }
-    }
-
-
-    //Todo: make check when user first looks at report and disable rating buttons if theyve voted or its their report
-    @Override
-    public void UserHasRatedReport(Boolean b, int netVote) {
-        Log.d(TAG, "UserHasRatedReportBefore? " + b);
-        //reportRating.setText(String.valueOf(map.getNetVote()));
-        if(b!=null) {
-            upVoteButton.setEnabled(false);
-            downVoteButton.setEnabled(false);
-
-            Log.d(TAG, "serHasRatedReportBefore: netVote"+String.valueOf(netVote));
-            reportRating.setText("Rating: " +String.valueOf(netVote));
-            }
-        }
-
-
-    public interface bitmapCallback{
-        void onFinishedString(String s);
-    }
-
     BitmapCallback callback = new BitmapCallback() {
         @Override
         public void processFinish(ArrayList<Bitmap> result) {
@@ -143,6 +113,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
                 ImageView iV = new ImageView(getApplicationContext());
                 iV.setImageBitmap(result);
                 horizontalLinearLayout.addView(createImageView(result));
+
+
             }
         }
 
@@ -166,8 +138,26 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
                 ImageView iV = new ImageView(getApplicationContext());
                 iV.setImageBitmap(result);
                 horizontalLinearLayout.addView(createImageView(result));
+                Log.d(TAG, "VIDEO TEST");
+//                For videos
+                String videoURL = "https://s3.amazonaws.com/skywarntestbucket/1490045353.0_tjpereira1995_0.mp4";
+
+//                vV.setVideoURI(uri);
+//                vV.start();
+                VideoViewMediaFragment videoView = new VideoViewMediaFragment();
+                videoView.setmContext(ViewReportActivity.this);
+                videoView.setVideoURL(videoURL);
+                horizontalLinearLayout.addView(videoView.getView());
+
+
+//                VideoView videoView = new VideoView(ViewReportActivity.this);
+//                horizontalLinearLayout.addView(videoView);
+//                videoView.setVideoURI(uri);
+//                videoView.start();
             }
         }
+
+
         public void processFinish(Bitmap result, ArrayList<String> pathList) {
             if(result !=null) {
                 Log.i(TAG, "processFinished(bitmap)");
@@ -178,6 +168,44 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             }
         }
     };
+
+    private static boolean storagePermitted(Activity activity) {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUESTCODE_WRITE_EXTERNAL_STORAGE);
+
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "storagePermitted: Granted" + ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE.toString()));
+            return true;
+        } else {
+            Log.d(TAG, "storagePermitted: Denied: " + ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE.toString()));
+
+            return false;
+        }
+    }
+
+    @Override
+    public void onProcessComplete(Uri returnedUri) {
+        Log.d(TAG, "onProcessComplete()");
+        try {
+            Bitmap b = MediaStore.Images.Media.getBitmap(this.getContentResolver(), returnedUri);
+            horizontalLinearLayout.addView(createImageView(b));
+        } catch (IOException e) {
+            Log.e(TAG, "onOnProcess complete:", e);
+        }
+    }
+
+    //Todo: make check when user first looks at report and disable rating buttons if theyve voted or its their report
+    @Override
+    public void UserHasRatedReport(Boolean b, int netVote) {
+        Log.d(TAG, "UserHasRatedReportBefore? " + b);
+        //reportRating.setText(String.valueOf(map.getNetVote()));
+        if (b != null) {
+            upVoteButton.setEnabled(false);
+            downVoteButton.setEnabled(false);
+
+            Log.d(TAG, "serHasRatedReportBefore: netVote" + String.valueOf(netVote));
+            reportRating.setText("Rating: " + String.valueOf(netVote));
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -196,6 +224,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         //Rating system widgets
         upVoteButton = (Button)findViewById(R.id.up_vote_button);
         downVoteButton = (Button)findViewById(R.id.down_vote_button);
+
+        vV = (VideoView) findViewById(R.id.videoView2);
 
         upVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -323,7 +353,7 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             Map.Entry<String,String> entry = iter.next();
             String value = entry.getValue();
             if(value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0")|| value.equals("0.0 F") || value.trim().equals("0") || value.equals("null") ) {
-                Log.i(TAG, "REMOVING DEFAULT VALUES value: " + value);
+                //   Log.i(TAG, "REMOVING DEFAULT VALUES value: " + value);
                 iter.remove();
             }
         }
@@ -514,19 +544,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         startActivity(i);
     }
 
-    private static boolean storagePermitted(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUESTCODE_WRITE_EXTERNAL_STORAGE);
-
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "storagePermitted: Granted" + ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE.toString()));
-            return true;
-        } else {
-            Log.d(TAG, "storagePermitted: Denied: " + ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE.toString()));
-
-            return false;
-        }
-    }
-
     //Create imageview with either bitmap or resourceID
     public ImageView createImageView(Bitmap b) {
         Log.d(TAG, "createImageView()");
@@ -559,8 +576,11 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         });
         return IV;
     }
-}
 
+    public interface bitmapCallback {
+        void onFinishedString(String s);
+    }
+}
 
 //////
 class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {

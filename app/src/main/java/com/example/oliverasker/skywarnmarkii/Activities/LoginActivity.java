@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -23,19 +23,17 @@ import com.example.oliverasker.skywarnmarkii.R;
 
 public class LoginActivity extends AppCompatActivity implements ResetPasswordDialog.ResetPasswordDialogListener, ResetPasswordEnterCodeDialog.ResetPasswordEnterCodeDialogListener {
 
+    private static final String TAG = "LoginActivity";
+    // Holds message to show user if input is incorrect
+    StringBuilder logStatus = new StringBuilder();
     private EditText emailTV;
     private EditText passwordTV;
     private Button signUpButton;
     private Button signInButton;
     private TextView forgotPasswordTV;
-
     private String email;
     private String password;
-    private static final String TAG = "LoginActivity";
-
     private boolean inputFieldsVerified = true;
-    // Holds message to show user if input is incorrect
-    StringBuilder logStatus= new StringBuilder();
 
     public LoginActivity() {
     }
@@ -51,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
 
         passwordTV = (EditText) findViewById(R.id.login_password_tv);
 
-        forgotPasswordTV = (TextView)findViewById(R.id.forgot_passwordTV);
+        forgotPasswordTV = (TextView) findViewById(R.id.forgot_passwordTV);
         forgotPasswordTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,13 +80,13 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
         if (resultCode == RESULT_OK) {
             Log.d(TAG, "onActivityResult()");
 
-            if(resultCode == RESULT_CANCELED & requestCode == Constants.SIGN_IN_CODE){
+            if (resultCode == RESULT_CANCELED & requestCode == Constants.SIGN_IN_CODE) {
                 Log.d(TAG, " SIGN IN RESULT CANCELLED");
                 //Toast.makeText(this, "Invaled Login/Password Combination",Toast.LENGTH_LONG).show();
                 Log.d(TAG, data.getStringExtra("errorCode"));
             }
 
-            if(resultCode == RESULT_OK & requestCode == Constants.SIGN_IN_CODE){
+            if (resultCode == RESULT_OK & requestCode == Constants.SIGN_IN_CODE) {
                 Log.d(TAG, " SIGN IN RESULT OK");
                 launchUserHomeActivity();
             }
@@ -106,26 +104,26 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
         }
     }
 
-    public void launchForgotPasswordActivity(){
+    public void launchForgotPasswordActivity() {
         Log.d(TAG, "launchForgotPasswordGetUsernameActivity()");
         //Received help from this link:
-            //  http://stackoverflow.com/questions/6626006/android-custom-dialog-cant-get-text-from-edittext
+        //  http://stackoverflow.com/questions/6626006/android-custom-dialog-cant-get-text-from-edittext
         LayoutInflater layoutInflater = LayoutInflater.from(this);
-        final View inflator = layoutInflater.inflate(R.layout.dialog_reset_password_layout,null);
+        final View inflator = layoutInflater.inflate(R.layout.dialog_reset_password_layout, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         alert.setTitle("Recover Password");
         //alert.setMessage("Message?");
         alert.setView(inflator);
 
-        final EditText usernameInput = (EditText)inflator.findViewById(R.id.reset_password_username_inputTV);
+        final EditText usernameInput = (EditText) inflator.findViewById(R.id.reset_password_username_inputTV);
 
         alert.setPositiveButton("Request Password Reset Code", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String userInput = usernameInput.getText().toString();
                 Log.d(TAG, "Recover Password Dialog onPositiveClick()  username: " + userInput);
-                if(userInput != "") {
+                if (userInput != "") {
                     UserInformationModel.getInstance().setUserID(userInput);
 
                     Intent intent = new Intent(LoginActivity.this, CognitoManager.class);
@@ -151,25 +149,24 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
     }
 
     public boolean verifyInputs() {
-        inputFieldsVerified= true;
-        if ((emailTV == null | passwordTV == null )| ( emailTV.getText().toString()=="" | passwordTV.getText().toString()=="")) {
+        inputFieldsVerified = true;
+        if ((emailTV == null | passwordTV == null) | (emailTV.getText().toString() == "" | passwordTV.getText().toString() == "")) {
             inputFieldsVerified = false;
-            Toast.makeText(this,"Please enter a username and a password",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please enter a username and a password", Toast.LENGTH_LONG).show();
             logStatus.append("emailTV or passwordTV is null");
             return false;
         }
 
         //Must fill in both fields
-        if ( emailTV.getText().toString().isEmpty() | passwordTV.getText().toString().isEmpty()){
-            logStatus.append( "Please Enter Username and Password");
+        if (emailTV.getText().toString().isEmpty() | passwordTV.getText().toString().isEmpty()) {
+            logStatus.append("Please Enter Username and Password");
             return false;
         }
         //Password must be at least 8 digits long
-        if(passwordTV.getText().toString().length() < 8){
+        if (passwordTV.getText().toString().length() < 8) {
             logStatus.append("Please Enter a valid Username and Password");
             return false;
-        }
-        else
+        } else
             return true;
     }
 
@@ -188,9 +185,8 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
             Intent i = new Intent(this, CognitoManager.class);
             i.putExtra("event", "login");
             startActivityForResult(i, Constants.SIGN_IN_CODE);
-        }
-        else{
-            Toast.makeText(this, logStatus,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, logStatus, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -223,24 +219,24 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
     // Cognito can send code
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        Log.d(TAG, "onDialogPositiveClick() " );
+        Log.d(TAG, "onDialogPositiveClick() ");
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        Log.d(TAG, "onDialogNegativeClick() " );
+        Log.d(TAG, "onDialogNegativeClick() ");
     }
 
     //  Listeners for dialog where user actually enters new passowrd verification code and new password
     //  to reset password
     @Override
     public void onEnterCodeDialogPositiveClick(DialogFragment dialog) {
-        Log.d(TAG, "onEnterCodeDialogPositiveClick() " );
+        Log.d(TAG, "onEnterCodeDialogPositiveClick() ");
     }
 
     @Override
     public void onEnterCodeDialogNegativeClick(DialogFragment dialog) {
-        Log.d(TAG, "onEnterCodeDialogNegativeClick() " );
+        Log.d(TAG, "onEnterCodeDialogNegativeClick() ");
     }
 
 }

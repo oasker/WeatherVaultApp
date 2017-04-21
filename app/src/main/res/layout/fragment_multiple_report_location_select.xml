@@ -10,7 +10,7 @@
         android:id="@+id/textView40"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/backgroundColor"
+        android:background="@color/colorPrimaryDark"
         android:text="@string/location"
         android:textAlignment="center"
         android:textColor="@color/textColor"
@@ -26,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginStart="20dp"
             android:padding="5dp"
             android:text="@string/street"
             android:textAlignment="center"
@@ -50,7 +49,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -58,8 +57,7 @@
             android:id="@+id/textView43"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_weight="1"
+            android:padding="5dp"
             android:text="@string/city"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -68,7 +66,7 @@
             android:id="@+id/city_input_multiple_reports_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.43"
             android:ems="10"
             android:inputType="textPersonName" />
 
@@ -81,52 +79,38 @@
 
         <TextView
             android:id="@+id/textView39"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/state"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-           />
+            android:textSize="18sp" />
 
         <Spinner
-            android:id="@+id/state_spinner"
-            android:layout_width="match_parent"
+            android:id="@+id/state_spinner_multiple_reports"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-
-            app:layout_column="2"
-            app:layout_row="2"
-
-            app:layout_rowSpan="1" />
+            android:layout_weight="4"
+            android:entries="@array/states_array" />
 
         <TextView
             android:id="@+id/label"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/zip"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_column="2"
-            app:layout_columnSpan="1"
-            app:layout_row="2"
-            app:layout_rowSpan="1" />
+            android:textSize="18sp" />
 
         <EditText
-            android:id="@+id/state_input_text_multiple_reports"
-            android:layout_width="match_parent"
+            android:id="@+id/zip_input_text_multiple_reports"
+            android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
-            android:textAlignment="center"
-            app:layout_column="4"
-            app:layout_columnSpan="1"
-            app:layout_row="2"
-            app:layout_rowSpan="1"
-            android:inputType="" />
+            android:inputType="text"
+            android:textAlignment="center" />
 
     </LinearLayout>
 
@@ -142,13 +126,6 @@
             android:layout_weight="1"
             android:text="@string/use_current_location" />
 
-        <CheckBox
-            android:id="@+id/use_as_default_location_checkbox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/set_as_default_location"
-            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>

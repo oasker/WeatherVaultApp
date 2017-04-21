@@ -1,10 +1,9 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +27,8 @@ import com.koushikdutta.ion.Ion;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
+
+//import android.support.v4.app.Fragment;
 
 /**
  * Created by oliverasker on 1/17/17.
@@ -103,11 +104,11 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
 
     private void showUserInfoFragment(Map<String,String> attrMap){
         Log.i(TAG, "showUserInfoFragment()");
-        Fragment showUserInfoFragment = new UserHomePersonalDetailsFragment();
+        Fragment showUserInfoFragment = new Fragment();
         Bundle b = new Bundle();
         b.putSerializable("attrMap", (Serializable) attrMap);
         showUserInfoFragment.setArguments(b);
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.user_info_frag_container, showUserInfoFragment);
         ft.commit();
     }
@@ -119,7 +120,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         Bundle b = new Bundle();
         b.putSerializable("bitmapArrayList",bitmapArrayList);
         showUserPhotoFragment.setArguments(b);
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
         ft.commit();
     }
@@ -133,7 +134,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         //b.putSerializable("bitmapArrayList",bitmapArrayList);
         //showUserPhotoFragment.setArguments(b);
 
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
         ft.commit();
     }
@@ -145,7 +146,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         String[] cognitoVals = {"SpotterIDTEST", "CALLSIGNTEST","AffilliationTEST","USERNAMETST"};
         b.putStringArray("cognitoVals" ,cognitoVals);
         showUserPhotoFragment.setArguments(b);
-        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
         ft.commit();
     }

@@ -3,7 +3,7 @@ package com.example.oliverasker.skywarnmarkii.Tasks;
 import android.os.AsyncTask;
 
 import com.amazonaws.AmazonServiceException;
-import com.example.oliverasker.skywarnmarkii.Activites.MainActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.MainActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Managers.DynamoDBManager;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class MyQueryAsyncTask extends AsyncTask<Void, Void, ArrayList<SkywarnWSDBMapper>>  {
 
+    private static final String TAG = "MyQueryAsyncTask";
     public ICallback delegate = null;
     ArrayList<SkywarnWSDBMapper> weatherList = null;
-    private static final String TAG = "MyQueryAsyncTask";
 
     public MyQueryAsyncTask(ICallback delegate){
         this.delegate=delegate;

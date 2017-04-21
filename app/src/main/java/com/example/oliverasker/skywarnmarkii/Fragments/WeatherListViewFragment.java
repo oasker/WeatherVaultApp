@@ -1,10 +1,10 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +13,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.oliverasker.skywarnmarkii.Activites.MapsActivity;
-import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.MapsActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
@@ -24,6 +24,8 @@ import com.example.oliverasker.skywarnmarkii.Tasks.GetAllUserReportsTask;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
+
+//import android.support.v4.app.Fragment;
 
 /**
  * Created by oliverasker on 2/19/17.
@@ -44,6 +46,7 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
 //        testReport.setDateSubmittedEpoch((long) 3442311);
 //        testReport.setDateSubmittedString("2/12/9000");
 //        data.add(testReport);
+
 
         mapViewButton = (Button)v.findViewById(R.id.toggle_map_list_view);
         mapViewButton.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +91,7 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         intent.putExtra("selectedReport", clickedReport);
         startActivity(intent);
     }
+
     @Override
     public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
         /*

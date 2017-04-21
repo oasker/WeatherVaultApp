@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,27 +45,6 @@ import static com.amazonaws.regions.Regions.US_EAST_1;
  */
 
 public class QueryLauncherActivity extends AppCompatActivity implements ICallback,Parcelable {
-    private static final String TAG = "QueryLauncherActivity";
-
-    ListView listView;
-    AmazonDynamoDBClient ddbClient = null;
-    DynamoDBMapper mapper = null;
-    ArrayList<SkywarnWSDBMapper> weatherList = null;
-    HashMap<String,String> attrHMap = null;
-    SkywarnWSDBMapper[] data = null;
-    //asyncTask
-    MyAsyncTask myAsync = new MyAsyncTask(this);
-    GetAllRecordsForDayTask getRecordsForDayTask;
-
-    private ToggleButton toggleMapViewButton;
-    ReportListViewFragment reportLV;
-
-    public QueryLauncherActivity(){
-
-    }
-    protected QueryLauncherActivity(Parcel in) {
-    }
-
     public static final Creator<QueryLauncherActivity> CREATOR = new Creator<QueryLauncherActivity>() {
         @Override
         public QueryLauncherActivity createFromParcel(Parcel in) {
@@ -77,6 +56,24 @@ public class QueryLauncherActivity extends AppCompatActivity implements ICallbac
             return new QueryLauncherActivity[size];
         }
     };
+    private static final String TAG = "QueryLauncherActivity";
+    ListView listView;
+    AmazonDynamoDBClient ddbClient = null;
+    DynamoDBMapper mapper = null;
+    ArrayList<SkywarnWSDBMapper> weatherList = null;
+    HashMap<String,String> attrHMap = null;
+    SkywarnWSDBMapper[] data = null;
+    //asyncTask
+    MyAsyncTask myAsync = new MyAsyncTask(this);
+    GetAllRecordsForDayTask getRecordsForDayTask;
+    ReportListViewFragment reportLV;
+    private ToggleButton toggleMapViewButton;
+    public QueryLauncherActivity(){
+
+    }
+
+    protected QueryLauncherActivity(Parcel in) {
+    }
 
     @Override
     public void onCreate(Bundle b) {

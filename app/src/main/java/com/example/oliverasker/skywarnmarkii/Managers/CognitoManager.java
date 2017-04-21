@@ -27,9 +27,9 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.Verificat
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.cognitoidentityprovider.model.InvalidParameterException;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.example.oliverasker.skywarnmarkii.Activites.ConfirmNewUserActivity;
-import com.example.oliverasker.skywarnmarkii.Activites.LoginActivity;
-import com.example.oliverasker.skywarnmarkii.Activites.ResetPasswordActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.ConfirmNewUserActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.LoginActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.ResetPasswordActivity;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Dialoges.ResetPasswordDialog;
 import com.example.oliverasker.skywarnmarkii.Dialoges.ResetPasswordEnterCodeDialog;
@@ -56,32 +56,27 @@ import java.util.Map;
 
 public class CognitoManager extends Activity implements ResetPasswordDialog.ResetPasswordDialogListener, ResetPasswordEnterCodeDialog.ResetPasswordEnterCodeDialogListener {
     private static final String TAG = "CognitoManager";
-    private CognitoUserPool userPool = new CognitoUserPool(this, Constants.cognitoPoolID, Constants.cognitoAppClientId, null);
-    private CognitoUser user;
-    private int signInUserReturnResult = Constants.SIGN_UP_FAILED;
-    ForgotPasswordContinuation forgotPasswordContinuation;
-
-    private AlertDialog alert;
-
-    private String callsign;
-    private String affiliation;
-    private String spotterID;
-    private String username;
     private static String userID;
     private static String email;
     private static String firstName;
     private static String lastName;
-
+    ForgotPasswordContinuation forgotPasswordContinuation;
+    Context context;
+    HashMap<String, String> attributeMap = new HashMap<String, String>();
+    private CognitoUserPool userPool = new CognitoUserPool(this, Constants.cognitoPoolID, Constants.cognitoAppClientId, null);
+    private CognitoUser user;
+    private int signInUserReturnResult = Constants.SIGN_UP_FAILED;
+    private AlertDialog alert;
+    private String callsign;
+    private String affiliation;
+    private String spotterID;
+    private String username;
     private String phone;
     private String password;
     private String resetPasswordReturnString;
-    Context context;
-
     //For password reset
     private String newPassword;
     private String newPasswordVerificationCode;
-
-    HashMap<String, String> attributeMap = new HashMap<String,String>();
 
     public CognitoUserPool getUserPool(){
         if(userPool == null){
@@ -152,13 +147,12 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
                         + "lastName: "+ lastName
                         + " phone: " + phone
                         + " password: " + password );
-                Log.d(TAG, "Create New User: Username: " +userID );
+
 
                 setUserFromId(setUserID(username));
                 UserInformationModel.getInstance().setUserID(userID);
                 UserInformationModel.getInstance().setCognitoUser(user);
                 signUpUser(userID, phone, email, password);
-                Log.d(TAG,"Create New User -> email:" + email + " userID: " + userID);
                 break;
 
             //  SEE TOP NOTES FOR THE CORRECT WAY TO SETUP USERID, USERNAME ...ETC
@@ -612,7 +606,7 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
                 }
                 index = 0;
 
-                Log.d(TAG, "phone number: "+userAttr.get("phone_number"));
+                //Log.d(TAG, "phone number: "+userAttr.get("phone_number"));
                // UserInformationModel.getInstance().setPhone(userAttr.get("phone_number").toString());
 
                 Log.d(TAG, "getDetailsHandler(): username: " + username + "  callsign: " + callsign);

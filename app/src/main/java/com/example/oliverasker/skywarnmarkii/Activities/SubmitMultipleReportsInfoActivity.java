@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,29 +37,29 @@ public class SubmitMultipleReportsInfoActivity extends AppCompatActivity {
         weatherEventTypeMap = new HashMap<>();
 
 
-        numberReportsInput = (EditText)findViewById(R.id.number_of_reports_input);
-        numberReportsInput.setText("1");
+//        numberReportsInput = (EditText)findViewById(R.id.number_of_reports_input);
+//        numberReportsInput.setText("1");
 
-        incrementNumReportsButton = (Button)findViewById(R.id.increment_number_of_reports);
-        incrementNumReportsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int numRep = Integer.parseInt(numberReportsInput.getText().toString());
-                numRep++;
-                numberReportsInput.setText(String.valueOf(numRep));
-            }
-        });
-
-        decrementNumReportsButton = (Button)findViewById(R.id.decrement_number_of_reports);
-        decrementNumReportsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int numRep = Integer.parseInt(numberReportsInput.getText().toString());
-                if(numRep>0)
-                    numRep--;
-                numberReportsInput.setText(String.valueOf(numRep));
-            }
-        });
+//        incrementNumReportsButton = (Button)findViewById(R.id.increment_number_of_reports);
+//        incrementNumReportsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int numRep = Integer.parseInt(numberReportsInput.getText().toString());
+//                numRep++;
+//                numberReportsInput.setText(String.valueOf(numRep));
+//            }
+//        });
+//
+//        decrementNumReportsButton = (Button)findViewById(R.id.decrement_number_of_reports);
+//        decrementNumReportsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int numRep = Integer.parseInt(numberReportsInput.getText().toString());
+//                if(numRep>0)
+//                    numRep--;
+//                numberReportsInput.setText(String.valueOf(numRep));
+//            }
+//        });
 
 
         /////////////////   Weather Event Type Checkboxes   ////////////////////
@@ -86,7 +86,6 @@ public class SubmitMultipleReportsInfoActivity extends AppCompatActivity {
 
             Intent i = new Intent(getApplicationContext(), SubmitMultipleReportsActivity.class);
             i.putExtra("weatherEventBoolsMap", weatherEventTypeMap);
-            i.putExtra("numberOfReports", Integer.parseInt(numberReportsInput.getText().toString()));
             startActivity(i);
             }
         });

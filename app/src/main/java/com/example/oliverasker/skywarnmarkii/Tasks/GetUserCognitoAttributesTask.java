@@ -2,10 +2,8 @@ package com.example.oliverasker.skywarnmarkii.Tasks;
 
 /**
  * Created by oliverasker on 2/23/17.
- * 1. set CognitoUserPool
- * 2. set CognitoUser
  */
-
+// Todo: allow users to update cognito attributes
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -28,8 +26,12 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private CognitoUser user;
     private HashMap<String,String>  attrMap = new HashMap<>();
-    String[] vals = new String[5];
-    Map<String, String> userAttrMap;
+    private String[] vals = new String[5];
+    private Map<String, String> userAttrMap;
+
+    public GetUserCognitoAttributesTask(UserAttributesCallback delegate) {
+        this.delegate = delegate;
+    }
 
     // 1. Set up CognitoUserPool
     public void initUserPool(Context context){
@@ -37,13 +39,10 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
         userPool = new CognitoUserPool(mContext, Constants.cognitoPoolID, Constants.cognitoAppClientId, null);
 
     }
+
     // 2. set CognitoUser
     public void setCognitoUser(String userID){
         user =  userPool.getUser(userID);
-    }
-
-    public GetUserCognitoAttributesTask(UserAttributesCallback delegate){
-        this.delegate=delegate;
     }
 
     @Override

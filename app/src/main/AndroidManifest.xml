@@ -5,14 +5,13 @@
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- Google Map API key -->
 
@@ -22,9 +21,10 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -37,6 +37,7 @@
         <!-- <provider -->
         <!-- android:name="android.support.v4.content.FileProvider" -->
         <!-- android:authorities="com.example.oliverasker.skywarnmarkii" -->
+        <!--android:authorities="${applicationId}.provider"-->
         <!-- android:exported="false" -->
         <!-- android:grantUriPermissions="true"> -->
         <!-- <meta-data -->
@@ -57,27 +58,27 @@
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name=".Activites.MainActivity">
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activites.QueryLauncherActivity" />
-        <activity android:name=".Activites.LoginActivity" />
-        <activity android:name=".Activites.SubmitReportActivity" />
-        <activity android:name=".Activites.SubmitReportDetailsActivity" />
-        <activity android:name=".Activites.ViewReportActivity" />
-        <activity android:name=".Activites.ConfirmSubmitReportActivity" />
-        <activity android:name=".Activites.SearchDBActivity" />
-        <activity android:name=".Activites.DownloadSelectionActivity" />
-        <activity android:name=".Activites.LaunchCameraActivity" />
+        <activity android:name=".Activities.QueryLauncherActivity" />
+        <activity android:name=".Activities.LoginActivity" />
+        <activity android:name=".Activities.SubmitReportActivity" />
+        <activity android:name=".Activities.SubmitReportDetailsActivity" />
+        <activity android:name=".Activities.ViewReportActivity" />
+        <activity android:name=".Activities.ConfirmSubmitReportActivity" />
+        <activity android:name=".Activities.SearchDBActivity" />
+        <activity android:name=".Activities.DownloadSelectionActivity" />
+        <activity android:name=".Activities.LaunchCameraActivity" />
         <activity android:name=".Managers.CognitoManager" />
-        <activity android:name=".Activites.CreateNewUserActivity" />
-        <activity android:name=".Activites.ConfirmNewUserActivity" />
-        <activity android:name=".Activites.ResetPasswordActivity" />
-        <activity android:name=".Activites.ResetPasswordEnterUsernameActivity" />
+        <activity android:name=".Activities.CreateNewUserActivity" />
+        <activity android:name=".Activities.ConfirmNewUserActivity" />
+        <activity android:name=".Activities.ResetPasswordActivity" />
+        <activity android:name=".Activities.ResetPasswordEnterUsernameActivity" />
 
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -88,7 +89,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Activites.TabbedUserHomeActivity"
+            android:name=".Activities.TabbedUserHomeActivity"
             android:label="@string/title_activity_tabbed_user_home2"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
@@ -105,16 +106,18 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Activites.MapsActivity"
+            android:name=".Activities.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".Activites.SubmitMultipleReportsActivity"
+            android:name=".Activities.SubmitMultipleReportsActivity"
             android:label="@string/title_activity_submit_multiple_reports"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".Activites.SubmitMultipleReportsInfoActivity"
+            android:name=".Activities.SubmitMultipleReportsInfoActivity"
             android:label="@string/title_activity_submit_multiple_reports_info"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity android:name=".Activities.VideoCameraTest" />
+        <activity android:name=".Activities.ViewQueryResultsActivity" />
     </application>
 
 </manifest>

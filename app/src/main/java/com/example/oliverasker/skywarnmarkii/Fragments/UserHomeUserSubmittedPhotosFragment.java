@@ -1,11 +1,11 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.BitmapCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.StringCallback;
 import com.example.oliverasker.skywarnmarkii.Models.SubmittedPhotoModel;
@@ -26,6 +26,8 @@ import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
+
+//import android.support.v4.app.Fragment;
 
 /**
 /**

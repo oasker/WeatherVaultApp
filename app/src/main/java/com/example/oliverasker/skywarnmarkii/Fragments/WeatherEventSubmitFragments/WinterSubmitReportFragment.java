@@ -1,6 +1,7 @@
 package com.example.oliverasker.skywarnmarkii.Fragments.WeatherEventSubmitFragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -22,6 +23,9 @@ import java.util.HashMap;
 
 public class WinterSubmitReportFragment extends Fragment {
     private static final String TAG ="WinterSubRepFrag";
+
+    private Context mContext;
+
     private TextView Snowfall;
     private TextView SnowfallRate;
     private TextView SnowDepth;
@@ -92,5 +96,9 @@ public class WinterSubmitReportFragment extends Fragment {
         if(!Thundersnow.getText().toString().trim().equals(""))
             vals.put("Thundersnow", new AttributeValue().withS(Thundersnow.getText().toString()));
         return vals;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
     }
 }

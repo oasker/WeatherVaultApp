@@ -30,18 +30,15 @@ import java.util.Map;
 
 public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
     private static final String TAG = "GetTopRatedReportsTask";
-
-    private String[] reportAttributes;
+    public ICallback delegate = null;
     ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
     SkywarnWSDBMapper testReport;
     AmazonDynamoDBClient ddb;
     Context mContext;
+    ArrayList<SkywarnWSDBMapper> weatherList = null;
+    private String[] reportAttributes;
     private String date;
     private String user;
-
-    public ICallback delegate = null;
-    ArrayList<SkywarnWSDBMapper> weatherList = null;
-
 
     @Override
     protected void onPreExecute() {
@@ -173,8 +170,8 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
             if(item.containsKey("WaterEquivalent"))
                 reportEntry.setWaterEquivalent(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("WaterEquivalent").toString())));
 
-            if(item.containsKey("WhiteOut"))
-                reportEntry.setWhiteout(Utility.parseDynamoDBResultValuesToString(item.get("WhiteOut").toString()));
+            if (item.containsKey("Whiteout"))
+                reportEntry.setWhiteout(Utility.parseDynamoDBResultValuesToString(item.get("Whiteout").toString()));
 
             if(item.containsKey("WinterWeatherComments"))
                 reportEntry.setWinterWeatherComments(Utility.parseDynamoDBResultValuesToString(item.get("WinterWeatherComments").toString()));

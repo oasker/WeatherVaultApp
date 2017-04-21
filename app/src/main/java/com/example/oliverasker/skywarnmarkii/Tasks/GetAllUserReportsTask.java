@@ -31,18 +31,15 @@ import java.util.Map;
 
 public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
     private static final String TAG = "GetAllUserReportsTask";
-
-    private String[] reportAttributes;
+    public ICallback delegate = null;
     ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
     SkywarnWSDBMapper testReport;
     AmazonDynamoDBClient ddb;
     Context mContext;
+    ArrayList<SkywarnWSDBMapper> weatherList = null;
+    private String[] reportAttributes;
     private String date;
     private String user;
-
-    public ICallback delegate = null;
-    ArrayList<SkywarnWSDBMapper> weatherList = null;
-
 
     @Override
     protected void onPreExecute() {
@@ -98,19 +95,22 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
 
             reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
             reportEntry.setDateSubmittedString(Utility.parseDynamoDBResultValuesToString(item.get("DateSubmittedString").toString()));
-            reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
-            double date = Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString());
+
+            double date = 0;
+            if (item.containsKey("DateOfEvent")) {
+                reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
+                date = Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString());
+            }
             Log.d(TAG, "DATE: " + date);
             /// Location Attributes
-            if(reportEntry.getState() != null)
+            if (item.containsKey("State"))
                 reportEntry.setEventState(Utility.parseDynamoDBResultValuesToString(item.get("State").toString()));
 
-            if(reportEntry.getCity() != null)
+            if (item.containsKey("City"))
                 reportEntry.setEventCity(Utility.parseDynamoDBResultValuesToString(item.get("City").toString()));
 
-            //Todo: when press back at  userhome it goes to weird screen
+            //Todo: when press back at  userhome it goes to weird screen. FIX: make LoginActivity app launcher
 
-            //Todo: make street optional to put in
             if(item.containsKey("Street"))
                 reportEntry.setStreet(Utility.parseDynamoDBResultValuesToString(item.get("Street").toString()));
 
@@ -164,16 +164,12 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
                 reportEntry.setSnowfallRate(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("SnowfallRate").toString())));
             if(item.containsKey("SnowfallSleet"))
                 reportEntry.setSnowFallSleet(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("SnowfallSleet").toString())));
-
             if(item.containsKey("ThunderSnow"))
                 reportEntry.setThundersnow(Utility.parseDynamoDBResultValuesToString(item.get("ThunderSnow").toString()));
-
             if(item.containsKey("WaterEquivalent"))
                 reportEntry.setWaterEquivalent(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("WaterEquivalent").toString())));
-
-            if(item.containsKey("WhiteOut"))
-                reportEntry.setWhiteout(Utility.parseDynamoDBResultValuesToString(item.get("WhiteOut").toString()));
-
+            if (item.containsKey("Whiteout"))
+                reportEntry.setWhiteout(Utility.parseDynamoDBResultValuesToString(item.get("Whiteout").toString()));
             if(item.containsKey("WinterWeatherComments"))
                 reportEntry.setWinterWeatherComments(Utility.parseDynamoDBResultValuesToString(item.get("WinterWeatherComments").toString()));
 
@@ -286,6 +282,5 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
     }
     public void setUser(String User){
         user = User;
-
     }
 }

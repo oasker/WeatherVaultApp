@@ -1,8 +1,9 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.oliverasker.skywarnmarkii.Activites.MapsActivity;
-import com.example.oliverasker.skywarnmarkii.Activites.ViewReportActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.MapsActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
@@ -29,6 +30,8 @@ import java.util.Calendar;
 
 import static android.content.ContentValues.TAG;
 
+//import android.support.v4.app.Fragment;
+
 /**
  * Created by oliverasker on 2/19/17.
  */
@@ -41,7 +44,8 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
     private Calendar cal;
     private TextView dateTV;
     private  SkywarnWSDBMapper[] data;
-    String date;
+    private String date;
+    private Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         Log.d(TAG, "onCreateView");
@@ -82,7 +86,6 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
 
         addDayButton = (Button)v.findViewById(R.id.increment_date_by_one_button);
         subtractDayButton = (Button)v.findViewById(R.id.deincrement_day_by_one_button);
-        viewReportsOnMapToggle = (ToggleButton)v.findViewById(R.id.toggle_map_list_view);
 
         addDayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +111,7 @@ public class ViewReportsFromSingleDayFragment extends Fragment implements ICallb
             }
         });
 
+        viewReportsOnMapToggle = (ToggleButton) v.findViewById(R.id.toggle_map_list_view);
         viewReportsOnMapToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

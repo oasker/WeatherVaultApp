@@ -1,12 +1,14 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.oliverasker.skywarnmarkii.Constants;
@@ -20,6 +22,7 @@ import com.example.oliverasker.skywarnmarkii.R;
 
 public class CreateNewUserActivity extends AppCompatActivity {
     private final static String TAG = "CreateNewUserActivity";
+//Todo: create text file everytime a new user creates profile
 
 
     UserInformationModel userInformationModel = UserInformationModel.getInstance();
@@ -34,9 +37,8 @@ public class CreateNewUserActivity extends AppCompatActivity {
     EditText usernameTV;
     EditText passwordTV;
     Button signUpButton;
-
     CognitoManager cognitoManager= new CognitoManager();
-
+    private Spinner affiliationSpinner;
     private String affiliation;
     private String spotterID;
     private String callsign;
@@ -47,15 +49,15 @@ public class CreateNewUserActivity extends AppCompatActivity {
     private String email;
     private String username;
 
-    String event = "sign_up";
+    private String event = "sign_up";
 
     @Override
-    protected  void onCreate(Bundle savedInstance){
+    protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_create_new_user_layout);
 
         //Assign
-        signUpButton = (Button)findViewById(R.id.sign_up_button);
+        signUpButton = (Button) findViewById(R.id.sign_up_button);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,14 +65,31 @@ public class CreateNewUserActivity extends AppCompatActivity {
             }
         });
 
-        firstNameTV = (EditText)findViewById(R.id.first_name_inputTV);
-        lastNameTV = (EditText)findViewById(R.id.last_name_inputTV);
-        spotterIDTV = (EditText)findViewById(R.id.weather_spotter_id);
-        affiliationTV = (EditText)findViewById(R.id.affiliation_inputTV);
-        emailTV = (EditText)findViewById(R.id.email_inputTV);
-        phoneTV = (EditText)findViewById(R.id.phone_inputTV);
-        usernameTV = (EditText)findViewById(R.id.username_inputTV);
-        passwordTV = (EditText)findViewById(R.id.password_inputTV);
+        firstNameTV = (EditText) findViewById(R.id.first_name_inputTV);
+        lastNameTV = (EditText) findViewById(R.id.last_name_inputTV);
+        spotterIDTV = (EditText) findViewById(R.id.weather_spotter_id);
+//        affiliationTV = (EditText)findViewById(R.id.affiliation_inputTV);
+        emailTV = (EditText) findViewById(R.id.email_inputTV);
+        phoneTV = (EditText) findViewById(R.id.phone_inputTV);
+        usernameTV = (EditText) findViewById(R.id.username_inputTV);
+        passwordTV = (EditText) findViewById(R.id.password_inputTV);
+
+
+        affiliationSpinner = (Spinner) findViewById(R.id.create_new_user_activity_affiliation_spinner);
+
+        affiliationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "StateSpinnerInput: onItemSelected(): " + parent.getItemAtPosition(position).toString());
+                affiliation = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+
+        });
     }
 
 
@@ -116,7 +135,6 @@ public class CreateNewUserActivity extends AppCompatActivity {
             Log.d(TAG,"Please Check input fields");
         else
             Log.d(TAG, "Inputs Verified");
-//        Toast.makeText(this,toastString, Toast.LENGTH_LONG).show();
         return verified;
     }
 
@@ -132,7 +150,6 @@ public class CreateNewUserActivity extends AppCompatActivity {
                 phone = "+" +phoneTV.getText().toString().trim();
             }
 
-
             password = passwordTV.getText().toString();
             username = usernameTV.getText().toString();
 
@@ -142,8 +159,6 @@ public class CreateNewUserActivity extends AppCompatActivity {
                 lastName = lastNameTV.getText().toString();
             if(callsignTV != null)
                 callsign = callsignTV.getText().toString();
-            if(affiliationTV != null)
-                affiliation = affiliationTV.getText().toString();
             if(spotterIDTV != null)
                 spotterID = spotterIDTV.getText().toString();
 
@@ -159,11 +174,13 @@ public class CreateNewUserActivity extends AppCompatActivity {
 
     // launches activity where user enters confirmation code that has been emailed to them
     private void launchConfirmNewUserActivity(){
+        Log.d(TAG, "launchConfirmNewUserActivity");
         Intent i = new Intent(this, ConfirmNewUserActivity.class);
         startActivity(i);
     }
 
     private void launchTabbedUserHomeActivity(){
+        Log.d(TAG, "launchTabbedUserHomeActivity");
         Intent i = new Intent(this, TabbedUserHomeActivity.class);
         startActivity(i);
     }
@@ -171,7 +188,7 @@ public class CreateNewUserActivity extends AppCompatActivity {
     //Called after CognitoManager processes request
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-
+        Log.d(TAG, "onActivityResult()");
         if(resultCode == RESULT_OK) {
             //result on sign up
             if (requestCode == Constants.SIGN_UP_CODE) {

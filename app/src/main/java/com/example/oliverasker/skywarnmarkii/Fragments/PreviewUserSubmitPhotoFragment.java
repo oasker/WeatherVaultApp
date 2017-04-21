@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.LaunchCameraActivity;
 import com.example.oliverasker.skywarnmarkii.R;
 
 /**

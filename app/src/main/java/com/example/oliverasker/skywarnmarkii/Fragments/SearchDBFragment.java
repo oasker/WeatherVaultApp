@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import com.example.oliverasker.skywarnmarkii.Activites.SearchDBActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.SearchDBActivity;
 import com.example.oliverasker.skywarnmarkii.R;
 
 import java.util.HashMap;
@@ -23,34 +23,33 @@ import java.util.HashMap;
  */
 
 public class SearchDBFragment extends Fragment {
+    private static final String TAG = "SearchDBFragment";
     EditText zip;
     EditText city;
     EditText street;
     EditText state;
-
    //Date Fields and Values
     DatePicker startDateRange;
     DatePicker endDateRange;
+    Button submitButton;
+    HashMap<String, String> testAttr = new HashMap<String, String>();
     private int startMonth;
     private int endMonth;
     private int startDay;
     private int endDay;
     private int startYear;
     private int endYear;
-
-    Button submitButton;
-
-
-
-    HashMap<String, String> testAttr = new HashMap<String,String>();
-    private static final String TAG = "SearchDBFragment";
     private OnItemSelectedListener listener;
     private int childCount;
 
-    public interface OnItemSelectedListener{
-        void onSubmitScan();
-        void onSubmitScan(HashMap<String, String> tempMap);
-         HashMap<String,String> sup = new HashMap<String,String>();
+    // public static WinterViewReportFragment newInstance(HashMap<String,String> m){
+    public static SearchDBActivity newInstance(HashMap<String, String> tempMap) {
+        SearchDBActivity rainView = new SearchDBActivity();
+        Bundle args = new Bundle();
+        //args.putString("snowfall", s);
+        args.putSerializable("hMap", tempMap);
+        // rainView.setArguments(args);
+        return rainView;
     }
 
     @Override
@@ -66,18 +65,6 @@ public class SearchDBFragment extends Fragment {
         */
     }
 
-
-
-    // public static WinterViewReportFragment newInstance(HashMap<String,String> m){
-    public static SearchDBActivity newInstance(HashMap<String, String> tempMap) {
-        SearchDBActivity rainView = new SearchDBActivity();
-        Bundle args = new Bundle();
-        //args.putString("snowfall", s);
-        args.putSerializable("hMap", tempMap);
-       // rainView.setArguments(args);
-        return rainView;
-    }
-
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -88,6 +75,14 @@ public class SearchDBFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance) {
         View view = inflater.inflate(R.layout.search_db_fragment, container, false);
         return view;
+    }
+
+    public interface OnItemSelectedListener {
+        HashMap<String, String> sup = new HashMap<String, String>();
+
+        void onSubmitScan();
+
+        void onSubmitScan(HashMap<String, String> tempMap);
     }
 }
 

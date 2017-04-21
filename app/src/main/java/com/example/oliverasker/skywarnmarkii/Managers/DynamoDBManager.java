@@ -13,7 +13,7 @@ import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
-import com.example.oliverasker.skywarnmarkii.Activites.MainActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.MainActivity;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,6 +19,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TableRow;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.amazonaws.AmazonServiceException;
@@ -72,20 +73,17 @@ import static java.lang.String.valueOf;
 //add photos to sd card
 //Command Line: adb push yourfile.xxx /sdcard/yourfile.xxx
 public class LaunchCameraActivity extends AppCompatActivity {
-    private final String TAG = "LaunchCameraActivity";
-    private static final int DOWNLOAD_SELECTION_REQUEST_CODE = 1;
-    private static int pictureCount;
     static final int REQUEST_TAKE_PHOTO = 1;
     static final int REQUEST_VIDEO_CAPTURE = 2;
     static final int SELECT_PICTURE = 3;
-    private long epoch;
-    private String dateSubmittedString;
-
-
+    private static final int DOWNLOAD_SELECTION_REQUEST_CODE = 1;
     //Request codes
     private static final int MY_PERMISSIONS_REQUEST_STORE_PHOTOS = 1;
-
-    private ArrayList<MyImageModel> images;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static int pictureCount;
+    private static int fragmentCount;
+    private static String selectedImagePath;
+    private final String TAG = "LaunchCameraActivity";
 //    File video_file;
 //    private static final File EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard");
 //    private static final String CACHE_STORAGE_DIRECTORY;
@@ -94,13 +92,19 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //    Uri videoURI;
 
 //    ArrayList<Uri> bitMapPathList;
-
     //  Report keys and values
     public AttributeValue[] attributeValArray;
     public String[] keyArray;
-
+    int position = 0;
+    ArrayList<String> photoPaths;
+    String mCurrentPhotoPath;
+    //Manages S3 transfers
+    TransferUtility transferUtility;
+    PreviewPhotoCommunicator prePhotoCom;
+    private long epoch;
+    private String dateSubmittedString;
+    private ArrayList<MyImageModel> images;
     private MediaController mediaControls;
-
     private Button submitButton;
     private Button addExistingPhotostoReportButton;
     private Button takeNewPhotoButton;
@@ -108,28 +112,46 @@ public class LaunchCameraActivity extends AppCompatActivity {
     private Button addPhotostoReportButton;
     private Button takeNewVideoButton;
     private VideoView mVideoView;
-
     private Uri mCapturedImageURI;
-    int position = 0;
-
     private LinearLayout previewPhotoLayout;
 
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static int fragmentCount;
-    private static String selectedImagePath;
-
-    ArrayList<String> photoPaths;
-    String mCurrentPhotoPath;
-
-    //Manages S3 transfers
-    TransferUtility transferUtility;
-
-    PreviewPhotoCommunicator prePhotoCom;
-
-    //Interface to bridge asyncTask and this class
-    public interface PreviewPhotoCommunicator {
-        void setImage(Bitmap b);
+    static File getDirectory(String variableName, String defaultPath) {
+        String path = System.getenv(variableName);
+        return path == null ? new File(defaultPath) : new File(path);
     }
+
+    // Check if URI authority is ExternalStorageProvider
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    // Check if URI authority is DownloadsProvider
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    // Check if URI authority is DownloadsProvider
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    // I COPIED AND PASTED THIS METOHD AND HEAVILY REFERENCED OTHER METHODS FROM
+    // EXAMPLE CODE FOUND AT THIS LINK:
+    // https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
+
+//    public Uri getImageUri(Context inContext, Bitmap inImage) {
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+//        return Uri.parse(path);
+//    }
+
+//    public String getRealPathFromURI(Uri uri) {
+//        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+//        cursor.moveToFirst();
+//        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//        return cursor.getString(idx);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstace) {
@@ -143,18 +165,23 @@ public class LaunchCameraActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+
+        //ToDo:UNCOMMENT TO ALLOW REPORTS TO BE SUBMITTED \/*******************************************
         //  Retreive Data from SubmitReportDetailsActivity to submit after user takes (or doesnt take)
         //  a photo
-        Intent i = getIntent();
-        epoch = i.getLongExtra("epoch", -1);
-        dateSubmittedString = i.getStringExtra("DateSubmittedString");
-        Object[] tempObj = (Object[]) i.getSerializableExtra("attributeValArray");
-        attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
+//        Intent i = getIntent();
+//        epoch = i.getLongExtra("epoch", -1);
+//        dateSubmittedString = i.getStringExtra("DateSubmittedString");
+//        Object[] tempObj = (Object[]) i.getSerializableExtra("attributeValArray");
+//        attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
+//
+//        keyArray = i.getStringArrayExtra("keyArray");
+//        for (int j = 0; j < keyArray.length; j++) {
+//            Log.d(TAG, " onCreate(): key: " + keyArray[j] + " val: " + attributeValArray[j]);
+//        }
+        //ToDo:UNCOMMENT TO ALLOW REPORTS TO BE SUBMITTED \/*******************************************
 
-        keyArray = i.getStringArrayExtra("keyArray");
-        for (int j = 0; j < keyArray.length; j++) {
-            Log.d(TAG, " onCreate(): key: " + keyArray[j] + " val: " + attributeValArray[j]);
-        }
+
         // Log.d(TAG, "epoch: "+epoch + " datesubmittedString: " + dateSubmittedString);
         // epochString = String.format("%.0f", epoch);
 
@@ -182,11 +209,13 @@ public class LaunchCameraActivity extends AppCompatActivity {
         addExistingPhotostoReportButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 // in onCreate or any event where your want the user to select a file
-                Intent intent = new Intent();
-                //  intent.setType("image/* video/*");
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                if (isStoragePermissionGranted()) {
+                    Intent intent = new Intent();
+                    //  intent.setType("image/* video/*");
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+                }
             }
         });
 
@@ -262,17 +291,18 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //                if(takeVideoIntent.resolveActivity(getPackageManager()) !=null){
 //                    startActivityForResult(takeVideoIntent,REQUEST_VIDEO_CAPTURE);
 //                }
-                dispatchTakeVideoIntent();
+                if (isStoragePermissionGranted())
+                    dispatchTakeVideoIntent();
             }
         });
-        takeNewVideoButton.setEnabled(false);
+        // takeNewVideoButton.setEnabled(false);
 
         if (mediaControls == null) {
             mediaControls = new MediaController(LaunchCameraActivity.this);
         }
 
         mVideoView = (VideoView) findViewById(R.id.video_view);
-        mVideoView.setMediaController(mediaControls);
+        //mVideoView.setMediaController(mediaControls);
         /////////////////// ///////////////////
         ////// AWS Example method
         //https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
@@ -378,110 +408,88 @@ public class LaunchCameraActivity extends AppCompatActivity {
             previewPhotoLayout.addView(existingImageIV);
         }
 
-        //For Videos
-        //if(resultCode ==Activity.RESULT_OK && requestCode == REQUEST_VIDEO_CAPTURE){
-        if (requestCode == REQUEST_VIDEO_CAPTURE) {
-//            Log.i(TAG, "REQUEST_VIDEO_CAPTURE");
-//            //File f = new File(Environment.getExternalStorageDirectory().toString() + "/samplevideofolder/VideoFileName.mp4");
-//            //Log.i(TAG,"f.getPath(): " +f.getPath());
-//            Uri videoUri = data.getData();
-//            Log.d(TAG, videoUri.getPath());
-//            mVideoView.setVideoURI(videoUri);
-//            //mVideoView.setVideoPath(f.getAbsolutePath());
-//            for (File temp : f.listFiles()) {
-//                Log.i(TAG, temp.getPath());
-//                if (temp.getName().equals("VideoFileName.mp4")) {
-//                    f = temp;
-//                   // videoUri = f.getAbsoluteFile()
-//                    Log.i(TAG, "VIDEO FILE Path: " + f.getAbsolutePath() );
-//                    break;
-//                }
-//            }
-            //mVideoView.setVideoURI(Uri.fromFile(new File(Environment.getExternalStorageDirectory().toString() + "/samplevideofolder/VideoFileName.mp4")));                    m
-//            //Log.i(TAG, "videoURI.getPath(): " + getRealPathFromURI(videoURI));
-//            //Log.i(TAG, "data.getData(): " + data.getData().getPath());
-//            //mVideoView.setVideoURI(data.getData());
-//           // mVideoView.setVideoPath(getRealPathFromURI(videoURI));
-//            String path = getCacheDir().toString();
-//            Log.i(TAG,"path: " + path);
-//            File directory = new File(path);
-//            File[] files = directory.listFiles();
-//            for(File f :files)
-//                Log.i(TAG, "file name: " + f.getName() + " path: " + f.getPath());
-//           // videoURI = Uri.fromFile(new File("));
-//            mVideoView.setVideoURI(videoURI);
-            if (requestCode == REQUEST_VIDEO_CAPTURE) {//&& resultCode == RESULT_OK) {
-                Uri videoUri = data.getData();
-                // mVideoView.setVideoURI(videoUri);
-                mVideoView.setVideoURI(data.getData());
-                mVideoView.requestFocus();
-                mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        // close the progress bar and play the video
-                        //progressDialog.dismiss();
-                        //if we have a position on savedInstanceState, the video playback should start from here
-                        mVideoView.seekTo(position);
-                        if (position == 0) {
-                            mVideoView.start();
-                        } else {
-                            //if we come from a resumed activity, video playback will be paused
-                            //mVideoView.pause();
-                        }
-                    }
-                });
+        if (requestCode == REQUEST_VIDEO_CAPTURE) {//&& resultCode == RESULT_OK) {
+            Log.d(TAG, "resultCode(): " + resultCode);
+//                Uri videoUri = data.getData();
+//                Uri videoUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName()+".provider", getFilePath() );
+            // Uri videoUri = FileProvider.getUriForFile(getApplicationContext(),"com.example.oliverasker.skywarnmarkii.provider", getFilePath() );
+
+            ContentValues values = new ContentValues(2);
+            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+            // values.put(MediaStore.Video.Media.DATA, f.getAbsolutePath());
+
+            // Add a new record (identified by uri) without the video, but with the values just set.
+            Uri videoUri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+            mVideoView.setVideoURI(videoUri);
+            Toast.makeText(getApplicationContext(), "video REQUEST_VIDEO_CAPTURE", Toast.LENGTH_SHORT).show();
+//                // mVideoView.setVideoURI(videoUri);
+//                mVideoView.setVideoURI(data.getData());
+//                mVideoView.requestFocus();
+//                mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                    public void onPrepared(MediaPlayer mediaPlayer) {
+//                        // close the progress bar and play the video
+//                        //progressDialog.dismiss();
+//                        //if we have a position on savedInstanceState, the video playback should start from here
+//                        mVideoView.seekTo(position);
+//                        if (position == 0) {
+//                            mVideoView.start();
+//                        } else {
+//                            //if we come from a resumed activity, video playback will be paused
+//                            //mVideoView.pause();
+//                        }
+//                    }
+//                });
+//           // }}
             }
-        }
     }
-
-    // I COPIED AND PASTED THIS METOHD AND HEAVILY REFERENCED OTHER METHODS FROM
-    // EXAMPLE CODE FOUND AT THIS LINK:
-    // https://github.com/awslabs/aws-sdk-android-samples/blob/master/S3TransferUtilitySample/src/com/amazonaws/demo/s3transferutility/UploadActivity.java
-
-//    public Uri getImageUri(Context inContext, Bitmap inImage) {
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-//        return Uri.parse(path);
-//    }
-
-//    public String getRealPathFromURI(Uri uri) {
-//        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-//        cursor.moveToFirst();
-//        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//        return cursor.getString(idx);
-//    }
 
     private void dispatchTakeVideoIntent() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-        }
+        // File videoFile = getFilePath();
+        // Uri video_uri = Uri.fromFile(videoFile);
+        //  Uri video_uri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName()+".provider", getFilePath() );
+
+//        String fileName = "testVideo.mp4";
+//        ContentValues values = new ContentValues();
+//        values.put(MediaStore.Images.Media.TITLE, fileName);
+//        mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+
+
+        ContentValues values = new ContentValues(2);
+        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+        // values.put(MediaStore.Video.Media.DATA, f.getAbsolutePath());
+
+        // Add a new record (identified by uri) without the video, but with the values just set.
+        Uri uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+
+
+        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,1);
+        // if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+        startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        //}
     }
 
+    private File getFilePath() {
+//        String folderPath = getExternalCacheDir().getPath();
+//        File folder = new File(folderPath+ "/skywarn_videos");
+//        if(!folder.exists()){
+//            folder.mkdir();
+//        }
+//        String fileName = "VIDEOTEST_APRIL.jpg";
+//        File videoFile=new File(folder,fileName);
+//        return videoFile;
 
-    private void beginUpload(String filePath) {
-        Log.d(TAG, "beginUpload()");
-        Log.d(TAG, "beginUpload(): filepath: " + filePath);
-        //File file = new File (mCurrentPhotoPath);
-        File file = new File(filePath);
+        File imagePath = new File(getApplicationContext().getFilesDir(), "images");
+        if (!imagePath.exists())
+            imagePath.mkdir();
 
-
-        Log.d(TAG, "fileName: " + file.getName() + "   filePath: " + filePath + " pictureCount: " + pictureCount);
-        String filename = epoch + "_" + UserInformationModel.getInstance().getUsername() + "_" + pictureCount + ".jpg";
-        Log.d(TAG, "beginUpload(): filename: " + filename);
-        TransferObserver observer = transferUtility.upload(Constants.BUCKET_NAME, filename, file);
-        observer.setTransferListener(new UploadListener());
-        pictureCount++;
-    }
-
-    private void launchConfirmReportActivity() {
-        Intent i = new Intent(this, ConfirmSubmitReportActivity.class);
-        startActivity(i);
-    }
-
-    static File getDirectory(String variableName, String defaultPath) {
-        String path = System.getenv(variableName);
-        return path == null ? new File(defaultPath) : new File(path);
+        File newFile = new File(imagePath, "default_image.jpg");
+        if (!newFile.exists())
+            newFile.mkdir();
+        Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.oliverasker.skywarnmarkii.provider", newFile);
+        return newFile;
     }
 
 //    private File createImageFile() throws IOException {
@@ -509,6 +517,26 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //        return image;
 //    }
 
+    private void beginUpload(String filePath) {
+        Log.d(TAG, "beginUpload()");
+        Log.d(TAG, "beginUpload(): filepath: " + filePath);
+        //File file = new File (mCurrentPhotoPath);
+        File file = new File(filePath);
+
+
+        Log.d(TAG, "fileName: " + file.getName() + "   filePath: " + filePath + " pictureCount: " + pictureCount);
+        String filename = epoch + "_" + UserInformationModel.getInstance().getUsername() + "_" + pictureCount + ".jpg";
+        Log.d(TAG, "beginUpload(): filename: " + filename);
+        TransferObserver observer = transferUtility.upload(Constants.BUCKET_NAME, filename, file);
+        observer.setTransferListener(new UploadListener());
+        pictureCount++;
+    }
+
+    private void launchConfirmReportActivity() {
+        Intent i = new Intent(this, ConfirmSubmitReportActivity.class);
+        startActivity(i);
+    }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -524,7 +552,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
-
 
     //Launch Camera to take new photo to upload
     private void launchCamera(View view) {
@@ -571,10 +598,8 @@ public class LaunchCameraActivity extends AppCompatActivity {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.TITLE, fileName);
             mCapturedImageURI = getContentResolver()
-                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                            values);
-            takePictureIntent
-                    .putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
 
@@ -608,40 +633,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 //                startActivityForResult(intent, REQUEST_TAKE_PHOTO);
         // }
-    }
-
-
-    private void launchVideoCamera(View view) {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-        }
-    }
-
-
-    private boolean hasCamera() {
-        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
-    }
-
-    private class UploadListener implements TransferListener {
-        //Updates UI when notified
-        @Override
-        public void onStateChanged(int id, TransferState state) {
-            Log.d(TAG, "onStateChanged: " + id + state);
-
-        }
-
-        @Override
-        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-            Log.d(TAG, format("onProgressChanged:  %d, total %d, current: %d", id, bytesTotal, bytesCurrent));
-
-        }
-
-        @Override
-        public void onError(int id, Exception ex) {
-            Log.d(TAG, "Error during upload: " + ex);
-        }
-        //
     }
 
     @Override
@@ -724,21 +715,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
             return uri.getPath();
         }
         return null;
-    }
-
-    // Check if URI authority is ExternalStorageProvider
-    public static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    // Check if URI authority is DownloadsProvider
-    public static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    // Check if URI authority is DownloadsProvider
-    public static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     //Todo: Add delete feature when submitting photos
@@ -846,6 +822,9 @@ public class LaunchCameraActivity extends AppCompatActivity {
         return cursor.getString(idx);
     }
 
+    private boolean hasCamera() {
+        return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
 
     public boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
@@ -863,6 +842,36 @@ public class LaunchCameraActivity extends AppCompatActivity {
             Log.v(TAG, "Permission is granted");
             return true;
         }
+    }
+
+    //  Handles user response to request for external storage
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_STORE_PHOTOS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    Log.d(TAG, "onRequestPermissionResult(): Permission Granted By User");
+
+                } else {
+                    Log.d(TAG, "onRequestPermissionResult(): Permission Denied By User");
+                    takeNewPhotoButton.setEnabled(false);
+                    takeNewVideoButton.setEnabled(false);
+                    addExistingPhotostoReportButton.setEnabled(false);
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    //Interface to bridge asyncTask and this class
+    public interface PreviewPhotoCommunicator {
+        void setImage(Bitmap b);
     }
 
 //    public void grantPhotoStoragePermission() {
@@ -892,36 +901,26 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //        }
 //    }
 
+    private class UploadListener implements TransferListener {
+        //Updates UI when notified
+        @Override
+        public void onStateChanged(int id, TransferState state) {
+            Log.d(TAG, "onStateChanged: " + id + state);
 
-
-//  Handles user response to request for external storage
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_STORE_PHOTOS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    Log.d(TAG, "onRequestPermissionResult(): Permission Granted By User");
-
-                } else {
-                    Log.d(TAG, "onRequestPermissionResult(): Permission Denied By User");
-                    takeNewPhotoButton.setEnabled(false);
-                    takeNewVideoButton.setEnabled(false);
-                    addExistingPhotostoReportButton.setEnabled(false);
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
+
+        @Override
+        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+            Log.d(TAG, format("onProgressChanged:  %d, total %d, current: %d", id, bytesTotal, bytesCurrent));
+
+        }
+
+        @Override
+        public void onError(int id, Exception ex) {
+            Log.d(TAG, "Error during upload: " + ex);
+        }
+        //
     }
-
-
-
-
 
 //
 //    Submits Users report into DynamoDB Table
@@ -968,4 +967,6 @@ class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallb
 
     }
 }
+
+
 }

@@ -3,7 +3,7 @@ package com.example.oliverasker.skywarnmarkii.Tasks;
 import android.os.AsyncTask;
 
 import com.amazonaws.AmazonServiceException;
-import com.example.oliverasker.skywarnmarkii.Activites.MainActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.MainActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Managers.DynamoDBManager;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;

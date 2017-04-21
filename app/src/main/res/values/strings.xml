@@ -210,6 +210,8 @@
         <item name="Item3" />
     </string-array>
 
+
+    <!--Severe weathereent spinners-->
     <string-array name="severe_weather_spinner_values_array">
         <item name="Tornado" />
         <item name="Thunderstorm" />
@@ -217,7 +219,6 @@
         <item name="Tropical Storm" />
         <item name="Hurricane" />
     </string-array>
-
     <string-array name="wind_direction_values_array">
         <item name="North" />
         <item name="South" />
@@ -229,125 +230,221 @@
         <item name="Southwest" />
     </string-array>
 
-    <string-array name="WinterAttributes">
-        <item name="SnowfallSleet " />
-           
-        <item name="SnowfallRate" />
-           
-        <item name="SnowDepth" />
-           
-        <item name="WaterEquivalent" />
-           
-        <item name="FreezingRain" />
-           
-        <item name="FreezingRainAccum" />
-           
-        <item name="BlowDrift" />
-           
-        <item name="Whiteout" />
-           
-        <item name="Thundersnow" />
-           
-        <item name="WinterWeatherComments" />
+
+    <!-- All Weather Attributes -->
+    <string-array name="WinterAttributesNames">
+        <item>SnowfallSleet </item>
+        <item>SnowfallRate</item>
+        <item>SnowDepth</item>
+        <item>WaterEquivalent</item>
+        <item>FreezingRain</item>
+        <item>FreezingRainAccum</item>
+        <item>BlowDrift</item>
+        <item>Whiteout</item>
+        <item>Thundersnow</item>
+        <item>WinterWeatherComments</item>
+    </string-array>
+    <string-array name="WinterAttributesValues">
+        <item>Sleet</item>
+        <item>Snowfall Rate</item>>
+        <item>Snow Depth</item>
+        <item>Water Equivalent</item>
+        <item>Freezing Rain</item>
+        <item>Freezing Rain Accumulation</item>
+        <item>Blow Drift</item>
+        <item>Whiteout</item>
+        <item>Thundersnow</item>
+        <item>Winter Weather Comments</item>
     </string-array>
 
-    <string-array name="CoastalAttributes">
-        <item name="StormSurge" />
-        <item name="CoastalEventComments" />
-
+    <string-array name="CoastalAttributesNames">
+        <item>StormSurge</item>
+        <item>CoastalEventComments</item>
+    </string-array>
+    <string-array name="CoastalAttributesValues">
+        <item>Storm Surge</item>
+        <item>Coastal Event Comments</item>
     </string-array>
 
-    <string-array name="SevereAttributes">
-        <item name="WindDamage" />
-           
-        <item name="WindDamageComments" />
-           
-        <item name="LightningDamage" />
-           
-        <item name="LightningDamageComments" />
-           
-        <item name="WhatDamaged" />
-           
-        <item name="DamageComments" />
-           
-        <item name="SevereWeatherComments" />
-        <item name="SevereType" />
-           
-        <item name="WindSpeed" />
-           
-        <item name="WindGust" />
-           
-        <item name="WindDirection" />
-           
-        <item name="HailSize" />
-           
-        <item name="Tornado" />
-           
-        <item name="Barometer" />
+    <string-array name="SevereAttributesNames">
+        <item>WindDamage</item>
+        <item>WindDamageComments</item>
+        <item>LightningDamage</item> 
+        <item>LightningDamageComments</item>
+        <item>WhatDamaged</item>
+        <item>DamageComments</item>
+        <item>SevereWeatherComments</item>
+        <item>SevereType</item>
+        <item>WindSpeed</item>
+        <item>WindGust</item>
+        <item>WindDirection</item>
+        <item>HailSize</item>
+        <item>Tornado</item>
+        <item>Barometer</item>
+    </string-array>
+    <string-array name="SevereAttributesValues">
+        <item>Wind Damage</item>
+        <item>Wind Damage Comments</item>
+        <item>Lightning Damage</item> 
+        <item>Lightning Damage Comments</item>
+        <item>What Damaged</item>
+        <item>Damage Comments</item>
+        <item>Severe Weather Comments</item>
+        <item>Severe Type</item>
+        <item>Wind Speed</item>
+        <item>Wind Gust</item>
+        <item>Wind Direction</item>
+        <item>Hail Size</item>
+        <item>Tornado</item>
+        <item>Barometer</item>
     </string-array>
 
-    <string-array name="GeneralAttributes">
-
+    <string-array name="RainAttributesNames">
+        <item>Rain</item>
+        <item>PrecipRate</item>
+        <item>FloodComments</item>
+        <item>RainEventComments</item>
+    </string-array>
+    <string-array name="RainAttributesValues">
+        <item>Rain</item>
+        <item>Precipitation Rate</item>
+        <item>Flood Comments</item>
+        <item>Rain Event Comments</item>
     </string-array>
 
-    <string-array name="RainAttributes">
-        <item name="Rain" />
-        <item name="PrecipRate" />
-        <item name="FloodComments" />
-        <item name="RainEventComments" />
+
+    <!--All Weather Types-->
+    <string-array name="AllWeatherEventTypes">
+        <item>Severe Event</item>
+        <item>Winter Event</item>
+        <item>Coastal Event</item>
+        <item>Rain/Flood Event</item>
     </string-array>
+
+
+    <!--QueryReportSelectAttributesDialog-->
+    <!--Attributes requiring a range to query-->
+    <string-array name="RangeAttributes">
+        <!--Winter Range Attrs-->
+        <item>Sleet</item>
+        <item>Snowfall Rate</item>
+        <item>Snow Depth</item>
+        <item>Water Equivalent</item>
+
+        <!--Coastal Range Attr-->
+        <item>Storm Surge</item>
+
+        <!--Severe Range Attr-->
+        <item>Wind Speed</item>>
+        <item>Wind Gust</item>>
+        <item>Hail Size</item>>
+        <item>Barometer</item>>
+
+        <!--Rain/Flood Range Attr-->
+        <item>Rain</item>
+        <item>Precipitation Rate</item>
+    </string-array>
+    <!--Attributes that can be searched for using matching-->
+    <string-array name="MatchAttributes">
+        <!--Winter Match Attrs-->
+        <item>Freezing Rain</item>
+        <item>Freezing Rain Accumulation</item>
+        <item>Blow Drift</item>
+        <item>Whiteout</item>
+        <item>Thundersnow</item>
+        <item>Winter Weather Comments</item>
+
+        <!--Coastal Match Attr-->
+        <item>Coastal Event Comments</item>
+
+        <!--Severe Match Attr-->
+        <item>Wind Damage</item>
+        <item>Wind Damage Comments</item>
+        <item>Lightning Damage</item> 
+        <item>Lightning Damage Comments</item>
+        <item>What Damaged</item>
+        <item>Damage Comments</item>
+        <item>Severe Weather Comments</item>
+        <item>Severe Type</item>
+        <item>Wind Direction</item>
+        <item>Tornado</item>
+
+        <!--Rainfall Match Attr-->
+        <item>Flood Comments</item>
+        <item>Rain Event Comments</item>
+    </string-array>
+
+
+    <!--CreateNewUserActivity-->
+    <string-array name="affiliation_spinner_values">
+        <item>General</item>
+        <item>Public</item>
+        <item>Trained Spotter</item>
+        <item>NWS Employee</item>
+        <item>Broadcast Media</item>
+        <item>Emergency Management</item>
+        <item>Law Enforcement</item>
+        <item>Fire Dept./Rescue</item>
+        <item>Amateur Radio</item>
+        <item>Utility Company</item>
+        <item>Co-op Observer</item>
+        <item>CWO</item>
+        <item>COCORAHS</item>
+        <item>Other/Federal</item>
+    </string-array>
+
 
     <string-array name="states_array">
-        <item name="AL" />
-        <item name="AK" />
-        <item name="AZ" />
-        <item name="AR" />
-        <item name="CA" />
-        <item name="CO" />
-        <item name="CT" />
-        <item name="DE" />
-        <item name="FL" />
-        <item name="GA" />
-        <item name="HI" />
-        <item name="ID" />
-        <item name="IL" />
-        <item name="IN" />
-        <item name="IA" />
-        <item name="KS" />
-        <item name="KY" />
-        <item name="LA" />
-        <item name="ME" />
-        <item name="MD" />
-        <item name="MA" />
-        <item name="MI" />
-        <item name="MN" />
-        <item name="MS" />
-        <item name="MO" />
-        <item name="MT" />
-        <item name="NE" />
-        <item name="NV" />
-        <item name="NH" />
-        <item name="NJ" />
-        <item name="NM" />
-        <item name="NY" />
-        <item name="NC" />
-        <item name="ND" />
-        <item name="OH" />
-        <item name="OK" />
-        <item name="OR" />
-        <item name="PA" />
-        <item name="RI" />
-        <item name="SC" />
-        <item name="SD" />
-        <item name="TN" />
-        <item name="TX" />
-        <item name="UT" />
-        <item name="VT" />
-        <item name="VA" />
-        <item name="WA" />
-        <item name="WV" />
-        <item name="WI" />
-        <item name="WY" />
+        <item>AL </item>
+        <item>AK </item>
+        <item>AZ </item>
+        <item>AR </item>
+        <item>CA </item>
+        <item>CO </item>
+        <item>CT </item>
+        <item>DE </item>
+        <item>FL </item>
+        <item>GA </item>
+        <item>HI </item>
+        <item>ID </item>
+        <item>IL </item>
+        <item>IN </item>
+        <item>IA </item>
+        <item>KS </item>
+        <item>KY </item>
+        <item>LA </item>
+        <item>ME </item>
+        <item>MD </item>
+        <item>MA </item>
+        <item>MI </item>
+        <item>MN </item>
+        <item>MS </item>
+        <item>MO </item>
+        <item>MT </item>
+        <item>NE </item>
+        <item>NV </item>
+        <item>NH </item>
+        <item>NJ </item>
+        <item>NM </item>
+        <item>NY </item>
+        <item>NC </item>
+        <item>ND </item>
+        <item>OH </item>
+        <item>OK </item>
+        <item>OR </item>
+        <item>PA </item>
+        <item>RI </item>
+        <item>SC </item>
+        <item>SD </item>
+        <item>TN </item>
+        <item>TX </item>
+        <item>UT </item>
+        <item>VT </item>
+        <item>VA </item>
+        <item>WA </item>
+        <item>WV </item>
+        <item>WI </item>
+        <item>WY </item>
     </string-array>
     <string name="title_activity_submit_multiple_reports">SubmitMultipleReportsActivity</string>
     <string name="large_text">
@@ -456,4 +553,11 @@
     </string>
     <string name="continue_string">Continue</string>
     <string name="flood_comments">Flood Comments</string>
+    <string name="set_end_date">Set End Date</string>
+    <string name="set_start_date">Set Start Date</string>
+    <string name="set_date_range">Set Date Range</string>
+    <string name="set_date_range_qestmrk">Set Date Range?</string>
+    <string name="add_attribute">Add Attribute</string>
+    <string name="enter_a_weather_attribute_to_search_for_below">Enter a weather attribute to search for below.</string>
+    <string name="l_than"><![CDATA[<]]></string>
 </resources>

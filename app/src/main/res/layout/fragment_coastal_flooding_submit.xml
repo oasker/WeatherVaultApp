@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/coastal_flood_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
-        android:padding="10dp"
         android:text="@string/coastal_flooding_features"
         android:textAlignment="center"
         android:textColor="@color/textColor"
-        android:textSize="24sp" />
+        android:textSize="22sp" />
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -36,8 +37,8 @@
                 android:id="@+id/storm_surge_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_column="2"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp"

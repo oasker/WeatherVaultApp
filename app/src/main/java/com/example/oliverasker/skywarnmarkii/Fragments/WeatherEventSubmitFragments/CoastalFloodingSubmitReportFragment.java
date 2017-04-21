@@ -1,6 +1,7 @@
 package com.example.oliverasker.skywarnmarkii.Fragments.WeatherEventSubmitFragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -20,7 +21,10 @@ import java.util.HashMap;
 
 public class CoastalFloodingSubmitReportFragment extends Fragment {
     private static final String TAG = "CoastalFloodSbmtRptFrag";
+    private Context mContext;
+
     private EditText StormSurgeInput;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance){
         View view = inflater.inflate(R.layout.fragment_coastal_flooding_submit,container, false);
@@ -34,5 +38,9 @@ public class CoastalFloodingSubmitReportFragment extends Fragment {
         if(!StormSurgeInput.getText().toString().trim().equals(""))
             vals.put("StormSurge", new AttributeValue().withN(StormSurgeInput.getText().toString()));
         return vals;
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
     }
 }

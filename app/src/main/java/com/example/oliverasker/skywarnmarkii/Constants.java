@@ -91,5 +91,8 @@ public class Constants {
     public static final String GET_USER_ATTRIBUTES_ERROR_NOT_AUTHENTICATED = "user is not authenticated";
 
 
+    //  QuertReportAttributesFragments Dialog Constants
+    public static final int SELECT_WEATHER_TYPE_DIALOG = 0;
+    public static final int SELECT_ATTRIBUTES_TO_QUERY_DIALOG = 1;
 
 }

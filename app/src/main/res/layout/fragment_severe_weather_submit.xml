@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/severe_weather_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
-        android:padding="10dp"
         android:text="@string/severe_weather_features"
         android:textAlignment="center"
         android:textColor="@color/textColor"
-        android:textSize="24sp" />
+        android:textSize="22sp" />
 
     <TableLayout
         android:layout_width="match_parent"
@@ -22,20 +22,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/severe_type_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/severe_type_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/severe_weather_type"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
 
             <Spinner
+                android:id="@+id/severe_weather_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/severe_weather_spinner"
                 android:overlapAnchor="false"
                 />
 
@@ -46,48 +46,48 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/wind_speed_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/wind_speed_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/windspeed"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
             <EditText
+                android:id="@+id/wind_speed_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/wind_speed_field_tv"
                 android:layout_column="2"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
+                android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
-                android:inputType="number|numberDecimal" />
+                android:textSize="16sp" />
         </TableRow>
         <!-- WINDGUST -->
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/wind_gust_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/wind_gust_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/wind_gust"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
             <EditText
+                android:id="@+id/wind_gust_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/wind_gust_field_tv"
                 android:layout_column="2"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
+                android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
-                android:inputType="number|numberDecimal" />
+                android:textSize="16sp" />
         </TableRow>
 
         <!-- WIND DIRECTION -->
@@ -96,25 +96,25 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/wind_direction_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/wind_direction_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/wind_direction"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
 
             <Spinner
+                android:id="@+id/severe_wind_direction_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/severe_wind_direction_spinner"
-                android:minWidth="200dp"
                 android:layout_column="2"
-                android:padding="8dp"
+                android:gravity="center_vertical"
+                android:minWidth="200dp"
                 android:overlapAnchor="false"
-                android:gravity="center_vertical" />
+                android:padding="8dp" />
 
         </TableRow>
 
@@ -123,24 +123,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/hail_size_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/hail_size_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/hail_size"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
             <EditText
+                android:id="@+id/hail_size_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/hail_size_field_tv"
                 android:layout_column="2"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
+                android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
-                android:inputType="number|numberDecimal" />
+                android:textSize="16sp" />
         </TableRow>
 
 
@@ -149,15 +149,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/tornado_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tornado_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/tornado"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/tornado_field_tv"
@@ -175,24 +175,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/barometer_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/barometer_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/barometer"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
             <EditText
+                android:id="@+id/barometer_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/barometer_field_tv"
                 android:layout_column="2"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
+                android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
-                android:inputType="number|numberDecimal" />
+                android:textSize="16sp" />
         </TableRow>
 
         <!-- Severe Weather Type -->
@@ -210,15 +210,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/wind_damage_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/wind_damage_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/wind_damage"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/wind_damage_field_tv"
@@ -236,30 +236,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/lightning_damage_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/lightning_damage_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/lightning_damage"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
             <EditText
+                android:id="@+id/lightning_damage_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/lightning_damage_field_tv"
                 android:layout_column="2"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
         </TableRow>
 
         <!-- DAMAGE COMMENTS-->
         <TableRow
+            android:id="@+id/LightningCommentsRow"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/LightningCommentsRow">
+            android:layout_height="match_parent">
 
         </TableRow>
 
@@ -267,23 +267,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/damage_comments_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/damage_comments_label_tv"
                 android:layout_column="1"
+                android:layout_margin="5dp"
                 android:text="@string/damage_comments"
                 android:textAlignment="viewStart"
-                android:textSize="16sp"
-                android:layout_margin="5dp"
-                android:textColor="@android:color/background_dark" />
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
             <EditText
+                android:id="@+id/damage_comments_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/damage_comments_field_tv"
                 android:layout_column="2"
-                android:textSize="16sp"
                 android:layout_margin="5dp"
                 android:textColor="@android:color/background_dark"
+                android:textSize="16sp"
                 />
         </TableRow>
     </TableLayout>

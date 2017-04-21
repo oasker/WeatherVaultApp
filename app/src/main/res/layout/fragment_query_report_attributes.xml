@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.oliverasker.skywarnmarkii.Fragments.QueryReportAttributesFragment">
+    tools:context="com.example.oliverasker.skywarnmarkii.Fragments.QueryReportsAttributesFragments.QueryReportAttributesFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -199,10 +199,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="5dp"
+                                android:layout_weight="0.34"
                                 android:ems="10"
                                 android:inputType="textPersonName"
-                                android:padding="5dp"
-                                android:layout_weight="0.34" />
+                                android:padding="5dp" />
                         </LinearLayout>
 
                     </TableRow>
@@ -266,9 +266,9 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.01"
                                 android:background="@color/cast_expanded_controller_ad_label_background_color"
+                                android:entries="@array/states_array"
                                 android:popupBackground="@color/cast_expanded_controller_ad_label_background_color"
-                                android:spinnerMode="dialog"
-                                android:entries="@array/states_array"/>
+                                android:spinnerMode="dialog" />
 
                             <TextView
                                 android:id="@+id/textView27"

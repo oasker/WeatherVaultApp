@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.example.oliverasker.skywarnmarkii.Activites.SearchDBActivity;
+import com.example.oliverasker.skywarnmarkii.Activities.SearchDBActivity;
 import com.example.oliverasker.skywarnmarkii.R;
 
 import java.util.HashMap;
@@ -20,11 +20,6 @@ import java.util.HashMap;
 
 public class ReportListViewFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    @Override
-    public void onAttach(Context context){
-        super.onAttach(context);
-    }
-
     // public static WinterViewReportFragment newInstance(HashMap<String,String> m){
     public static SearchDBActivity newInstance(HashMap<String, String> tempMap) {
         SearchDBActivity rainView = new SearchDBActivity();
@@ -33,6 +28,11 @@ public class ReportListViewFragment extends Fragment implements AdapterView.OnIt
         args.putSerializable("hMap", tempMap);
         // rainView.setArguments(args);
         return rainView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override

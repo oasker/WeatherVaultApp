@@ -2,18 +2,20 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 <LinearLayout
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
 <include layout = "@layout/toolbar_rev2"/>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:weightSum="1">
 
         <LinearLayout
@@ -27,7 +29,6 @@
                 android:layout_width="106dp"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:contentDescription=""
                 android:padding="5dp"
                 app:srcCompat="@drawable/sunny" />
 
@@ -181,10 +182,10 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/frag0_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.03"
-            android:id="@+id/frag0_container">
+            android:layout_weight="0.03">
 
         </FrameLayout>
 
@@ -206,28 +207,28 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/frag1_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frag1_container">
+            android:layout_height="match_parent">
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/frag2_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frag2_container">
+            android:layout_height="match_parent">
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/frag3_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frag3_container">
+            android:layout_height="match_parent">
 
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/frag4_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frag4_container">
+            android:layout_height="match_parent">
 
         </FrameLayout>
 
@@ -242,27 +243,27 @@
             android:textSize="30sp" />
 
         <ImageView
+            android:id="@+id/photoIV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/background_gradient"
-            android:id="@+id/photoIV"
             android:layout_weight="0.03"
             android:background="@drawable/background_gradient"
-            android:contentDescription="" />
+            android:contentDescription=""
+            app:srcCompat="@drawable/background_gradient" />
 
         <HorizontalScrollView
+            android:id="@+id/horizon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.03"
-            android:id="@+id/horizon"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.03">
 
             <LinearLayout
+                android:id="@+id/view_report_activity_horizontal_linearlayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/view_report_activity_horizontal_linearlayout"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
             </LinearLayout>
         </HorizontalScrollView>

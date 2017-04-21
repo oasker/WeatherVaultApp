@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -31,10 +32,12 @@ public class SubmitMultipleReportsLocation extends Fragment {
     private EditText StreetInput;
     private EditText ZipInput;
     private EditText CityInput;
-    private Spinner StateInput;
+    private Spinner StateSpinnerInput;
+    private Context mContext;
 
+    private String state;
 
-    private CheckBox useAsDefaultLocationCB;
+    //    private CheckBox useAsDefaultLocationCB;
     private CheckBox useCurrentLocationCB;
 
     @Override
@@ -54,13 +57,24 @@ public class SubmitMultipleReportsLocation extends Fragment {
         View v = inflater.inflate(R.layout.fragment_multiple_report_location_select,container,false);
 
         StreetInput = (EditText)v.findViewById(R.id.street_input_field_multiple_reports);
-        ZipInput = (EditText)v.findViewById(R.id.zip_input_field);
+        ZipInput = (EditText) v.findViewById(R.id.zip_input_text_multiple_reports);
         CityInput = (EditText)v.findViewById(R.id.city_input_multiple_reports_tv);
-        StateInput = (Spinner)v.findViewById(R.id.state_spinner);
 
-        useAsDefaultLocationCB = (CheckBox)v.findViewById(R.id.use_as_default_location_checkbox);
-        useCurrentLocationCB = (CheckBox)v.findViewById(R.id.use_current_location_checkbox);
+//        Setup state spinner
+        StateSpinnerInput = (Spinner) v.findViewById(R.id.state_spinner_multiple_reports);
+        StateSpinnerInput.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "StateSpinnerInput: onItemSelected(): " + parent.getItemAtPosition(position).toString());
+                state = parent.getItemAtPosition(position).toString();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        useCurrentLocationCB = (CheckBox) v.findViewById(R.id.use_current_location_checkbox);
         return v;
     }
 
@@ -68,7 +82,6 @@ public class SubmitMultipleReportsLocation extends Fragment {
     public void onStart() {
         super.onStart();
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -83,17 +96,47 @@ public class SubmitMultipleReportsLocation extends Fragment {
     public void onStop() {
         super.onStop();
     }
+
     public HashMap<String,AttributeValue> getValues(HashMap<String, AttributeValue> vals){
         Log.d(TAG, "getValues");
         if(!StreetInput.getText().toString().trim().equals(""))
-            vals.put("Street",new AttributeValue().withS(StreetInput.toString()));
-
+            vals.put("Street", new AttributeValue().withS(StreetInput.getText().toString()));
         if(!CityInput.getText().toString().trim().equals(""))
-            vals.put("City",new AttributeValue().withS(CityInput.toString()));
-
+            vals.put("City", new AttributeValue().withS(CityInput.getText().toString()));
         if(!ZipInput.getText().toString().trim().equals(""))
-            vals.put("ZipCode",new AttributeValue().withS(ZipInput.toString()));
+            vals.put("ZipCode", new AttributeValue().withS(ZipInput.getText().toString()));
 
+        if (state != null)
+            vals.put("State", new AttributeValue().withS(state));
         return vals;
     }
+
+
+    public String getCity() {
+        return CityInput.getText().toString();
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getZip() {
+        return ZipInput.getText().toString();
+    }
+
+    public String getStreet() {
+        return StreetInput.getText().toString();
+    }
+
+
+    public boolean areAllRequiredFieldsEntered() {
+//        Ensures an address is entered, at least state, zip and city must be entered
+        return state != null && !ZipInput.getText().toString().matches("") && !CityInput.getText().toString().matches("");
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
+
 }

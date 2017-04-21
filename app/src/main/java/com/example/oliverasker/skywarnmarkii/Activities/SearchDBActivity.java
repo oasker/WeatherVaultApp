@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,22 +22,18 @@ import java.util.HashMap;
  */
 
 public class SearchDBActivity extends AppCompatActivity implements  SearchDBFragment.OnItemSelectedListener{
-    private ListView listView;
-    HashMap<String,String> testAttr;
-
     private static final String TAG = "SearchDBActivity";
-
+    HashMap<String, String> testAttr;
     EditText cityTF;
     EditText stateTF;
     EditText zipTF;
     EditText streetTF;
     Switch singleOrRangedDate;
     CheckBox useCurrentLocation;
-    
     //DateRange Stuff
     DatePicker startDP;
     DatePicker endDP;
-
+    private ListView listView;
     private int startMonth;
     private int endMonth;
     private int startDay;

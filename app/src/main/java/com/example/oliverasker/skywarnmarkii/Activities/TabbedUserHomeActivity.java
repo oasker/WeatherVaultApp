@@ -1,12 +1,12 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.example.oliverasker.skywarnmarkii.Callbacks.UserAttributesCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
-import com.example.oliverasker.skywarnmarkii.Fragments.QueryReportAttributesFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.QueryReportsAttributesFragments.QueryReportAttributesFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.UserInfoHomeFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.ViewReportsFromSingleDayFragment;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
@@ -32,17 +32,19 @@ import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
 
 import java.util.Map;
 
+//import android.support.v4.app.Fragment;
+//import android.support.v4.app.FragmentManager;
+//import android.support.v4.app.FragmentPagerAdapter;
+//import android.support.v4.view.ViewPager;
+
 
 public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, UserAttributesCallback {
     private static final String TAG= "TabbedUserHomeActivity";
-
+    Fragment mostRecentSelectedFragment;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private TabLayout tabLayout;
     private ImageButton newReportButton;
-
-
-    Fragment mostRecentSelectedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         //mViewPager=new ViewPager(this);
 //         Create the adapter that will return a fragment for each of the three
 //         primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -300,7 +302,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            mostRecentSelectedFragment = new UserInfoHomeFragment();
+            mostRecentSelectedFragment = null;//new UserInfoHomeFragment();
             switch (position){
                 case 0:
                     Log.d(TAG, "::::::::::::::::::::::::::UserInfoHomeFragment");
@@ -312,6 +314,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                 case 1:
                     Log.d(TAG, "::::::::::::::::::::::::::Query Report frag");
                     mostRecentSelectedFragment = new QueryReportAttributesFragment();
+//                    mostRecentSelectedFragment.;
+//                    mostRecentSelectedFragment
                     return mostRecentSelectedFragment;
                     //return new QueryReportAttributesFragment();
 
@@ -335,7 +339,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
                 default:
                     Log.d(TAG, "Default: UsereInfoHomeFragment");
-                    return mostRecentSelectedFragment;
+                    return new UserInfoHomeFragment();
 //                    return new UserInfoHomeFragment();
             }
         }

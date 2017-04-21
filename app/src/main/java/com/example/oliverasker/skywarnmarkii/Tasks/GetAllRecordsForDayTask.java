@@ -28,14 +28,13 @@ import java.util.Map;
  */
 
 public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
-    private String[] reportAttributes;
     private static final String TAG = "GetAllRecordsForDayTask";
-    ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
-    private AmazonDynamoDBClient ddb;
-    Context mContext;
-    private String date;
-
     public ICallback delegate = null;
+    ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
+    Context mContext;
+    private String[] reportAttributes;
+    private AmazonDynamoDBClient ddb;
+    private String date;
 
     public void setDelegate(ICallback delegate){
         this.delegate=delegate;
@@ -189,8 +188,8 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
             if(item.containsKey("WaterEquivalent"))
                 reportEntry.setWaterEquivalent(Float.parseFloat(Utility.parseDynamoDBResultValuesToString(item.get("WaterEquivalent").toString())));
 
-            if(item.containsKey("WhiteOut"))
-                reportEntry.setWhiteout(Utility.parseDynamoDBResultValuesToString(item.get("WhiteOut").toString()));
+            if (item.containsKey("Whiteout"))
+                reportEntry.setWhiteout(Utility.parseDynamoDBResultValuesToString(item.get("Whiteout").toString()));
 
             if(item.containsKey("WinterWeatherComments"))
                 reportEntry.setWinterWeatherComments(Utility.parseDynamoDBResultValuesToString(item.get("WinterWeatherComments").toString()));
@@ -263,10 +262,10 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
 
             reportList.add(reportEntry);
             reportEntry = null;
-            for(Object items: item.values())
-                Log.d(TAG, items.toString());
+//            for(Object items: item.values())
+            //Log.d(TAG, items.toString());
         }
-        Log.d(TAG, "QueryResultSize: "+ queryResult.getCount());
+        // Log.d(TAG, "QueryResultSize: "+ queryResult.getCount());
         return null;
     }
 

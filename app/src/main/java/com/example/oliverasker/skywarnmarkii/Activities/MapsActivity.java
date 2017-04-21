@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Activites;
+package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,24 +29,20 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
     private static final String TAG = "MapsActivity";
-
-    private GoogleMap mMap;
-
     //  Variables for controlling camera bounds, view
     LatLngBounds.Builder builder;
     CameraUpdate cameraUpdate;
-
+    MarkerOptions markerOptions;
+    private GoogleMap mMap;
     //  Holds values passed into it from QueryLauncherActivity class
     private SkywarnWSDBMapper[] receivedData;
     //  Holds value for a single report from ViewReportActivity class
     private SkywarnWSDBMapper report;
-
     //  For multiple reports
     // Resource: http://stackoverflow.com/questions/13855049/how-to-show-multiple-markers-on-mapfragment-in-google-map-api-v2
     private List<MarkerOptions> markerOptionsList = new ArrayList<MarkerOptions>();
     //For Single report
     private LatLng pos;
-    MarkerOptions markerOptions;
     private boolean singleReport;
 
     private ArrayList<SkywarnWSDBMapper> reportsWithValidCoords;

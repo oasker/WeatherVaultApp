@@ -21,8 +21,9 @@ import java.io.Serializable;
 //class CustomAdapter extends ArrayAdapter<String> {
 public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements Serializable {
     private static final String TAG = "SkywarnDBAdapter";
-    private Context mContext;
     SkywarnWSDBMapper[] rows;
+    private Context mContext;
+    private Context getmContext;
 
     public SkywarnDBAdapter(Context context, SkywarnWSDBMapper[] row) {
         super(context, R.layout.custom_row, row);
@@ -33,7 +34,6 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SkywarnWSDBMapper dbRow = rows[position];
-
 
         ViewHolder viewHolder = null;
         //if (convertView == null) {
@@ -98,7 +98,7 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
 //            ViewHolder.rating.setText("Rating: " + String.valueOf(dbRow.getNetVote()));
 //            ViewHolder.comments.setText(dbRow.getComments());
         ViewHolder.date.setText("Submitted: " + dbRow.getDateSubmittedString());
-        ViewHolder.location.setText(dbRow.getEventCity() + " ," + dbRow.getEventState());
+        ViewHolder.location.setText(dbRow.getEventCity() + " ," + dbRow.getEventState().toUpperCase());
         ViewHolder.username.setText(dbRow.getUsername());
         ViewHolder.weatherEvent.setText(dbRow.getWeatherEvent());
         ViewHolder.rating.setText("Rating: " + String.valueOf(dbRow.getNetVote()));
@@ -144,6 +144,10 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         return 0;
     }
 
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
     static class ViewHolder {
         static TextView date;
         static TextView location;
@@ -154,5 +158,4 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         static ImageView weatherImage;
         static int pos;
     }
-
 }
