@@ -18,7 +18,6 @@ import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,10 +31,10 @@ import java.util.Map;
 public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
     private static final String TAG = "QueryReportAttrTask";
     public ICallback delegate = null;
-    ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
-    HashMap<String, String> matchAttributesToQuery;
-    HashMap<String, String> rangeAttributesToQuery;
-    ArrayList<SkywarnWSDBMapper> weatherList = null;
+    private ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
+    private HashMap<String, String> matchAttributesToQuery;
+    private HashMap<String, String> rangeAttributesToQuery;
+    private ArrayList<SkywarnWSDBMapper> weatherList = null;
     private String[] reportAttributes;
     private AmazonDynamoDBClient ddb;
     private Context mContext;
@@ -45,6 +44,13 @@ public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
     private int minRange;
     private int maxRange;
     private Map queryConditionMap;
+
+
+
+
+
+//    Used to tell when all reports have been received
+    private boolean isLastQuery;
 
     @Override
     protected void onPreExecute() {
@@ -60,11 +66,12 @@ public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
                 Constants.IDENTITY_POOL_ID,
                 Regions.US_EAST_1);
 
-        ddb= new AmazonDynamoDBClient(credentials);
+        ddb = new AmazonDynamoDBClient(credentials);
         ddb.setRegion(Region.getRegion(Regions.US_EAST_1));
 
         //FINALLY WORKS
         //https://aws.amazon.com/blogs/mobile/amazon-dynamodb-on-mobile-part-4-local-secondary-indexes/
+
 
 //       while (startDate != endDate) {
         Map keyCondition = new HashMap();
@@ -123,6 +130,7 @@ public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
 
 
 //            Log.d(TAG, "*************Print vals****************");
+        Log.d(TAG, "/////// queryConditionMap before placing in QueryRequest //////////// ");
         Utility.printMap(queryConditionMap);
         QueryRequest queryRequest = new QueryRequest()
                 .withTableName("SkywarnWSDB_rev4")
@@ -264,23 +272,23 @@ public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
             if (item.containsKey("DownVote"))
                 reportEntry.setDownVote(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("DownVote").toString())));
 
-            ////////// Severe Attributes //////////
-            if (item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
+//            Todo: add in injury/fatalities/comments attributes for all weather event types
+            ////////// Injury,Fatalities Comments Attributes //////////
+            if (item.containsKey("CoastalEventFatalities"))
+                reportEntry.setCoastalEventFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("CoastalEventFatalities").toString())));
 
-            if (item.containsKey("NumberOfFatalities"))
-                reportEntry.setFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
-            if (item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
+            if (item.containsKey("CoastalEventInjuries"))
+                reportEntry.setCoastalEventInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("CoastalEventInjuries").toString())));
+
+            if (item.containsKey("CoastalEventComments"))
+                reportEntry.setCoastalEventComments(Utility.parseDynamoDBResultValuesToString(item.get("CoastalEventComments").toString()));
 
             Log.i(TAG, "WeatherEvent" + reportEntry.getWeatherEvent());
             reportList.add(reportEntry);
-            reportEntry = null;
-//               startDate.add(Calendar.DAY_OF_MONTH,1);
-//           }
-            //Log.d(TAG, "QueryResultSize: " + queryResult.getCount());
-
         }
+
+//      Signal this is last queries
+
         return null;
     }
 
@@ -293,11 +301,12 @@ public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-//        SkywarnWSDBMapper test = new SkywarnWSDBMapper();
-//                test.setDateSubmittedEpoch((long)12312442);
-//                test.setDateSubmittedString("2/2/2");
         delegate.processFinish(reportList);
+
+        if(isLastQuery)
+            delegate.allQueriesComplete();
         delegate = null;
+        reportList.clear();
     }
 
 
@@ -339,11 +348,8 @@ public class QueryReportAttributesTask extends AsyncTask<Void,Void,Void> {
         mContext = c;
     }
 
-
-    public String CalendarToString(Calendar c) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String dateOfEvent = sdf.format(c.getTime());
-        Log.d(TAG, "startDateString: " + dateOfEvent);
-        return dateOfEvent;
+    public void setLastQuery(boolean lastQuery) {
+        isLastQuery = lastQuery;
     }
+
 }

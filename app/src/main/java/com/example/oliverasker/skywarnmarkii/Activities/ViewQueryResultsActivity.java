@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.oliverasker.skywarnmarkii.Adapters.SkywarnDBAdapter;
@@ -32,15 +31,17 @@ public class ViewQueryResultsActivity extends Activity {
         setContentView(R.layout.weather_list_view);
         Log.d(TAG, "onCreate()");
 
+
         listView = (ListView) findViewById(R.id.weather_list_view);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle.getSerializable("queryResultsArray") != null) {
             queryResult = (SkywarnWSDBMapper[]) bundle.getSerializable("queryResultsArray");
             if (queryResult.length == 0) {
-                Toast.makeText(this, "No Reports found", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "No Reports found", Toast.LENGTH_SHORT).show();
             }
 
+            Log.d(TAG,"STRAIGHT OUT OF BUNDLE queryResult.length: " +queryResult.length);
             SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(this, queryResult);
             listView.setAdapter(skywarnAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -65,13 +66,13 @@ public class ViewQueryResultsActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        queryResult=new SkywarnWSDBMapper[queryResult.length];
     }
 
     @Override
     protected void onPause() {
         super.onPause();
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -91,5 +92,6 @@ public class ViewQueryResultsActivity extends Activity {
         i.putExtras(bundle);
         startActivity(i);
     }
+
 
 }

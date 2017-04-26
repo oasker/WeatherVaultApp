@@ -3,7 +3,6 @@ package com.example.oliverasker.skywarnmarkii.Fragments.QueryReportsAttributesFr
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,8 +13,12 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.example.oliverasker.skywarnmarkii.Callbacks.DateCallBack;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility.DateUtility;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,6 +42,9 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
     private TextView dateToQueryTV;
     private String month;
     private String day;
+    private Date dateToQuery;
+
+    private DateCallBack callBack;
 
     //    private String mParam1;
 //    private String mParam2;
@@ -76,6 +82,7 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        dateToQuery = new Date();
     }
 
     @Override
@@ -83,7 +90,7 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View v = inflater.inflate(R.layout.fragment_query_report_attributes_single_day_date_select, container, false);
-
+        dateToQuery = java.util.Calendar.getInstance().getTime();
         dateToQueryString = new StringBuilder();
         //  Setup widgets and listeners
         dateToQueryTV = (TextView) v.findViewById(R.id.single_day_to_query_TV);
@@ -114,6 +121,9 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
                                         c = Calendar.getInstance();
                                         c.set(year, monthOfYear, dayOfMonth);
                                         dateToQueryEpoch = c.getTimeInMillis();
+                                        dateToQuery = c.getTime();
+
+                                        callBack.setSingleDateToQuery(c);
                                     }
 
                                     if (monthOfYear + 1 < 10)
@@ -138,7 +148,6 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
                 }
             }
         });
-
         return v;
     }
 
@@ -167,9 +176,13 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
         mListener = null;
     }
 
-    public String getDateToQuery() {
+    public String getDateToQueryString() {
         Log.d(TAG, "dateToQueryTV.getText(): " + dateToQueryTV.getText().toString());
         return dateToQueryTV.getText().toString();
+    }
+
+    public Date getDateToQuery() {
+        return dateToQuery;
     }
 
     /**
@@ -185,4 +198,9 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+    public void setCallBack(DateCallBack callBack) {
+        this.callBack = callBack;
+    }
 }
+

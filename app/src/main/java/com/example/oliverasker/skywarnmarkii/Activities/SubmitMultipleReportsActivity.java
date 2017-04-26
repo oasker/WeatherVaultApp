@@ -188,6 +188,7 @@ public class SubmitMultipleReportsActivity extends ActionBarActivity {
     }
 
     private void refreshActivity() {
+        Toast.makeText(this, "Report Submitted", Toast.LENGTH_SHORT);
         finish();
         startActivity(getIntent());
     }
@@ -227,6 +228,11 @@ public class SubmitMultipleReportsActivity extends ActionBarActivity {
 
         @Override
         public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
+
+        }
+
+        @Override
+        public void allQueriesComplete() {
 
         }
 

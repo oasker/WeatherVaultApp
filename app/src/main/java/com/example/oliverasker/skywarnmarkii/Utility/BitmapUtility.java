@@ -116,7 +116,6 @@ public class BitmapUtility {
     }
 
 
-
     public static ImageView resizeImageView(int width, int height, ImageView i) {
 //        final ImageView picture1 = (ImageView)findViewById(R.id.imageView1);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);

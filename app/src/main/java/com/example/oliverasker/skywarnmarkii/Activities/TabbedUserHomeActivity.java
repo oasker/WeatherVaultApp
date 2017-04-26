@@ -32,10 +32,6 @@ import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
 
 import java.util.Map;
 
-//import android.support.v4.app.Fragment;
-//import android.support.v4.app.FragmentManager;
-//import android.support.v4.app.FragmentPagerAdapter;
-//import android.support.v4.view.ViewPager;
 
 
 public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, UserAttributesCallback {
@@ -43,7 +39,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     Fragment mostRecentSelectedFragment;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
-    private TabLayout tabLayout;
+    private TabLayout topTabLayout;
+    private TabLayout bottomTabLayout;
     private ImageButton newReportButton;
 
     @Override
@@ -64,9 +61,11 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(0);
 
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(mViewPager);
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+//        Setup top and bottom tab layout
+        bottomTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        bottomTabLayout.setupWithViewPager(mViewPager);
+        bottomTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch(tab.getPosition()){
@@ -90,6 +89,38 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                 }
             }
         });
+
+
+        bottomTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        bottomTabLayout.setupWithViewPager(mViewPager);
+        bottomTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch(tab.getPosition()){
+                    case 3:
+                        launchMultipleOrSingleReportDialog();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                switch(tab.getPosition()){
+                    case 3:
+                        launchMultipleOrSingleReportDialog();
+                        break;
+                }
+            }
+        });
+
+
+        
+        
 
 //        newReportButton = (ImageButton) findViewById(R.id.open_write_new_report_button);
 //        newReportButton.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +219,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 //        int id = item.getItemId();
 
         switch(item.getItemId()) {
-
             case R.id.action_settings:
                 Toast.makeText(this, "User Settings Functionality is Still under Development", Toast.LENGTH_LONG).show();
                 return true;
@@ -232,7 +262,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     }
     @Override
     public void onProcessFinished(Map<String, String> vals) {
-
+        Log.d(TAG, "onProcessFinished(Map<String, String>)");
     }
     @Override
     public void onProcessFinished(String[] vals) {
@@ -340,13 +370,12 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                 default:
                     Log.d(TAG, "Default: UsereInfoHomeFragment");
                     return new UserInfoHomeFragment();
-//                    return new UserInfoHomeFragment();
             }
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
+            // Show 4 total pages.
             return 4;
         }
 
@@ -356,11 +385,11 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                 case 0:
                     return "User Profile";
                 case 1:
-                    return "Search Reports";
+                    return "Search";
                 case 2:
                     return "Relevant Reports";
                 case 3:
-                    return "Submit Report";
+                    return "Submit";
             }
             return null;
         }

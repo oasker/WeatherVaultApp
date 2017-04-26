@@ -429,6 +429,11 @@ class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallb
     public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
 
     }
+
+    @Override
+    public void allQueriesComplete() {
+
+    }
 }
 }
 

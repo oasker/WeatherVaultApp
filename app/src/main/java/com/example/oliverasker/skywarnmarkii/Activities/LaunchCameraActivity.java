@@ -169,16 +169,16 @@ public class LaunchCameraActivity extends AppCompatActivity {
         //ToDo:UNCOMMENT TO ALLOW REPORTS TO BE SUBMITTED \/*******************************************
         //  Retreive Data from SubmitReportDetailsActivity to submit after user takes (or doesnt take)
         //  a photo
-//        Intent i = getIntent();
-//        epoch = i.getLongExtra("epoch", -1);
-//        dateSubmittedString = i.getStringExtra("DateSubmittedString");
-//        Object[] tempObj = (Object[]) i.getSerializableExtra("attributeValArray");
-//        attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
-//
-//        keyArray = i.getStringArrayExtra("keyArray");
-//        for (int j = 0; j < keyArray.length; j++) {
-//            Log.d(TAG, " onCreate(): key: " + keyArray[j] + " val: " + attributeValArray[j]);
-//        }
+        Intent i = getIntent();
+        epoch = i.getLongExtra("epoch", -1);
+        dateSubmittedString = i.getStringExtra("DateSubmittedString");
+        Object[] tempObj = (Object[]) i.getSerializableExtra("attributeValArray");
+        attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
+
+        keyArray = i.getStringArrayExtra("keyArray");
+        for (int j = 0; j < keyArray.length; j++) {
+            Log.d(TAG, " onCreate(): key: " + keyArray[j] + " val: " + attributeValArray[j]);
+        }
         //ToDo:UNCOMMENT TO ALLOW REPORTS TO BE SUBMITTED \/*******************************************
 
 
@@ -301,7 +301,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
             mediaControls = new MediaController(LaunchCameraActivity.this);
         }
 
-        mVideoView = (VideoView) findViewById(R.id.video_view);
+//        mVideoView = (VideoView) findViewById(R.id.video_view);
         //mVideoView.setMediaController(mediaControls);
         /////////////////// ///////////////////
         ////// AWS Example method
@@ -965,6 +965,10 @@ class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallb
     @Override
     public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
 
+    }
+
+    @Override
+    public void allQueriesComplete() {
     }
 }
 

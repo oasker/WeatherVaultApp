@@ -35,10 +35,6 @@ public class SkywarnWSDBMapper implements Serializable {
     private String LastName;
 
 
-    private int Injuries;
-    private int Fatalities;
-    private String InjuryComments;
-
     //Number of photos/videos associated with S3
     private int NumberOfImages=0;
     private int NumberOfVideos=0;
@@ -83,11 +79,12 @@ public class SkywarnWSDBMapper implements Serializable {
     private String SevereFatalities="|";
     private String LightningDamageComments="|";
     private String WindDamageComments="|";
+    private String SevereWeatherComments="|";
+
 
     ///////////////////////////////////////////////////////////////
     //                  Winter Weather                          //
     //////////////////////////////////////////////////////////////
-
     private float Snowfall = 9999;
     private float SnowfallRate = 9999;
     private float SnowDepth = 9999;
@@ -98,7 +95,10 @@ public class SkywarnWSDBMapper implements Serializable {
     private String BlowDrift = "false";
     private String Whiteout = "false";
     private String Thundersnow = "false";
+
     private String WinterWeatherComments="|";
+    private int WinterWeatherInjuries;
+    private int WinterWeatherFatalities;
 
     ///////////////////////////////////////////////////////////////
     //                  Rain Weather                          //
@@ -106,9 +106,11 @@ public class SkywarnWSDBMapper implements Serializable {
     private float Rain = 9999;
     private float PrecipRate= 9999;
     private String FloodComments="|";
+
     private String RainEventComments="|";
-    private String RainEventFatalities="|";
-    private String RainEventInjuries="|";
+    private int RainEventFatalities;
+    private int RainEventInjuries;
+
 
 
 
@@ -117,9 +119,11 @@ public class SkywarnWSDBMapper implements Serializable {
     //////////////////////////////////////////////////////////////
     //Coastal Flooding Specific Attributes
     private float StormSurge = 9999;
+
     private String CoastalEventComments="|";
-    private String CoastalEventFatalities="|";
-    private String CoastalEventInjuries="|";
+    private int CoastalEventFatalities;
+    private int CoastalEventInjuries;
+
 
 
     ///////////////////////////////////////////////////////////////
@@ -565,19 +569,19 @@ public class SkywarnWSDBMapper implements Serializable {
         RainEventComments = rainEventComments;
     }
 
-    public String getRainEventFatalities() {
+    public int getRainEventFatalities() {
         return RainEventFatalities;
     }
 
-    public void setRainEventFatalities(String rainEventFatalities) {
+    public void setRainEventFatalities(int rainEventFatalities) {
         RainEventFatalities = rainEventFatalities;
     }
 
-    public String getRainEventInjuries() {
+    public int getRainEventInjuries() {
         return RainEventInjuries;
     }
 
-    public void setRainEventInjuries(String rainEventInjuries) {
+    public void setRainEventInjuries(int rainEventInjuries) {
         RainEventInjuries = rainEventInjuries;
     }
 
@@ -589,19 +593,19 @@ public class SkywarnWSDBMapper implements Serializable {
         CoastalEventComments = coastalEventComments;
     }
 
-    public String getCoastalEventFatalities() {
+    public int getCoastalEventFatalities() {
         return CoastalEventFatalities;
     }
 
-    public void setCoastalEventFatalities(String coastalEventFatalities) {
+    public void setCoastalEventFatalities(int coastalEventFatalities) {
         CoastalEventFatalities = coastalEventFatalities;
     }
 
-    public String getCoastalEventInjuries() {
+    public int getCoastalEventInjuries() {
         return CoastalEventInjuries;
     }
 
-    public void setCoastalEventInjuries(String coastalEventInjuries) {
+    public void setCoastalEventInjuries(int coastalEventInjuries) {
         CoastalEventInjuries = coastalEventInjuries;
     }
 
@@ -732,30 +736,6 @@ public class SkywarnWSDBMapper implements Serializable {
         WinterWeatherComments = winterWeatherComments;
     }
 
-    @DynamoDBAttribute(attributeName = "NumberOfInjuries")
-    public int getInjuries() {
-        return Injuries;
-    }
-    public void setInjuries(int injuries) {
-        Injuries = injuries;
-    }
-
-    @DynamoDBAttribute(attributeName = "NumberOfFatalities")
-    public int getFatalities() {
-        return Fatalities;
-    }
-    public void setFatalities(int fatalities) {
-        Fatalities = fatalities;
-    }
-
-
-    @DynamoDBAttribute(attributeName = "InjuryComments")
-    public String getInjuryComments() {
-        return InjuryComments;
-    }
-    public void setInjuryComments(String injuryComments) {
-        InjuryComments = injuryComments;
-    }
 
     @DynamoDBAttribute(attributeName = "UpVote")
     public int getUpVote() {
@@ -797,6 +777,30 @@ public class SkywarnWSDBMapper implements Serializable {
 
     public void setWindDamageComments(String windDamageComments) {
         WindDamageComments = windDamageComments;
+    }
+
+    public String getSevereWeatherComments() {
+        return SevereWeatherComments;
+    }
+
+    public void setSevereWeatherComments(String severeWeatherComments) {
+        SevereWeatherComments = severeWeatherComments;
+    }
+
+    public int getWinterWeatherInjuries() {
+        return WinterWeatherInjuries;
+    }
+
+    public void setWinterWeatherInjuries(int winterWeatherInjuries) {
+        WinterWeatherInjuries = winterWeatherInjuries;
+    }
+
+    public int getWinterWeatherFatalities() {
+        return WinterWeatherFatalities;
+    }
+
+    public void setWinterWeatherFatalities(int winterWeatherFatalities) {
+        WinterWeatherFatalities = winterWeatherFatalities;
     }
 }
 

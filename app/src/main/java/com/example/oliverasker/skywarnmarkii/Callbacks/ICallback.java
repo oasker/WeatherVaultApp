@@ -10,4 +10,5 @@ import java.util.ArrayList;
 
 public interface ICallback {
     void processFinish(ArrayList<SkywarnWSDBMapper> result);
+    void allQueriesComplete();
 }

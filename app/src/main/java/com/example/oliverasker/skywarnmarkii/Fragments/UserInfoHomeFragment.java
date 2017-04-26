@@ -1,6 +1,7 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
 import com.example.oliverasker.skywarnmarkii.Utility.BitmapUtility;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 import com.koushikdutta.ion.Ion;
 
 import java.io.Serializable;
@@ -45,6 +47,8 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     private int profileImageViewWidth=300;
     private int profileImageViewHeight= 300;
 
+    private Context mContext;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
@@ -60,7 +64,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
 
         GetUserCognitoAttributesTask attributesTask = new GetUserCognitoAttributesTask(UserInfoHomeFragment.this);
         // showUserInfoFragment();
-        attributesTask.initUserPool(getContext());
+        attributesTask.initUserPool(mContext);
         attributesTask.setCognitoUser(UserInformationModel.getInstance().getUserID());
         attributesTask.execute();
 
@@ -69,7 +73,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
             public void onClick(View v) {
                 GetUserCognitoAttributesTask attributesTask = new GetUserCognitoAttributesTask(UserInfoHomeFragment.this);
                // showUserInfoFragment();
-                attributesTask.initUserPool(getContext());
+                attributesTask.initUserPool(mContext);
                 attributesTask.setCognitoUser(UserInformationModel.getInstance().getUserID());
                 attributesTask.execute();
             }
@@ -104,11 +108,14 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
 
     private void showUserInfoFragment(Map<String,String> attrMap){
         Log.i(TAG, "showUserInfoFragment()");
-        Fragment showUserInfoFragment = new Fragment();
+
+        UserHomePersonalDetailsFragment showUserInfoFragment = new UserHomePersonalDetailsFragment();
+
         Bundle b = new Bundle();
         b.putSerializable("attrMap", (Serializable) attrMap);
         showUserInfoFragment.setArguments(b);
         android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+//        ft.replace(R.id.user_info_frag_container, showUserInfoFragment);
         ft.replace(R.id.user_info_frag_container, showUserInfoFragment);
         ft.commit();
     }
@@ -189,6 +196,9 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     public void onProcessFinished(Map<String,String> vals) {
         //showUserInfoFragment(mapVals);
         if(vals!=null) {
+
+            Log.d(TAG, "***********  onProcessFinished(Map<STring,String>): user attributes   ***********");
+            Utility.printMap(vals);
             UserInformationModel.getInstance().setPhone(vals.get("phone_number"));
             UserInformationModel.getInstance().setAffiliation(vals.get("custom:Affiliation"));
             UserInformationModel.getInstance().setCallsign(vals.get("custom:CallSign"));
@@ -198,6 +208,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
             UserInformationModel.setLastName(vals.get("family_name"));
             //Log.d(TAG, "phoneAFF " + UserInformationModel.getInstance().getAffiliation());
 
+
             showUserInfoFragment(vals);
             Log.i(TAG, "onProcessFinished() : CALLSIGN: " + UserInformationModel.getInstance().getCallsign());
             //Log.d(TAG, "onProceessFinised(): " + vals.get("phone_number"));
@@ -205,16 +216,22 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext= context;
+    }
+
     //
     public void downloadPhoto(){
         Log.d(TAG, "downloadPhoto()");
         // String filename = "oasker.jpg";
         String filename = UserInformationModel.getInstance().getUsername()+".jpg";
 
-        String externalStorage = getContext().getCacheDir().toString()+"/";
+        String externalStorage = mContext.getCacheDir().toString()+"/";
         final String filePath = externalStorage+filename;
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                getContext(),
+                mContext,
                 Constants.IDENTITY_POOL_ID, // Identity Pool ID
                 Regions.US_EAST_1           // Region
         );
@@ -263,7 +280,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
                 .placeholder(R.drawable.sunny)
                 .error(R.drawable.snow_icon)
                 .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
-        BitmapUtility.scaleImage(getContext(),profileImage);
+        BitmapUtility.scaleImage(mContext,profileImage);
     }
 
 }

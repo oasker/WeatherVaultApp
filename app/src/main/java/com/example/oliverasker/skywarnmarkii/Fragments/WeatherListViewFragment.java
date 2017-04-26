@@ -121,6 +121,11 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         result = null;
     }
 
+    @Override
+    public void allQueriesComplete() {
+
+    }
+
     public void setmContext(Context mContext) {
         this.mContext = mContext;
     }

@@ -11,17 +11,22 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -44,7 +49,6 @@ import com.example.oliverasker.skywarnmarkii.Callbacks.UriCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Fragments.CoastalFloodingViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.GeneralSubmitReportFragment;
-import com.example.oliverasker.skywarnmarkii.Fragments.MediaFragments.VideoViewMediaFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.RainFloodViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.SevereViewReportFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.WinterViewReportFragment;
@@ -53,6 +57,7 @@ import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.RateReportTask;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
+import com.koushikdutta.ion.Ion;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,7 +67,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /*
  *  Activity for viewing report selected from listview
@@ -90,21 +94,32 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     private Button upVoteButton;
     private Button downVoteButton;
 
+    private Context mContext;
+
+    private int imageViewWidth=300;
+    private int imageViewHeight= 300;
+
+//    Video variables
+    private boolean bVideoIsBeingTouched = false;
+    private Handler mHandler = new Handler();
+
     private VideoView vV;
 
     private Button viewOnMapButton;
 
     private HashMap<String, String> valueMap;
     private ImageView iconImageView;
-    private int numberOfPhotos = 0;
-    private int reportImageWidth = 400;
-    private int reportImageHeight = 400;
+
+    private int numberOfPhotos;
+    private int numberOfVideos;
+
+    private int reportImageWidth = 500;
+    private int reportImageHeight = 500;
     BitmapCallback callback = new BitmapCallback() {
         @Override
         public void processFinish(ArrayList<Bitmap> result) {
 
         }
-
         @Override
         public void processFinish(Bitmap result,String s) {
             if(result !=null) {
@@ -117,7 +132,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 
             }
         }
-
         @Override
         public void processFinish(Uri result) {
             //createImageView(result)
@@ -131,33 +145,26 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
                 e.printStackTrace();
             }
         }
+
+
         public void processFinish(Bitmap result) {
             if(result !=null) {
                 Log.i(TAG, "processFinished(bitmap)");
+//          For bitmaps
+//                ImageView iV = new ImageView(getApplicationContext());
+                ImageView iv = createImageView();
+                Ion.with(iv)
+                        .resize(reportImageWidth,reportImageHeight)
+                        .placeholder(R.drawable.sunny)
+                        .error(R.drawable.snow_icon)
+                        .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
+//                BitmapUtility.scaleImage(mContext, iv);
 
-                ImageView iV = new ImageView(getApplicationContext());
-                iV.setImageBitmap(result);
-                horizontalLinearLayout.addView(createImageView(result));
-                Log.d(TAG, "VIDEO TEST");
-//                For videos
-                String videoURL = "https://s3.amazonaws.com/skywarntestbucket/1490045353.0_tjpereira1995_0.mp4";
-
-//                vV.setVideoURI(uri);
-//                vV.start();
-                VideoViewMediaFragment videoView = new VideoViewMediaFragment();
-                videoView.setmContext(ViewReportActivity.this);
-                videoView.setVideoURL(videoURL);
-                horizontalLinearLayout.addView(videoView.getView());
-
-
-//                VideoView videoView = new VideoView(ViewReportActivity.this);
-//                horizontalLinearLayout.addView(videoView);
-//                videoView.setVideoURI(uri);
-//                videoView.start();
+                iv.setImageBitmap(result);
+//                horizontalLinearLayout.addView(iv);
+//          horizontalLinearLayout.addView(createImageView(result));
             }
         }
-
-
         public void processFinish(Bitmap result, ArrayList<String> pathList) {
             if(result !=null) {
                 Log.i(TAG, "processFinished(bitmap)");
@@ -168,6 +175,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             }
         }
     };
+
+
 
     private static boolean storagePermitted(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUESTCODE_WRITE_EXTERNAL_STORAGE);
@@ -185,12 +194,24 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     @Override
     public void onProcessComplete(Uri returnedUri) {
         Log.d(TAG, "onProcessComplete()");
-        try {
-            Bitmap b = MediaStore.Images.Media.getBitmap(this.getContentResolver(), returnedUri);
-            horizontalLinearLayout.addView(createImageView(b));
-        } catch (IOException e) {
-            Log.e(TAG, "onOnProcess complete:", e);
-        }
+
+//
+//        ImageView iv = createImageView();
+//        Ion.with(iv)
+//                .resize(reportImageWidth,reportImageHeight)
+//                .placeholder(R.drawable.sunny)
+//                .error(R.drawable.snow_icon)
+//                .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
+//        BitmapUtility.scaleImage(mContext, iv);
+//        horizontalLinearLayout.addView(iv);
+//
+//
+//        try {
+//            Bitmap b = MediaStore.Images.Media.getBitmap(this.getContentResolver(), returnedUri);
+//           // horizontalLinearLayout.addView(createImageView(b));
+//        } catch (IOException e) {
+//            Log.e(TAG, "onOnProcess complete:", e);
+//        }
     }
 
     //Todo: make check when user first looks at report and disable rating buttons if theyve voted or its their report
@@ -207,25 +228,28 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         }
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_view_report_layout);
         Log.d(TAG, "OnCreate()");
         Intent intent = getIntent();
-        Bundle weatherReport = intent.getExtras();
+        Bundle viewActivityBundle = intent.getExtras();
+        map = (SkywarnWSDBMapper) viewActivityBundle.get("selectedReport");
+        initGUI(map);
 
         horizontalLinearLayout = (LinearLayout) findViewById(R.id.view_report_activity_horizontal_linearlayout);
         photoIV = (ImageView) findViewById(R.id.photoIV);
-        valueMap = new HashMap<String, String>();
-        map = (SkywarnWSDBMapper) weatherReport.get("selectedReport");
-        initGUI(map);
+        valueMap = new HashMap<>();
+
 
         //Rating system widgets
         upVoteButton = (Button)findViewById(R.id.up_vote_button);
         downVoteButton = (Button)findViewById(R.id.down_vote_button);
 
-        vV = (VideoView) findViewById(R.id.videoView2);
+        //vV = (VideoView) findViewById(R.id.videoView2);
 
         upVoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,12 +308,19 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             }
         });
 
+//        Get count of related media
         numberOfPhotos = map.getNumberOfImages();
-
-        if(numberOfPhotos <= 0) {
-            photoLabelTV = (TextView) findViewById(R.id.view_report_activity_photo_label);
+        numberOfVideos = map.getNumberOfVideos();
+//
+        photoLabelTV = (TextView) findViewById(R.id.view_report_activity_photo_label);
+        if(numberOfPhotos <= 0 & numberOfVideos<=0) {
             photoLabelTV.setText("");
         }
+       else{
+            photoLabelTV.setText("Media");
+        }
+
+
 
         //Send data to fragments
         //Stupid way to do this i think, but need to brute force it
@@ -309,9 +340,9 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         valueMap.put("Freeing Rain Accumulation", String.valueOf(map.getFreezingRainAccum()));
 
 
-        valueMap.put("Number Of Fatalities", String.valueOf(map.getFatalities()));
-        valueMap.put("Number Of Injuries", String.valueOf(map.getInjuries()));
-        valueMap.put("Injuries Comments", String.valueOf(map.getInjuryComments()));
+        valueMap.put("Number Of Fatalities", String.valueOf(map.getCoastalEventFatalities()));
+        valueMap.put("Number Of Injuries", String.valueOf(map.getCoastalEventInjuries()));
+        valueMap.put("Injuries Comments", String.valueOf(map.getCoastalEventComments()));
 
         //Severe Weather
         valueMap.put("Severe Weather Type", map.getSevereType());
@@ -465,15 +496,67 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         storagePermitted(this);
         Log.d(TAG, "Epoch:" + map.getDateOfEvent() + " NumberPhotos: " + map.getNumberOfImages());
         if (numberOfPhotos > 0) {
-            Log.i(TAG, "NUMBERPHOTOS: " + numberOfPhotos);
+//            Log.i(TAG, "NUMBERPHOTOS: " + numberOfPhotos);
+            for(int i=0; i < numberOfPhotos;i++) {
+
+                StringBuilder urlSB = new StringBuilder();
+                urlSB.append("https://s3.amazonaws.com/skywarntestbucket/"+ String.format("%.0f",map.getDateSubmittedEpoch()) +"_"+ map.getUsername() +"_"+i+".jpg");
+                Log.d(TAG, "S3 URL: "+ urlSB);
+                ImageView iv = createImageView();
+                Ion.with(iv)
+                        .resize(reportImageWidth, reportImageHeight)
+                        .placeholder(R.drawable.sunny)
+                        .error(R.drawable.snow_icon)
+                        .load(urlSB.toString());
+
+//                BitmapUtility.scaleImage(mContext, iv);
+
+                horizontalLinearLayout.addView(iv);
+                urlSB.setLength(0);
+            }
         }
         fragTransaction.commit();
+//        try {
+////            launchdownloadPhotoTask();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
+//      Todo: CHANGE URL TO DYNAMICALLY CREATED ONE
+        if(numberOfVideos>0){
+            for(int i=0; i < numberOfVideos;i++) {
+                StringBuilder url = new StringBuilder();
+               // url.append("https://s3.amazonaws.com/skywarntestbucket/" + map.getDateSubmittedEpoch()+"_" + map.getUsername() + "_" + i +".mp4");
+                https://s3.amazonaws.com/skywarntestbucket/SampleVideo_1280x720_1mb.mp4
+                AddVideosToUI(url.toString());
+//                Set length of string builder to zero so it doesnt append over previous url
+                url.setLength(0);
+            }
+        }
+    }
+
+    public void AddVideosToUI(String videoURL){
+        Log.d(TAG, "VIDEO TEST");
+//                For videos
         try {
-            launchdownloadPhotoTask();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            Bitmap videoThumbnail = retriveVideoFrameFromVideo(videoURL);
+            FrameLayout frameLayout = new FrameLayout(this);
+
+//          Create play icon for over video thumbnail
+            Bitmap playIcon = BitmapFactory.decodeResource(this.getResources(),
+                    R.drawable.mr_ic_play_dark);
+            playIcon = Bitmap.createScaledBitmap(playIcon,50,50,false);
+
+            //frameLayout.addView(createVideoThumbnailView(videoThumbnail,videoURL));
+
+            frameLayout.addView(createVideoThumbnailView(playIcon,videoURL));
+//            horizontalLinearLayout.addView(createVideoThumbnailView(videoThumbnail,videoURL));
+            horizontalLinearLayout.addView(frameLayout);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
     private TableRow createAttributeTableRow(String labelString, String value){
@@ -513,28 +596,28 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         }
     }
 
-    public void launchdownloadPhotoTask() throws ExecutionException, InterruptedException {
-        for(int i = 0; i < numberOfPhotos; i++) {
-            downloadPhotoTask photoTask = new downloadPhotoTask();
-            String filename = String.format("%.0f" ,map.getDateSubmittedEpoch()) + "_" + map.getUsername() + "_" +i+".jpg";
-            Log.d(TAG, "launchdownloadPhotoTask(): with filename: " +filename );
-            photoTask.setmContext(this);
-            photoTask.setCallback(callback);
-            photoTask.setFilename(filename);
-            photoTask.setfilePath(getCacheDir() + "/"+filename+".jpg");
-
-            File cache = this.getCacheDir();
-            File appDir= new File(cache+"/bingo.jpg");
-           // p.setFile(appDir);
-
-           // photoTask.setfilePath(cache+"/bingo.jpg");
-
-            photoTask.setNumPhotos(map.getNumberOfImages());
-            photoTask.setLinearLayout(horizontalLinearLayout);
-            photoTask.execute();
-            photoTask.get();
-        }
-    }
+//    public void launchdownloadPhotoTask() throws ExecutionException, InterruptedException {
+//        for(int i = 0; i < numberOfPhotos; i++) {
+//            downloadPhotoTask photoTask = new downloadPhotoTask();
+//            String filename = String.format("%.0f" ,map.getDateSubmittedEpoch()) + "_" + map.getUsername() + "_" +i+".jpg";
+//            Log.d(TAG, "launchdownloadPhotoTask(): with filename: " +filename );
+//            photoTask.setmContext(this);
+//            photoTask.setCallback(callback);
+//            photoTask.setFilename(filename);
+//            photoTask.setfilePath(getCacheDir() + "/"+filename+".jpg");
+//
+//            File cache = this.getCacheDir();
+//            File appDir= new File(cache+"/bingo.jpg");
+//           // p.setFile(appDir);
+//
+//           // photoTask.setfilePath(cache+"/bingo.jpg");
+//
+//            photoTask.setNumPhotos(map.getNumberOfImages());
+//            photoTask.setLinearLayout(horizontalLinearLayout);
+//            photoTask.execute();
+//            photoTask.get();
+//        }
+//    }
 
     public void launchMapActivity() {
         Intent i = new Intent(this, MapsActivity.class);
@@ -576,9 +659,100 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         });
         return IV;
     }
+    public ImageView createVideoThumbnailView(Bitmap b, final String url) {
+        Log.d(TAG, "createImageView()");
+        final Bitmap tempBitmap = b;
+        ImageView IV = new ImageView(getApplicationContext());
+        IV.setId(0);
+        IV.requestLayout();
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth, reportImageHeight);
+        IV.setLayoutParams(layoutParams);
+        IV.setPadding(15, 15, 15, 15);
+        IV.setImageBitmap(b);
+        IV.setOnTouchListener(new View.OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.d(TAG, "VideoView onClick()");
+                Intent fullScreenVideoIntent = new Intent(ViewReportActivity.this, ViewVideoFullScreenActivity.class);
+                Bundle b = new Bundle();
+                fullScreenVideoIntent.putExtra("videoURL",url);
+                startActivity(fullScreenVideoIntent);
+
+                return false;
+            }
+        });
+        return IV;
+    }
+    //Create imageview with either bitmap or resourceID
+    public ImageView createImageView() {
+        Log.d(TAG, "createImageView()");
+//        final Bitmap tempBitmap = b;
+        ImageView IV = new ImageView(getApplicationContext());
+        IV.setId(0);
+        IV.requestLayout();
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth, reportImageHeight);
+        IV.setLayoutParams(layoutParams);
+        IV.setPadding(15, 15, 15, 15);
+//        IV.setImageBitmap(b);
+        IV.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ViewReportActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.dialog_view_photo_layout, null);
+                TextView dateTV = (TextView) alertLayout.findViewById(R.id.dialog_dateTV);
+                ImageView imageView = (ImageView) alertLayout.findViewById((R.id.imageView));
+//                imageView.setImageBitmap(tempBitmap);
+                builder.setIcon(R.drawable.sunny)
+                        .setMessage("message")
+                        .setTitle("Title");
+                builder.show();
+            }
+
+            //IV.setScaleType(ImageView.ScaleType.FIT_XY);
+            // b = Bitmap.createScaledBitmap(b,IV.getWidth(),IV.getHeight(),false);
+        });
+        return IV;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause()");
+
+    }
 
     public interface bitmapCallback {
         void onFinishedString(String s);
+    }
+
+//    Generates thumbnail from video received from url
+    public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable
+    {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever mediaMetadataRetriever = null;
+        try
+        {
+            mediaMetadataRetriever = new MediaMetadataRetriever();
+
+            if (Build.VERSION.SDK_INT >= 14 & videoPath!=null)
+                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
+            else
+                mediaMetadataRetriever.setDataSource(videoPath);
+            //   mediaMetadataRetriever.setDataSource(videoPath);
+            bitmap = mediaMetadataRetriever.getFrameAtTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.getMessage());
+
+        } finally {
+            if (mediaMetadataRetriever != null) {
+                mediaMetadataRetriever.release();
+            }
+        }
+        return bitmap;
     }
 }
 
@@ -695,4 +869,5 @@ class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
      public void setLinearLayout(LinearLayout ll){
         linearLayout = ll;
     }
+
 }

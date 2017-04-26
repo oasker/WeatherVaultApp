@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.example.oliverasker.skywarnmarkii.Callbacks.DateCallBack;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility.DateUtility;
 
@@ -66,6 +67,9 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
     private Calendar startDate;
     private Calendar endDate;
 
+    private DateCallBack callback;
+
+
 
     private TextView dateTV;
 
@@ -95,6 +99,7 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(false);
         if (getArguments() != null) {
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
@@ -103,6 +108,11 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        startDate = Calendar.getInstance();
+        startDate.add(Calendar.DAY_OF_MONTH,-1);
+        endDate = Calendar.getInstance();
+
 
         startDateString.append(DateUtility.getYerdaysDateString());
         endDateString.append(DateUtility.getTodaysDateString());
@@ -148,10 +158,12 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                                         c.set(year, monthOfYear, dayOfMonth);
                                         startDateEpoch = c.getTimeInMillis();
                                         startDate = c;
+                                        callback.startDateChanged(startDate);
                                     }
                                     startDateString.setLength(0);
                                     startDateString.append((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
                                     dateRangeToQueryTV.setText(startDateString + " to " + endDateString);
+
                                 }
                             }, mYear, mMonth, mDay);
                     datePickerDialog.getDatePicker().setMaxDate(endDateEpoch);
@@ -187,6 +199,7 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                                         c.set(year, monthOfYear, dayOfMonth);
                                         endDateEpoch = c.getTimeInMillis();
                                         endDate = c;
+                                        callback.endDateChanged(endDate);
                                     }
                                     // dateTV.setText((monthOfYear + 1)+ "/" + (dayOfMonth + "/"  + year));
                                     endDateString.setLength(0);
@@ -273,5 +286,9 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void setCallBack(DateCallBack dc){
+        callback = dc;
     }
 }

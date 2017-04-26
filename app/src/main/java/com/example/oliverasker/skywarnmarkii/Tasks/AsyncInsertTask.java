@@ -52,8 +52,6 @@ public class AsyncInsertTask extends AsyncTask<String[], Void, Void> implements 
                 Log.d(TAG, "_____________________________________________");
 
                // PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", report);
-
-
 //                PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", params[0]);
 //                PutItemResult putItemResult = ddb.putItem(putItemRequest);
 
@@ -76,6 +74,11 @@ public class AsyncInsertTask extends AsyncTask<String[], Void, Void> implements 
     }
     @Override
     public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
+
+    }
+
+    @Override
+    public void allQueriesComplete() {
 
     }
 }

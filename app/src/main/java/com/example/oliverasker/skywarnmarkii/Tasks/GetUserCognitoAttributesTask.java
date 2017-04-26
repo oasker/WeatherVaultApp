@@ -26,7 +26,7 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private CognitoUser user;
     private HashMap<String,String>  attrMap = new HashMap<>();
-    private String[] vals = new String[5];
+    private String[] userAttributesArray = new String[5];
     private Map<String, String> userAttrMap;
 
     public GetUserCognitoAttributesTask(UserAttributesCallback delegate) {
@@ -37,7 +37,6 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
     public void initUserPool(Context context){
         mContext = context;
         userPool = new CognitoUserPool(mContext, Constants.cognitoPoolID, Constants.cognitoAppClientId, null);
-
     }
 
     // 2. set CognitoUser
@@ -47,6 +46,7 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
+        Log.d(TAG, "doInBackground");
         GetDetailsHandler handler = new GetDetailsHandler() {
             @Override
             public void onSuccess(CognitoUserDetails cognitoUserDetails) {
@@ -58,7 +58,8 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
                // Utility.printMap(userAttr2.getAttributes());
                 Log.d(TAG, "given name: "+userAttrMap.get("given_name"));
                 //Iterator it = userAttr2.entrySet().iterator();
-                int index =0;
+                delegate.onProcessFinished(userAttrMap);
+
             }
 
             @Override
@@ -74,7 +75,7 @@ public class GetUserCognitoAttributesTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void v){
         delegate.onProcessFinished(userAttrMap);
-        delegate.onProcessFinished(vals);
+        delegate.onProcessFinished(userAttributesArray);
         delegate = null;
     }
 }

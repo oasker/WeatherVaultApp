@@ -88,6 +88,7 @@ public class RateReportTask extends AsyncTask<Void,Void,Void> {
         try {
             u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
+            Log.d(TAG, "url.openConnection() Response Code: "+ c.getResponseCode());
             c.setRequestMethod("GET");
             c.connect();
             InputStream inputStream = c.getInputStream();

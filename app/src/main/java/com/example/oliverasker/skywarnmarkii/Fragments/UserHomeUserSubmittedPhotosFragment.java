@@ -58,7 +58,7 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
 
         //ToDo:change filename to current user, not placeholder
         GetUserSubmittedPhotoNamesTask task2 = new GetUserSubmittedPhotoNamesTask();
-        task2.setmContext(getContext());
+        task2.setmContext(mContext);
         task2.setCallback(this);
         task2.execute();
 
@@ -74,10 +74,16 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
     public void processFinish(ArrayList<Bitmap> result) {
         Log.d(TAG, "bitMapcallback processFinished: size: " + result.size());
         for (Bitmap b : result) {
-            ImageView iV = new ImageView(getContext());
+            ImageView iV = new ImageView(mContext);
         }
     }
 
@@ -87,12 +93,12 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         //Log.d(TAG, "processFinished() bitmapSize: "+ result.getByteCount());
         //File f = new File("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
         Bitmap bitmap = BitmapFactory.decodeFile("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
-        ImageView iV = new ImageView(getContext());
-        ImageView iV2 = new ImageView(getContext());
+        ImageView iV = new ImageView(mContext);
+        ImageView iV2 = new ImageView(mContext);
         if (result != null) {
             iV.setImageBitmap(result);
             photoLinearLayout.addView(iV);
-            iV2.setImageBitmap(bitmap);
+//            iV2.setImageBitmap(bitmap);
             // photoLinearLayout.addView(iV2);
         }
     }

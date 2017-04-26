@@ -20,6 +20,7 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.example.oliverasker.skywarnmarkii.Activities.ViewQueryResultsActivity;
+import com.example.oliverasker.skywarnmarkii.Callbacks.DateCallBack;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.QueryReportAttributesFragmentDialogCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.StringCallback;
@@ -30,12 +31,13 @@ import com.example.oliverasker.skywarnmarkii.Fragments.SubmitMultipleReportsActi
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.QueryReportAttributesTask;
+import com.example.oliverasker.skywarnmarkii.Utility.DateUtility;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ import java.util.Map;
  * Use the {@link QueryReportAttributesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class QueryReportAttributesFragment extends Fragment implements ICallback, StringCallback, QueryReportAttributesFragmentDialogCallback {
+public class QueryReportAttributesFragment extends Fragment implements ICallback, StringCallback, QueryReportAttributesFragmentDialogCallback,DateCallBack {
     private static final String TAG = "QryRprtAttrFragment";
     QueryReportAttributesDateRangeFragment dateRangeFragment;
     private Map masterMap;
@@ -64,6 +66,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     private HashMap<String, String> matchAttributesToQuery;
     private HashMap<String, float[][]> rangeAttributesToQuery;
     private int weatherEventType;
+    private String testDate;
 //    1. severe
 //    2. winter
 //    3. coastal
@@ -84,11 +87,22 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     private QueryReportAttributesMatchItemFragment matchItem;
     private QueryReportAttributeRangeItemFragment rangeItem;
 
+//    Date stuff
     private boolean isDateRange;
     private boolean isSingleDay = true;
 
-    private Calendar startDate;
-    private Calendar endDate;
+//    Date Range variables
+    private Calendar startCal;
+    private Calendar endCal;
+
+    private Date startDate;
+    private Date endDate;
+
+//    Single Day stuff
+    private Date singleDate;
+
+
+    private ArrayList<SkywarnWSDBMapper> resultArrayList;
 
     public QueryReportAttributesFragment() {
         // Required empty public constructor
@@ -117,6 +131,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         }
         matchAttributesToQuery = new HashMap<>();
         rangeAttributesToQuery = new HashMap<>();
+
     }
 
     @Override
@@ -124,12 +139,60 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //         Inflate the layout for this fragment
         final View v = inflater.inflate(R.layout.fragment_query_report_attributes2, container, false);
 
+        resultArrayList = new ArrayList<>();
+
+
+
 //         Begin query button
         submitSearchButton = (Button) v.findViewById(R.id.submit_query_attr_button);
         submitSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchQueryReportAttributesTask();
+//               Todo: Here we loop thorugh all days and request reports
+//                Log.d(TAG, "BEFOREstartCal: " + CalendarToString(startCal) + " endDate: " + CalendarToString(endDate));
+
+//                if(dateRangeFragment != null ) {
+                if(isDateRange ) {
+                    startCal= dateRangeFragment.getStartDate();
+                    endCal=dateRangeFragment.getEndDate();
+
+                    startDate = startCal.getTime();
+                    endDate = endCal.getTime();
+
+
+                    Log.d(TAG, "startDate vs EndDate: ");
+                    long differenceInDays= DateUtility.getNumberDaysBetweenTwoCalendars(startCal,endCal);
+
+                    Log.d(TAG, "startDate - endDate = " + differenceInDays + " days");
+                    do{
+                        Log.d(TAG, "startDate: "  + startDate + " endDate: " +  endDate);
+
+                        testDate = DateUtility.DateToString(startDate);
+                        if (DateUtility.DateToString(startDate).equals(DateUtility.DateToString(endDate))){
+                            launchQueryReportAttributesTask(testDate, true);
+                            Log.d(TAG, "startDate == endDate");
+                            break;
+                        }
+
+                        else{
+//                            Log.d(TAG, "startDate: " + DateUtility.CalendarToString(tempStartCal) + " enddate2: " + DateUtility.CalendarToString(endCal));
+//                            Log.d(TAG, "startDate = endDate?: " + (startDate == endDate));
+                            launchQueryReportAttributesTask(testDate, false);
+                            Log.d(TAG, "startDate != endDate");
+                        }
+                        startDate=DateUtility.AddOneDayToDate(startDate);
+                        Log.d(TAG, "looping through reports, testdate: " + testDate);
+                    }
+                    while (4>3);
+                }
+
+                if(isSingleDay & singleDayFragment!=null){
+                    singleDayFragment.setCallBack(QueryReportAttributesFragment.this);
+                    singleDate =singleDayFragment.getDateToQuery();
+                    launchQueryReportAttributesTask(DateUtility.DateToString(singleDate),true);
+
+//                    launchQueryReportAttributesTask(singleDayFragment.getDateToQueryString(),true);
+                }
             }
         });
 
@@ -171,19 +234,25 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
                 if (!singleOrRangeDateSwitch.isChecked()) {
                     FragmentTransaction trans = fragMananager.beginTransaction();
 
-                    QueryReportAttributesSingleDayFragment singleDayFragment = new QueryReportAttributesSingleDayFragment();
+                    singleDayFragment = new QueryReportAttributesSingleDayFragment();
+                    singleDayFragment.setCallBack(QueryReportAttributesFragment.this);
                     trans.replace(R.id.date_picker_container, singleDayFragment);
                     trans.commit();
                     isSingleDay = true;
                     isDateRange = false;
+                    Log.d(TAG, "isSingleDay: " + isSingleDay + "  isDateRange: " + isDateRange);
+                    //dateRangeFragment=null;
                 } else if (singleOrRangeDateSwitch.isChecked()) {
                     FragmentTransaction trans = fragMananager.beginTransaction();
 
                     dateRangeFragment = new QueryReportAttributesDateRangeFragment();
+                    dateRangeFragment.setCallBack(QueryReportAttributesFragment.this);
                     trans.replace(R.id.date_picker_container, dateRangeFragment);
                     trans.commit();
                     isSingleDay = false;
                     isDateRange = true;
+                    //singleDayFragment = null;
+                    Log.d(TAG, "isSingleDay: " + isSingleDay + "  isDateRange: " + isDateRange);
                 }
             }
         });
@@ -266,15 +335,17 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 
     }
 
-    //    Callback for report query
+//  Callback for report query.
+//  Adds reports to list
     @Override
     public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
-        resultArray = result.toArray(new SkywarnWSDBMapper[result.size()]);
+//        resultArray = result.toArray(new SkywarnWSDBMapper[result.size()]);
         List tempList = new ArrayList(Arrays.asList(result));
-        tempList.addAll(Arrays.asList(resultArray));
-        resultArray = (SkywarnWSDBMapper[]) tempList.toArray();
-
-        launchViewQueryResult(resultArray);
+//        tempList.addAll(Arrays.asList(resultArray));
+//        resultArray =  tempList.toArray(new );
+        Log.d(TAG, "processFinish(ArrayList<SkywarnWSDB> result.size():" + result.size());
+        resultArrayList.addAll(result);
+//        launchViewQueryResult(resultArray);
 //        Log.i(TAG, "processFinish()");
 //        Log.i(TAG, "result null?: " + (result == null) + " size(): " + result.size());
 //
@@ -300,6 +371,16 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //            }
 //        });
 //        result = null;
+    }
+
+
+
+    @Override
+    public void allQueriesComplete() {
+        Log.d(TAG, "allQueriesComplete");
+        resultArray = new SkywarnWSDBMapper[resultArrayList.size()];
+        resultArray = resultArrayList.toArray(resultArray);
+        launchViewQueryResult(resultArray);
     }
 
     //    These methods are callbacks that fire when dialog asking for attributes to query on finishes
@@ -360,7 +441,6 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
    *   @attribute is selected weather type or attribute
    *   @dialogTag tells us which dialog is responding
    */
-
     @Override
     public void onProcessFinished(String attributeToQuery, String attrDynamoDBName, int dialogTag) {
         attributeToQueryDynamoDBName = attrDynamoDBName;
@@ -456,65 +536,54 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
      */
 
 
-    //    Determine if attribute requires range or match layout
-    private boolean isMatchAttribute(String s) {
-        List<String> matchAttrList = Arrays.asList(getResources().getStringArray(R.array.MatchAttributes));
-        if (matchAttrList.contains(s)) {
-            Log.d(TAG, "isMatchAttribute()->TRUE : val:  " + s);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isRangeAttribute(String s) {
-        List<String> rangeAttrList = Arrays.asList(getResources().getStringArray(R.array.RangeAttributes));
-        if (rangeAttrList.contains(s)) {
-            Log.d(TAG, "isRangeAttribute()->TRUE : val:  " + s);
-            return true;
-        }
-        return false;
-    }
-
     private void launchViewQueryResult(SkywarnWSDBMapper[] results) {
         Intent i = new Intent(mContext, ViewQueryResultsActivity.class);
         Bundle b = new Bundle();
         b.putSerializable("queryResultsArray", results);
         i.putExtras(b);
         startActivity(i);
+        results=null;
     }
 
     //Todo: query attributes should have two tasks, one for date range, one for single day
-    private void launchQueryReportAttributesTask() {
+    private void launchQueryReportAttributesTask(String testDate, boolean isLastDate) {
         QueryReportAttributesTask queryTask = new QueryReportAttributesTask();
         queryTask.setContext(mContext);
         queryTask.setDelegate(this);
+
+        if(isLastDate)
+            queryTask.setLastQuery(true);
+
         masterMap = new HashMap();
-        if (isSingleDay) {
-//        queryTask.setDate("02/26/2017");
-            Log.d(TAG, "Single Day To Query: " + singleDayFragment.getDateToQuery());
-            queryTask.setDate(singleDayFragment.getDateToQuery());
+
+        if (!locationFrag.getCity().trim().equals("")) {
+            matchAttributesToQuery.put("City", locationFrag.getCity());
+//            masterMap.put("City", locationFrag.getCity());
         }
 
-//        matchAttributesToQuery.put(attributeToQueryDynamoDBName, matchItem.getQueryInput());
-        if (!locationFrag.getCity().trim().equals(""))
-            matchAttributesToQuery.put("City", locationFrag.getCity());
-
-        if (!locationFrag.getState().trim().equals(""))
+        if (!locationFrag.getState().trim().equals("")){
             matchAttributesToQuery.put("State", locationFrag.getState());
+//            masterMap.put("State", locationFrag.getState());
+         }
 
-        if (!locationFrag.getZip().trim().equals(""))
+        if (!locationFrag.getZip().trim().equals("")){
             matchAttributesToQuery.put("ZipCode", locationFrag.getZip());
+//            masterMap.put("ZipCode", locationFrag.getZip());
+        }
 
         if (!locationFrag.getStreet().trim().equals("")) {
             matchAttributesToQuery.put("Street", locationFrag.getStreet());
+//            masterMap.put("Street", locationFrag.getStreet());
         }
 
-        Log.d(TAG, "LOCATION: city: " + locationFrag.getCity() + " state: " + locationFrag.getState() + " zip: " + locationFrag.getZip());
 
+//        Log.d(TAG, "LOCATION: city: " + locationFrag.getCity() + " state: " + locationFrag.getState() + " zip: " + locationFrag.getZip());
 
 //        Get input attrbute to query
-        if (matchItem != null)
+        if (matchItem != null) {
             matchAttributesToQuery.put(attributeToQueryDynamoDBName, matchItem.getQueryInput());
+            Log.d(TAG, "dynamoName: " + attributeToQueryDynamoDBName + " query Input: " + matchItem.getQueryInput());
+        }
 
         if (matchAttributesToQuery.size() > 0) {
             String[] matchAttributeDynamoDBNames = new String[matchAttributesToQuery.size()];
@@ -538,10 +607,8 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 
         if (rangeItem != null) {
             rangeAttributesToQuery.put(attributeToQueryDynamoDBName,
-                    new float[][]{{Float.parseFloat(rangeItem.getMinRangeString()),
-                            Float.parseFloat(rangeItem.getMaxRangeString())}});
+                    new float[][]{{Float.parseFloat(rangeItem.getMinRangeString()), Float.parseFloat(rangeItem.getMaxRangeString())}});
             String[] rangeAttributeDynamoDBNames = new String[rangeAttributesToQuery.size()];
-            String[] rangeAttributeQueryValues = new String[rangeAttributesToQuery.size()];
             List rangeVals = new ArrayList<>();
             int counter = 0;
             for (String s : rangeAttributesToQuery.keySet()) {
@@ -550,17 +617,17 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
                 counter++;
             }
             masterMap = generateRangeDynamoDBQueryConditionMap(rangeAttributeDynamoDBNames, rangeVals, masterMap);
-        }
+
 //        matchAttributesToQuery.put("NetVote", "100");
 //        Log.d(TAG, "launchQueryReportAttributesTask()");
 //        Utility.printMap(matchAttributesToQuery);
 
 //        queryTask.setQueryConditionMap(generateDynamoDBQueryConditionMap(matchAttributesToQuery,rangeAttributesToQuery));
-        //MatchAttributes
-        //Utility.printMap(matchAttributesToQuery);
+            //MatchAttributes
+            //Utility.printMap(matchAttributesToQuery);
 
-        //Range
-        // Utility.printMap(rangeAttributesToQuery);
+            //Range
+            // Utility.printMap(rangeAttributesToQuery);
 
 //      Remember there are two types of conditions used to query
 //        1 for strings where we check if ddb attribute CONTAINS the string
@@ -570,48 +637,21 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 
 //        queryTask.setMatchAttributesToQuery(matchAttributesToQuery);
 //        queryTask.setRangeAttributesToQuery(rangeAttributesToQuery);
-        Log.d(TAG, "************PRINT MASTER MAP*************");
-        Utility.printMap(masterMap);
-        queryTask.setQueryConditionMap(masterMap);
-
-
-        if (isDateRange) {
-            startDate = Calendar.getInstance();
-            startDate.set(Calendar.DAY_OF_MONTH, dateRangeFragment.getStartDay());
-            startDate.set(Calendar.MONTH, dateRangeFragment.getStartMonth());
-            startDate.set(Calendar.YEAR, dateRangeFragment.getStartYear());
-            queryTask.setStartDate(startDate);
-            Log.d(TAG, "START DATE STRING: " + CalendarToString(startDate));
-
-            endDate = Calendar.getInstance();
-            endDate.set(Calendar.DAY_OF_MONTH, dateRangeFragment.getEndDay());
-            endDate.set(Calendar.MONTH, dateRangeFragment.getEndMonth());
-            endDate.set(Calendar.YEAR, dateRangeFragment.getEndYear());
-            queryTask.setStartDate(endDate);
-            Log.d(TAG, "END DATE STRING: " + CalendarToString(endDate));
-            //queryTask.setDate(singleDayFragment.getDateToQuery());
-
-            // startDate.set(dateRangeFragment.getStartYear(),dateRangeFragment.getStartMonth(), dateRangeFragment.getStartDay());
-//        String dateOfEvent = CalendarToString(startDate);
-            endDate = Calendar.getInstance();
-            endDate.set(dateRangeFragment.getEndYear(), dateRangeFragment.getEndMonth(), dateRangeFragment.getEndDay());
-
-            //Log.d(TAG, "Month: "+ startDate.MONTH + " DAy: " + startDate.DAY_OF_MONTH + " Year: " + startDate.YEAR);
-            //Log.d(TAG, "increment Day: dateOfEvent(): "+ dateOfEvent.toString());
-            // queryTask.setDate(dateOfEvent.toString());
-            queryTask.execute();
-            //  dateOfEvent.setLength(0);
+            Log.d(TAG, "************PRINT MASTER MAP*************");
+            Utility.printMap(masterMap);
+            queryTask.setQueryConditionMap(masterMap);
         }
-        // if(isSingleDay) {
-        Log.d(TAG, "isSingleDay()");
-        queryTask.execute();
-        //}
 
-        rangeAttributesToQuery.clear();
-        matchAttributesToQuery.clear();
-        Log.d(TAG, "all Maps cleared: range.size(): " + rangeAttributesToQuery.size() + " matchATtr.size() " + matchAttributesToQuery.size());
-    }
+            queryTask.setDate(testDate);
+            queryTask.setQueryConditionMap(masterMap);
+            queryTask.execute();
+//
+//            masterMap.clear();
+//            rangeAttributesToQuery.clear();
+//            matchAttributesToQuery.clear();
+        }
 
+//    Creates Map of attribute namesin dynamodb and AttributeValues
     public Map generateRangeDynamoDBQueryConditionMap(String[] attributeNames, List<float[][]> attributeValsToQuery, Map queryConditionMap) {
         Log.d(TAG, "generateRangeDynamoDBQueryConditionMap");
 
@@ -638,7 +678,6 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         }
         return queryConditionMap;
     }
-
     public Map generateMatchDynamoDBQueryConditionMap(String[] attributeNames, String[] attributeValsToQuery, Map queryConditionMap) {
         for (int i = 0; i < attributeNames.length; i++) {
             Log.d(TAG, "generateMatchDynamoDBCondition() attrName: " + attributeNames[i] + " valsToQuery: " + attributeValsToQuery[i]);
@@ -657,20 +696,70 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         return queryConditionMap;
     }
 
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
+    //    Determine if attribute requires range or match layout
+    private boolean isMatchAttribute(String s) {
+        List<String> matchAttrList = Arrays.asList(getResources().getStringArray(R.array.MatchAttributes));
+        if (matchAttrList.contains(s)) {
+            Log.d(TAG, "isMatchAttribute()->TRUE : val:  " + s);
+            return true;
+        }
+        return false;
+    }
+    private boolean isRangeAttribute(String s) {
+        List<String> rangeAttrList = Arrays.asList(getResources().getStringArray(R.array.RangeAttributes));
+        if (rangeAttrList.contains(s)) {
+            Log.d(TAG, "isRangeAttribute()->TRUE : val:  " + s);
+            return true;
+        }
+        return false;
     }
 
-    public String CalendarToString(Calendar c) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        String dateOfEvent = sdf.format(c.getTime());
-        Log.d(TAG, "startDateString: " + dateOfEvent);
-        return dateOfEvent;
+    @Override
+    public void onPause(){
+        super.onPause();
+//        rangeAttributesToQuery.clear();
+//        matchAttributesToQuery.clear();
+//        masterMap.clear();
+//        resultArrayList.clear();
+//        resultArray=null;
+//        startDate = null;
+//        endDate=null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resultArrayList = new ArrayList<>();
+        masterMap = new HashMap();
+        matchAttributesToQuery=new HashMap<>();
+        rangeAttributesToQuery = new HashMap<>();
+    }
+
+    @Override
+    public void startDateChanged(Calendar startCal) {
+        Log.d(TAG, "startDateChanged()");
+        startDate = startCal.getTime();
+    }
+    @Override
+    public void endDateChanged(Calendar endCal) {
+        Log.d(TAG, "endDateChanged()");
+        endDate = endCal.getTime();
+    }
+
+    @Override
+    public void setSingleDateToQuery(Calendar singleDateCalendar) {
+        singleDate=singleDateCalendar.getTime();
     }
 
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
     }
 }

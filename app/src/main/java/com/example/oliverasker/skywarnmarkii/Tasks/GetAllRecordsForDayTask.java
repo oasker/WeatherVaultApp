@@ -249,16 +249,18 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
 
             ////////// Severe Attributes //////////
             if(item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
+                reportEntry.setCoastalEventInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
 
             if(item.containsKey("SevereType"))
                 reportEntry.setSevereType(Utility.parseDynamoDBResultValuesToString(item.get("SevereType").toString()));
 
-            if(item.containsKey("NumberOfFatalities"))
-                reportEntry.setFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
 
-            if(item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
+
+            if(item.containsKey("CoastalEventFatalities"))
+                reportEntry.setCoastalEventFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("CoastalEventFatalities").toString())));
+
+            if(item.containsKey("CoastalEventInjuries"))
+                reportEntry.setCoastalEventComments(Utility.parseDynamoDBResultValuesToString(item.get("CoastalEventInjuries").toString()));
 
             reportList.add(reportEntry);
             reportEntry = null;

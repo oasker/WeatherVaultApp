@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -56,7 +55,6 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
 
         ddb= new AmazonDynamoDBClient(credentials);
         ddb.setRegion(Region.getRegion(Regions.US_EAST_1));
-        DynamoDBMapper mapper = new DynamoDBMapper(ddb);
 
 
 
@@ -79,11 +77,18 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
 
         keyCondition.put("NetVote", rangeKeyCondition);
 
-        QueryRequest queryRequest = new QueryRequest()
-                .withTableName("SkywarnWSDB_rev4")
+//        Todo: be able to set order of scanIndexForward()
+        QueryRequest queryRequest = new QueryRequest();
+        Log.d(TAG, "isScanIndexForward(); " + queryRequest.isScanIndexForward());
+        queryRequest.setScanIndexForward(true);
+        queryRequest.withTableName("SkywarnWSDB_rev4")
                 .withKeyConditions(keyCondition)
                 .withIndexName("NetVoteIndex")
-                .withScanIndexForward(false);
+                .setScanIndexForward(false);
+
+
+
+
 
         QueryResult queryResult = ddb.query(queryRequest);
         List<Map<String, AttributeValue>> valMap = queryResult.getItems();
@@ -93,7 +98,6 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
             SkywarnWSDBMapper reportEntry = new SkywarnWSDBMapper();
 
             reportEntry.setDateSubmittedEpoch(Utility.parseDynamoDBResultValuesToLong(item.get("DateSubmittedEpoch").toString()));
-
             reportEntry.setDateSubmittedString(Utility.parseDynamoDBResultValuesToString(item.get("DateSubmittedString").toString()));
             reportEntry.setDateOfEvent(Utility.parseDynamoDBResultValuesToLong(item.get("DateOfEvent").toString()));
 
@@ -209,12 +213,12 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
 
             ////////// Severe Attributes //////////
             if(item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
+                reportEntry.setCoastalEventInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
 
             if(item.containsKey("NumberOfFatalities"))
-                reportEntry.setFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
+                reportEntry.setCoastalEventFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
             if(item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
+                reportEntry.setCoastalEventComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
 
             Log.d(TAG, "adding report with epoch to list: " + String.valueOf(reportEntry.getDateSubmittedEpoch()));
             reportList.add(reportEntry);
@@ -256,7 +260,6 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
         delegate = null;
     }
 
-
     //Getters and Setters
     public void setDelegate(ICallback delegate){
         this.delegate=delegate;
@@ -274,10 +277,5 @@ public class GetTopRatedReportsTask extends AsyncTask<Void,Void,Void> {
     }
     public void setUser(String User){
         user = User;
-
     }
-
-
-
-
 }

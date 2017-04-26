@@ -313,6 +313,11 @@ public class QueryLauncherActivity extends AppCompatActivity implements ICallbac
         result = null;
     }
 
+    @Override
+    public void allQueriesComplete() {
+
+    }
+
 
     @Override
     public int describeContents() {

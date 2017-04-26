@@ -22,7 +22,6 @@ import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,7 +87,7 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
                 .withIndexName("ProfilePageSorter");
 
         QueryResult queryResult = ddb.query(queryRequest);
-        List<Map<String, AttributeValue>> valMap = queryResult.getItems();
+//        List<Map<String, AttributeValue>> valMap = queryResult.getItems();
        // Log.i(TAG, "NUMBER RETURNED REPORTS: "+queryResult.getCount().toString());
         for(Map item : queryResult.getItems()) {
             SkywarnWSDBMapper reportEntry = new SkywarnWSDBMapper();
@@ -207,12 +206,12 @@ public class GetAllUserReportsTask extends AsyncTask<Void,Void,Void> {
 
             ////////// Severe Attributes //////////
             if(item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
+                reportEntry.setCoastalEventInjuries(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString())));
 
             if(item.containsKey("NumberOfFatalities"))
-                reportEntry.setFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
+                reportEntry.setCoastalEventFatalities(Integer.parseInt(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfFatalities").toString())));
             if(item.containsKey("NumberOfInjuries"))
-                reportEntry.setInjuryComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
+                reportEntry.setCoastalEventComments(Utility.parseDynamoDBResultValuesToString(item.get("NumberOfInjuries").toString()));
 
 
             //////////  Report Rating Fiels //////////
