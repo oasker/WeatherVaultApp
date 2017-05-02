@@ -1,6 +1,7 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,20 +23,21 @@ import java.util.Map;
 
 public class UserHomePersonalDetailsFragment extends Fragment {
 
+    //    public interface dataPass{
+//        void onDataPass(String[] cognitoVals);
+//    }
+    private static final String TAG = "PersnlDetailsFrag";
     private TextView affilliationTV;
     private TextView usernameTV;
     private TextView spotterIDTV;
     private TextView callSignTV;
-
-//    public interface dataPass{
-//        void onDataPass(String[] cognitoVals);
-//    }
-    private static final String TAG = "PersnlDetailsFrag";
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_user_home_personal_details, container, false);
 
+        mContext = getActivity().getApplicationContext();
         Log.d(TAG, "onCreateView");
         //affilliationTV = (TextView)v.findViewById(R.id.affiliationTV);
         //usernameTV = (TextView)v.findViewById(R.id.usernameTV);
@@ -73,7 +75,7 @@ public class UserHomePersonalDetailsFragment extends Fragment {
 
         TableLayout tableLayout = (TableLayout)v.findViewById(R.id.user_cognito_details_table_layout);
 
-        TableRow tableRow = new TableRow(getContext());
+        TableRow tableRow = new TableRow(mContext);
         tableLayout.addView(tableRow);
 
         if(vals.containsKey("given_name") & vals.containsKey("family_name")) {
@@ -106,16 +108,22 @@ public class UserHomePersonalDetailsFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+//        mContext = context;
+    }
+
     public TableRow createTableRow(String label, String value){
-        TableRow TR = new TableRow(getContext());
-        TextView labelTV = new TextView(getContext());
+        TableRow TR = new TableRow(mContext);
+        TextView labelTV = new TextView(mContext);
         labelTV.setText(label);
         labelTV.setTextSize(16);
         labelTV.setTextColor(Color.BLACK);
         labelTV.setPadding(15,15,15,15);
 
 
-        TextView valueTV = new TextView(getContext());
+        TextView valueTV = new TextView(mContext);
         valueTV.setPadding(15,15,15,15);
         valueTV.setTextColor(Color.BLACK);
         valueTV.setText(value);

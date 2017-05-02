@@ -409,7 +409,7 @@ class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallb
         }
         try {
              PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", attributeValueMap);
-            //PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", report);
+            //PutItemRequest putItemRequest = new PutItemRequest(Constants.REPORTS_TABLE_NAME, report);
             PutItemResult putItemResult = ddb.putItem(putItemRequest);
         }catch (DynamoDBMappingException dynamoDBMappingException){
             Log.e(TAG, dynamoDBMappingException.toString());

@@ -40,9 +40,10 @@ public class SevereWeatherSubmitReportFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstance){
-        String[] test = getResources().getStringArray(R.array.wind_direction_values_array);//{"item1","item2"};
+        mContext = getActivity().getApplicationContext();
 
         View view = inflater.inflate(R.layout.fragment_severe_weather_submit,container,false);
+
         severeWeatherSpinner = (Spinner)view.findViewById(R.id.severe_weather_spinner);
         ArrayAdapter<String> severeWeatherTypeSpinnerAdapter = new ArrayAdapter<String>(mContext, R.layout.multiline_spinner_dropdown_item, severeWeatherTypeValues);
         severeWeatherTypeSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
@@ -62,8 +63,6 @@ public class SevereWeatherSubmitReportFragment extends Fragment {
         WindDamageInput= (EditText)view.findViewById(R.id.wind_damage_field_tv);
         LightningInput= (EditText)view.findViewById(R.id.lightning_damage_field_tv);
         DamageCommentsInput= (EditText)view.findViewById(R.id.damage_comments_field_tv);
-
-
         return view;
     }
     public HashMap<String,AttributeValue> getValues(HashMap<String, AttributeValue> vals){

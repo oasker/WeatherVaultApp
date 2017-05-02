@@ -41,7 +41,7 @@ public class ViewQueryResultsActivity extends Activity {
 //                Toast.makeText(this, "No Reports found", Toast.LENGTH_SHORT).show();
             }
 
-            Log.d(TAG,"STRAIGHT OUT OF BUNDLE queryResult.length: " +queryResult.length);
+            Log.d(TAG, "STRAIGHT OUT OF BUNDLE queryResult.length: " + queryResult.length);
             SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(this, queryResult);
             listView.setAdapter(skywarnAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,7 +66,7 @@ public class ViewQueryResultsActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        queryResult=new SkywarnWSDBMapper[queryResult.length];
+        queryResult = new SkywarnWSDBMapper[queryResult.length];
     }
 
     @Override

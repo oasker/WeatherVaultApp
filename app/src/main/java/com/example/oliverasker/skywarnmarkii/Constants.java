@@ -8,7 +8,13 @@ public class Constants {
     //////////////////////////////////////////////////////////////////////
     /// DynamoDB Constants
     public static final String IDENTITY_POOL_ID ="us-east-1:75c2afbc-dfba-4e27-bdc0-0d7e65027111";
-    public static final String TEST_TABLE_NAME="SkywarnWSDB_rev4";
+
+    //    DB for reports
+    public static final String REPORTS_TABLE_NAME = Constants.REPORTS_TABLE_NAME;
+
+    //   DB for Chat
+    public static final String CHATDB_TABLE_NAME = "ChatDB";
+
     //////////////////////////////////////////////////////////////////////
 
 

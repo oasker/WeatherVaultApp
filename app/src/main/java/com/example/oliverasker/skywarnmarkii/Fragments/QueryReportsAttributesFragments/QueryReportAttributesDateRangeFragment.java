@@ -7,7 +7,6 @@ package com.example.oliverasker.skywarnmarkii.Fragments.QueryReportsAttributesFr
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,10 +69,9 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
     private DateCallBack callback;
 
 
-
+    private Context mContext;
     private TextView dateTV;
 
-    private OnFragmentInteractionListener mListener;
 
     public QueryReportAttributesDateRangeFragment() {
         // Required empty public constructor
@@ -83,15 +81,12 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment QueryReportAttributesSingleDayFragment.
      */
-    public static QueryReportAttributesSingleDayFragment newInstance(String param1, String param2) {
+    public static QueryReportAttributesSingleDayFragment newInstance() {
         QueryReportAttributesSingleDayFragment fragment = new QueryReportAttributesSingleDayFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,18 +96,17 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(false);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mContext = getActivity().getApplicationContext();
 
         startDate = Calendar.getInstance();
-        startDate.add(Calendar.DAY_OF_MONTH,-1);
+        startDate.add(Calendar.DAY_OF_MONTH, -1);
         endDate = Calendar.getInstance();
-
 
         startDateString.append(DateUtility.getYerdaysDateString());
         endDateString.append(DateUtility.getTodaysDateString());
@@ -136,39 +130,44 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
             public void onClick(View v) {
                 final Calendar c;
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    c = Calendar.getInstance();
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
-                }
-//                Set datepicker start date
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                            new DatePickerDialog.OnDateSetListener() {
-                                @Override
-                                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                    Log.d(TAG, dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                    startDay = dayOfMonth;
-                                    startMonth = monthOfYear;
-                                    startYear = year;
-                                    Calendar c = null;
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                                        c = Calendar.getInstance();
-                                        c.set(year, monthOfYear, dayOfMonth);
-                                        startDateEpoch = c.getTimeInMillis();
-                                        startDate = c;
-                                        callback.startDateChanged(startDate);
-                                    }
-                                    startDateString.setLength(0);
-                                    startDateString.append((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
-                                    dateRangeToQueryTV.setText(startDateString + " to " + endDateString);
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+//            }
 
+//                Set datepicker start date
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                Log.d(TAG, "SDK_INT >= VERSION_CODES.N" + android.os.Build.VERSION.SDK_INT + " >=" + android.os.Build.VERSION_CODES.N);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                Log.d(TAG, dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                startDay = dayOfMonth;
+                                startMonth = monthOfYear;
+                                startYear = year;
+                                Calendar c = null;
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                    c = Calendar.getInstance();
+                                    c.set(year, monthOfYear, dayOfMonth);
+                                    startDateEpoch = c.getTimeInMillis();
+                                    startDate = c;
+                                    callback.startDateChanged(startDate);
                                 }
-                            }, mYear, mMonth, mDay);
-                    datePickerDialog.getDatePicker().setMaxDate(endDateEpoch);
-                    datePickerDialog.show();
-                }
+                                startDateString.setLength(0);
+                                startDateString.append((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+                                dateRangeToQueryTV.setText(startDateString + " to " + endDateString);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMaxDate(endDateEpoch);
+                datePickerDialog.show();
+
+                Log.d(TAG, "SDK_INT < VERSION_CODES.N" + android.os.Build.VERSION.SDK_INT + " >=" + android.os.Build.VERSION_CODES.N);
+
             }
         });
 
@@ -185,7 +184,7 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                 }
 //                Set datepicker start date
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -213,32 +212,18 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                 }
             }
         });
-
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     public Calendar getStartDate() {
@@ -249,46 +234,8 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
         return endDate;
     }
 
-    public int getStartDay() {
-        return startDay;
-    }
-
-    public int getStartMonth() {
-        return startMonth;
-    }
-
-    public int getStartYear() {
-        return startYear;
-    }
-
-    public int getEndDay() {
-        return endDay;
-    }
-
-    public int getEndMonth() {
-        return endMonth;
-    }
-
-    public int getEndYear() {
-        return endYear;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public void setCallBack(DateCallBack dc){
+    public void setCallBack(DateCallBack dc) {
         callback = dc;
     }
+
 }

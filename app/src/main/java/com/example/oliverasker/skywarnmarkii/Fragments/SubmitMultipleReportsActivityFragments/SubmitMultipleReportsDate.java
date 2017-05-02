@@ -140,7 +140,7 @@ public class SubmitMultipleReportsDate extends Fragment implements OnDateSetList
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
+//        mContext = context;
     }
 
     @Override

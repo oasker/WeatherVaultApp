@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
 //    private String mParam2;
     private TextView dateTV;
 
+    private Context mContext;
 
     private OnFragmentInteractionListener mListener;
 
@@ -83,6 +85,7 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
         dateToQuery = new Date();
+        mContext = getActivity().getApplicationContext();
     }
 
     @Override
@@ -101,15 +104,14 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final Calendar c;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     c = Calendar.getInstance();
                     mYear = c.get(Calendar.YEAR);
                     mMonth = c.get(Calendar.MONTH);
                     mDay = c.get(Calendar.DAY_OF_MONTH);
                 }
 //                Set datepicker start date
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -117,7 +119,7 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
                                     if (monthOfYear < 10)
                                         month = 0 + String.valueOf(monthOfYear);
                                     Calendar c = null;
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         c = Calendar.getInstance();
                                         c.set(year, monthOfYear, dayOfMonth);
                                         dateToQueryEpoch = c.getTimeInMillis();
@@ -144,8 +146,11 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
                                 }
                             }, mYear, mMonth, mDay);
                     datePickerDialog.getDatePicker().setMaxDate(DateUtility.getTodaysEpoch());
-                    datePickerDialog.show();
-                }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                datePickerDialog.create();
+
+                datePickerDialog.show();
+//                }
             }
         });
         return v;
@@ -185,6 +190,10 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
         return dateToQuery;
     }
 
+    public void setCallBack(DateCallBack callBack) {
+        this.callBack = callBack;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -197,10 +206,6 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
-    }
-
-    public void setCallBack(DateCallBack callBack) {
-        this.callBack = callBack;
     }
 }
 

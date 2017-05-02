@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.R;
+import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.io.Serializable;
 
@@ -39,8 +40,7 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         //if (convertView == null) {
         if (viewHolder == null) {
             viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.gridview_row, parent, false);
-
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.gridview_row, parent, false);
 
             //  Map layout fields to DB Result Row Widgets on listview of returned query results
 //            dateTV = (TextView) customView.findViewById(R.id.date_row_text);
@@ -76,7 +76,8 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
 //            ViewHolder.comments = (TextView) convertView.findViewById(R.id.event_description_row_text);
 //            ViewHolder.rating = (TextView) convertView.findViewById(R.id.report_rating_row_text);
 
-            ViewHolder.date = (TextView) convertView.findViewById(R.id.date_row_text);
+            ViewHolder.dateOfEvent = (TextView) convertView.findViewById(R.id.date_of_event_field);
+            ViewHolder.dateSubmitted = (TextView) convertView.findViewById(R.id.date_row_text);
             ViewHolder.location = (TextView) convertView.findViewById(R.id.location_row_text);
             ViewHolder.username = (TextView) convertView.findViewById(R.id.reporter_username_row_text);
             ViewHolder.weatherEvent = (TextView) convertView.findViewById(R.id.event_type_row_text);
@@ -90,14 +91,9 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        //SkywarnWSDBMapper dbRow = getItem(position);
-//            viewHolder.date.setText("Submitted: " + dbRow.getDateSubmittedString());
-//            ViewHolder.location.setText(dbRow.getEventCity() + " ," + dbRow.getEventState());
-//            ViewHolder.username.setText(dbRow.getUsername());
-//            ViewHolder.weatherEvent.setText(dbRow.getWeatherEvent());
-//            ViewHolder.rating.setText("Rating: " + String.valueOf(dbRow.getNetVote()));
-//            ViewHolder.comments.setText(dbRow.getComments());
-        ViewHolder.date.setText("Submitted: " + dbRow.getDateSubmittedString());
+
+        ViewHolder.dateOfEvent.setText("Date of Event: " + Utility.epochToDateTimeString(dbRow.getDateOfEvent()));
+        ViewHolder.dateSubmitted.setText("Submitted: " + dbRow.getDateSubmittedString());
         ViewHolder.location.setText(dbRow.getEventCity() + " ," + dbRow.getEventState().toUpperCase());
         ViewHolder.username.setText(dbRow.getUsername());
         ViewHolder.weatherEvent.setText(dbRow.getWeatherEvent());
@@ -109,17 +105,6 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
 
         //  Set Icon Image Based on Weather Type
         String weatherType = dbRow.getWeatherEvent().toUpperCase();
-//
-//        if (weatherType.toUpperCase().contains("SEVERE"))
-//            weatherEventImageView.setImageResource(R.drawable.severe);
-//        if (weatherType.toUpperCase().contains("RAIN"))
-//            weatherEventImageView.setImageResource(R.drawable.rain);
-//        if (weatherType.toUpperCase().contains("WINTER"))
-//            weatherEventImageView.setImageResource(R.drawable.snow_icon);
-//        if (weatherType.toUpperCase().contains("COASTAL"))
-//            weatherEventImageView.setImageResource(R.drawable.coastal);
-//        if (weatherType.toUpperCase().contains("GENERAL"))
-//            weatherEventImageView.setImageResource(R.drawable.sunny);
 
         if (weatherType.toUpperCase().contains("SEVERE"))
             weatherEventImageView.setImageResource(R.drawable.severe);
@@ -149,13 +134,15 @@ public class SkywarnDBAdapter extends ArrayAdapter<SkywarnWSDBMapper> implements
     }
 
     static class ViewHolder {
-        static TextView date;
+        static TextView dateSubmitted;
+        static TextView dateOfEvent;
         static TextView location;
         static TextView weatherEvent;
         static TextView comments;
         static TextView username;
         static TextView rating;
         static ImageView weatherImage;
+
         static int pos;
     }
 }

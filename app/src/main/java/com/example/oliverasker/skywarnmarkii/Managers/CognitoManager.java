@@ -78,11 +78,13 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
     private String newPassword;
     private String newPasswordVerificationCode;
 
+
     public CognitoUserPool getUserPool(){
         if(userPool == null){
             CognitoUserPool userPool = new CognitoUserPool(this, Constants.cognitoPoolID, Constants.cognitoAppClientId, null);
         }
         return userPool;
+
     }
 
     @Override
@@ -274,7 +276,6 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
 
                 String codeSentTo = continuation.getParameters().toString();
                 Log.d(TAG, "ForgotPasswordHanderl getResetCode(): Reset Code was sent to " + codeSentTo);
-
 
                 Intent i = new Intent(CognitoManager.this, ResetPasswordActivity.class);
                 forgotPasswordContinuation  = continuation;
@@ -498,7 +499,7 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
             public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String UserId) {
                 Log.d(TAG, "getAuthenticationDetails() authContinutation:UserId: " +UserId);
                 AuthenticationDetails authenticationDetails;
-                // AuthenticationDetails authenticationDetails = new AuthenticationDetails(email, password, null);
+//                AuthenticationDetails authenticationDetails = new AuthenticationDetails(email, password, null);
                 String userIdString ="";
 
                 if(UserId != null) {
@@ -522,6 +523,7 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
                 i.putExtra("login_success_or_failure", signInUserReturnResult);
                 setResult(Activity.RESULT_OK,i);
                 finish();
+
             }
             @Override
             public void getMFACode(MultiFactorAuthenticationContinuation continuation) {
@@ -550,6 +552,9 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
             }
         };
         user.getSessionInBackground(authenticationHandler);
+        UserInformationModel.getInstance().setCognitoUser(user);
+//        callback.setCognitoUser(user);
+
     }
 
 
@@ -671,5 +676,7 @@ public class CognitoManager extends Activity implements ResetPasswordDialog.Rese
     public void onEnterCodeDialogNegativeClick(DialogFragment dialog) {
         Log.d(TAG, "onEnterCodeDialogNegativeClick() " );
     }
+
+
 }
 

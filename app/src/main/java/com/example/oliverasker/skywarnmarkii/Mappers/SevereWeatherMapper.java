@@ -9,7 +9,7 @@ import java.util.HashMap;
  * Created by Oliver Asker on 10/25/16.
  */
 
-//@DynamoDBTable(tableName ="SkywarnWSDB_rev4")
+//@DynamoDBTable(tableName =Constants.REPORTS_TABLE_NAME)
 //@DynamoDBTable(tableName ="Test_Table")
 
 public class SevereWeatherMapper {
@@ -73,16 +73,14 @@ public class SevereWeatherMapper {
     //////////////////////////////////////
     //////////////////////////////////////
 
+    public String getSevereType() {
+        return SevereType;
+    }
 
     @DynamoDBAttribute(attributeName  ="HailSize")
     public void setSevereType(String severeType) {
         SevereType = severeType;
     }
-
-    public String getSevereType() {
-        return SevereType;
-    }
-
 
     @DynamoDBAttribute(attributeName  = "WindSpeed")
     public String getWindSpeed() {
@@ -92,16 +90,6 @@ public class SevereWeatherMapper {
     public void setWindSpeed(String windSpeed) {
         WindSpeed = windSpeed;
     }
-
-    @DynamoDBAttribute(attributeName  ="WindGust")
-    public String getWindGust() {
-        return WindGust;
-    }
-
-    public void setWindGust(String windGust) {
-        WindGust = windGust;
-    }
-
 
     @DynamoDBAttribute(attributeName  ="WindDirection")
     public String getWindDirection() {

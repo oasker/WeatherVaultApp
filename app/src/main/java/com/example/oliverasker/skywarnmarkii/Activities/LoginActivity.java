@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.example.oliverasker.skywarnmarkii.Callbacks.CognitoUserCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Dialoges.ResetPasswordDialog;
 import com.example.oliverasker.skywarnmarkii.Dialoges.ResetPasswordEnterCodeDialog;
@@ -21,7 +23,7 @@ import com.example.oliverasker.skywarnmarkii.Managers.CognitoManager;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 
-public class LoginActivity extends AppCompatActivity implements ResetPasswordDialog.ResetPasswordDialogListener, ResetPasswordEnterCodeDialog.ResetPasswordEnterCodeDialogListener {
+public class LoginActivity extends AppCompatActivity implements ResetPasswordDialog.ResetPasswordDialogListener, ResetPasswordEnterCodeDialog.ResetPasswordEnterCodeDialogListener, CognitoUserCallback {
 
     private static final String TAG = "LoginActivity";
     // Holds message to show user if input is incorrect
@@ -184,6 +186,7 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
 
             Intent i = new Intent(this, CognitoManager.class);
             i.putExtra("event", "login");
+
             startActivityForResult(i, Constants.SIGN_IN_CODE);
         } else {
             Toast.makeText(this, logStatus, Toast.LENGTH_LONG).show();
@@ -214,6 +217,10 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
         }
     }
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+    }
 
     //  Listeners for dialog where user actually enters username to set UserID so
     // Cognito can send code
@@ -239,4 +246,8 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
         Log.d(TAG, "onEnterCodeDialogNegativeClick() ");
     }
 
+    @Override
+    public void setCognitoUser(CognitoUser cognitoUser) {
+        UserInformationModel.getInstance().setCognitoUser(cognitoUser);
+    }
 }

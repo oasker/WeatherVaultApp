@@ -65,13 +65,14 @@ public class DateUtility {
         }
         return epoch;
     }
-    public static long getNumberDaysBetweenTwoCalendars(java.util.Calendar startCalendar, java.util.Calendar endCalendar){
-        Date stardDate =startCalendar.getTime();
+
+    public static long getNumberDaysBetweenTwoCalendars(java.util.Calendar startCalendar, java.util.Calendar endCalendar) {
+        Date stardDate = startCalendar.getTime();
         Date endDate = endCalendar.getTime();
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        long differenceMilis =  endDate.getTime() -stardDate.getTime();
-        long differenceInDays = TimeUnit.DAYS.convert(differenceMilis,TimeUnit.MILLISECONDS);
+        long differenceMilis = endDate.getTime() - stardDate.getTime();
+        long differenceInDays = TimeUnit.DAYS.convert(differenceMilis, TimeUnit.MILLISECONDS);
 
         return differenceInDays;
     }
@@ -84,16 +85,16 @@ public class DateUtility {
         return dateOfEvent;
     }
 
-    public static String DateToString(Date date){
+    public static String DateToString(Date date) {
         java.util.Calendar c = java.util.Calendar.getInstance();
         c.setTime(date);
         return CalendarToString(c);
     }
 
-    public static Date AddOneDayToDate(Date date){
+    public static Date AddOneDayToDate(Date date) {
         java.util.Calendar c = java.util.Calendar.getInstance();
         c.setTime(date);
-        c.add(java.util.Calendar.DAY_OF_MONTH,1);
+        c.add(java.util.Calendar.DAY_OF_MONTH, 1);
         date = c.getTime();
         return date;
     }

@@ -30,8 +30,8 @@ public class AmazonClientManager {
     }
     public boolean hasCredentials(){
         return(!(Constants.IDENTITY_POOL_ID.equalsIgnoreCase("us-east-1:75c2afbc-dfba-4e27-bdc0-0d7e65027111"))||
-                Constants.TEST_TABLE_NAME.equalsIgnoreCase("SkywarnWSDB_rev4"));
-            //Constants.TEST_TABLE_NAME.equalsIgnoreCase("Test_Table"));
+                Constants.REPORTS_TABLE_NAME.equalsIgnoreCase(Constants.REPORTS_TABLE_NAME));
+        //Constants.REPORTS_TABLE_NAME.equalsIgnoreCase("Test_Table"));
     }
     public void validateCredentials(){
         if(ddb==null)

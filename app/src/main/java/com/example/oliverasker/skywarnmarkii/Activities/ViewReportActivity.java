@@ -26,13 +26,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -94,18 +92,18 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     private Button upVoteButton;
     private Button downVoteButton;
 
-    private Context mContext;
-
-    private int imageViewWidth=300;
-    private int imageViewHeight= 300;
-
-//    Video variables
+    //    Video variables
     private boolean bVideoIsBeingTouched = false;
     private Handler mHandler = new Handler();
 
-    private VideoView vV;
 
     private Button viewOnMapButton;
+
+    //    Multiple Maps to hold attributes for different events
+    private HashMap<String, String> winterAttrMap;
+    private HashMap<String, String> severeAttrMap;
+    private HashMap<String, String> rainAttrMap;
+    private HashMap<String, String> coastalAttrMap;
 
     private HashMap<String, String> valueMap;
     private ImageView iconImageView;
@@ -113,8 +111,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     private int numberOfPhotos;
     private int numberOfVideos;
 
-    private int reportImageWidth = 500;
-    private int reportImageHeight = 500;
+    private int reportImageWidth = 250;
+    private int reportImageHeight = 250;
     BitmapCallback callback = new BitmapCallback() {
         @Override
         public void processFinish(ArrayList<Bitmap> result) {
@@ -154,10 +152,10 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 //                ImageView iV = new ImageView(getApplicationContext());
                 ImageView iv = createImageView();
                 Ion.with(iv)
-                        .resize(reportImageWidth,reportImageHeight)
+                        .resize(reportImageWidth, reportImageHeight)
                         .placeholder(R.drawable.sunny)
                         .error(R.drawable.snow_icon)
-                        .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
+                        .load("https://s3.amazonaws.com/skywarntestbucket/" + UserInformationModel.getInstance().getUsername() + ".jpg");
 //                BitmapUtility.scaleImage(mContext, iv);
 
                 iv.setImageBitmap(result);
@@ -175,8 +173,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             }
         }
     };
-
-
+    private int reportVideoThumbnailWidth = 300;
+    private int reportVideoThumbnailHeight = 300;
 
     private static boolean storagePermitted(Activity activity) {
         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.REQUESTCODE_WRITE_EXTERNAL_STORAGE);
@@ -189,6 +187,31 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 
             return false;
         }
+    }
+
+    //    Generates thumbnail from video received from url
+    public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever mediaMetadataRetriever = null;
+        try {
+            mediaMetadataRetriever = new MediaMetadataRetriever();
+
+            if (Build.VERSION.SDK_INT >= 14 & videoPath != null)
+                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
+            else
+                mediaMetadataRetriever.setDataSource(videoPath);
+            //   mediaMetadataRetriever.setDataSource(videoPath);
+            bitmap = mediaMetadataRetriever.getFrameAtTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.getMessage());
+
+        } finally {
+            if (mediaMetadataRetriever != null) {
+                mediaMetadataRetriever.release();
+            }
+        }
+        return bitmap;
     }
 
     @Override
@@ -214,7 +237,9 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 //        }
     }
 
-    //Todo: make check when user first looks at report and disable rating buttons if theyve voted or its their report
+//    Todo: severeWeather View needs to have some attributes only added if others are present
+
+    //    Todo: make check when user first looks at report and disable rating buttons if theyve voted or its their report
     @Override
     public void UserHasRatedReport(Boolean b, int netVote) {
         Log.d(TAG, "UserHasRatedReportBefore? " + b);
@@ -228,8 +253,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         }
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -242,12 +265,17 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 
         horizontalLinearLayout = (LinearLayout) findViewById(R.id.view_report_activity_horizontal_linearlayout);
         photoIV = (ImageView) findViewById(R.id.photoIV);
+
         valueMap = new HashMap<>();
+        winterAttrMap = new HashMap<>();
+        severeAttrMap = new HashMap<>();
+        rainAttrMap = new HashMap<>();
+        coastalAttrMap = new HashMap<>();
 
 
         //Rating system widgets
-        upVoteButton = (Button)findViewById(R.id.up_vote_button);
-        downVoteButton = (Button)findViewById(R.id.down_vote_button);
+        upVoteButton = (Button) findViewById(R.id.up_vote_button);
+        downVoteButton = (Button) findViewById(R.id.down_vote_button);
 
         //vV = (VideoView) findViewById(R.id.videoView2);
 
@@ -260,11 +288,12 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
                 rateTask.setmContext(ViewReportActivity.this);
                 rateTask.setUrl(UserInformationModel.getInstance().getUsername());
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                rateTask.setReportName(sdf.format(map.getDateOfEvent()*1000)+"_"+String.format("%.0f",map.getDateSubmittedEpoch()));
-                rateTask.setFilePath(getCacheDir()+"/");
+                rateTask.setReportName(sdf.format(map.getDateOfEvent() * 1000) + "_" + String.format("%.0f", map.getDateSubmittedEpoch()));
+                rateTask.setFilePath(getCacheDir() + "/");
                 rateTask.setUsername(UserInformationModel.getInstance().getUsername());
                 rateTask.setCallback(ViewReportActivity.this);
 
+                Log.d(TAG, "EventType: " + map.getWeatherEvent() + " City: " + map.getCity() + " NetVote: " + map.getNetVote());
                 rateTask.setReportRating(map.getNetVote());
                 rateTask.setReportPrimaryKey(map.getDateSubmittedString());
                 rateTask.setRangeKey(String.valueOf(map.getDateSubmittedEpoch()));
@@ -284,8 +313,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
                 //Url to S3 text file
                 rateTask.setUrl(UserInformationModel.getInstance().getUsername());
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                rateTask.setReportName(sdf.format(map.getDateOfEvent()*1000)+"_"+String.format("%.0f",map.getDateSubmittedEpoch()));
-                rateTask.setFilePath(getCacheDir()+"/");
+                rateTask.setReportName(sdf.format(map.getDateOfEvent() * 1000) + "_" + String.format("%.0f", map.getDateSubmittedEpoch()));
+                rateTask.setFilePath(getCacheDir() + "/");
                 rateTask.setUsername(UserInformationModel.getInstance().getUsername());
 
                 rateTask.setReportRating(map.getNetVote());
@@ -313,13 +342,11 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         numberOfVideos = map.getNumberOfVideos();
 //
         photoLabelTV = (TextView) findViewById(R.id.view_report_activity_photo_label);
-        if(numberOfPhotos <= 0 & numberOfVideos<=0) {
+        if (numberOfPhotos <= 0 & numberOfVideos <= 0) {
             photoLabelTV.setText("");
-        }
-       else{
+        } else {
             photoLabelTV.setText("Media");
         }
-
 
 
         //Send data to fragments
@@ -328,66 +355,138 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         //valueMap.put("Date Of Event", String.valueOf(map.getDateOfEvent()));
 
         // Winter Event
-        valueMap.put("Snowfall", String.valueOf(map.getSnowfall()));
-        valueMap.put("Snowfall Rate", String.valueOf(map.getSnowfallRate()));
-        valueMap.put("Snow Depth", String.valueOf(map.getSnowDepth()));
-        valueMap.put("Water Equivalent", String.valueOf(map.getWaterEquivalent()));
-        valueMap.put("Freezing Rain", map.getFreezingRain());
-        valueMap.put("Sleet", String.valueOf(map.getSnowFallSleet()));
-        valueMap.put("BlowDrift", map.getBlowDrift());
-        valueMap.put("Whiteout", map.getWhiteout());
-        valueMap.put("Thundersnow", map.getThundersnow());
-        valueMap.put("Freeing Rain Accumulation", String.valueOf(map.getFreezingRainAccum()));
+        winterAttrMap.put("Snowfall", String.valueOf(map.getSnowfall()));
+        winterAttrMap.put("Snowfall Rate", String.valueOf(map.getSnowfallRate()));
+        winterAttrMap.put("Snow Depth", String.valueOf(map.getSnowDepth()));
+        winterAttrMap.put("Water Equivalent", String.valueOf(map.getWaterEquivalent()));
+        winterAttrMap.put("Freezing Rain", map.getFreezingRain());
+        winterAttrMap.put("Sleet", String.valueOf(map.getSnowFallSleet()));
+        winterAttrMap.put("BlowDrift", map.getBlowDrift());
+        winterAttrMap.put("Whiteout", map.getWhiteout());
+        winterAttrMap.put("Thundersnow", map.getThundersnow());
+        winterAttrMap.put("Freeing Rain Accumulation", String.valueOf(map.getFreezingRainAccum()));
+        winterAttrMap.put("Number Of Fatalities", String.valueOf(map.getWinterWeatherFatalities()));
+        winterAttrMap.put("Number Of Injuries", String.valueOf(map.getWinterWeatherInjuries()));
+        winterAttrMap.put("Injuries Comments", String.valueOf(map.getWinterWeatherInjuries()));
 
 
-        valueMap.put("Number Of Fatalities", String.valueOf(map.getCoastalEventFatalities()));
-        valueMap.put("Number Of Injuries", String.valueOf(map.getCoastalEventInjuries()));
-        valueMap.put("Injuries Comments", String.valueOf(map.getCoastalEventComments()));
+//        Coastal Attribites
+        coastalAttrMap.put("Number Of Fatalities", String.valueOf(map.getCoastalEventFatalities()));
+        coastalAttrMap.put("Number Of Injuries", String.valueOf(map.getCoastalEventInjuries()));
+        coastalAttrMap.put("Injuries Comments", String.valueOf(map.getCoastalEventComments()));
 
         //Severe Weather
-        valueMap.put("Severe Weather Type", map.getSevereType());
-        if(map.getWindSpeed() != 9999)
-            valueMap.put("Wind Speed", String.valueOf(map.getWindSpeed() + " MPH"));
-        if(map.getWindGust() != 9999)
-            valueMap.put("Wind Gust", String.valueOf(map.getWindGust()) + " MPH");
-        valueMap.put("Wind Direction", map.getWindDirection());
-        valueMap.put("Hail Size", String.valueOf(map.getHailSize()));
-        valueMap.put("Tornado", map.getTornado());
-        valueMap.put("Barometer", String.valueOf(map.getBarometer()));
-        valueMap.put("Wind Damage", map.getWindDamage());
-        valueMap.put("Lightning Damage", map.getLightningDamage());
-        valueMap.put("Damage Comments", map.getDamageComments());
+        severeAttrMap.put("Severe Weather Type", map.getSevereType());
+        if (map.getWindSpeed() != 9999)
+            severeAttrMap.put("Wind Speed", String.valueOf(map.getWindSpeed() + " MPH"));
+        if (map.getWindGust() != 9999)
+            severeAttrMap.put("Wind Gust", String.valueOf(map.getWindGust()) + " MPH");
+        severeAttrMap.put("Wind Direction", map.getWindDirection());
+        severeAttrMap.put("Hail Size", String.valueOf(map.getHailSize()));
+        severeAttrMap.put("Tornado", map.getTornado());
+        severeAttrMap.put("Barometer", String.valueOf(map.getBarometer()));
+        severeAttrMap.put("Wind Damage Comments", map.getWindDamageComments());
+        severeAttrMap.put("Lightning Damage", map.getLightningDamage());
+        severeAttrMap.put("Damage Comments", map.getDamageComments());
+        severeAttrMap.put("Number Of Fatalities", String.valueOf(map.getSevereFatalities()));
+        severeAttrMap.put("Number Of Injuries", String.valueOf(map.getSevereInjuries()));
+        severeAttrMap.put("Injuries Comments", String.valueOf(map.getSevereWeatherComments()));
+
 
         //Rainfall/flooding
-        valueMap.put("Rain", String.valueOf(map.getRain()));
-        valueMap.put("Freezing Rain", map.getFreezingRain());
-        valueMap.put("Precipitation Rate", String.valueOf(map.getPrecipRate()));
+        Log.d(TAG, "Rain: " + map.getRain());
+        rainAttrMap.put("Rain", String.valueOf(map.getRain()));
+        rainAttrMap.put("Freezing Rain", map.getFreezingRain());
+        rainAttrMap.put("Precipitation Rate", String.valueOf(map.getPrecipRate()));
+        rainAttrMap.put("Number Of Fatalities", String.valueOf(map.getRainEventFatalities()));
+        rainAttrMap.put("Number Of Injuries", String.valueOf(map.getRainEventInjuries()));
+        rainAttrMap.put("Injuries Comments", String.valueOf(map.getRainEventComments()));
+
 
         //  Get Number of photos and videos associate with a report
         valueMap.put("NumberOfVideos", String.valueOf(map.getNumberOfVideos()));
         valueMap.put("NumberOfImages", String.valueOf(map.getNumberOfImages()));
 
-       // valueMap.put("Zip", map.getZipCode());
+        // valueMap.put("Zip", map.getZipCode());
         valueMap.put("Username", map.getUsername());
         valueMap.put("Longitude", String.valueOf(map.getLongitude()));
         valueMap.put("Latitude", String.valueOf(map.getLatitude()));
 
-        valueMap.put("Weather Event", map.getWeatherEvent());
+//        valueMap.put("Weather Event", map.getWeatherEvent());
         valueMap.put("Street", String.valueOf(map.getStreet()));
         valueMap.put("Comments", map.getComments());
         valueMap.put("Current Temperature", String.valueOf(map.getCurrentTemperature()) + " F");
 
-        Log.d(TAG, "Street: " + map.getStreet());
-        //Remove unwanted views
+//        Remove unwanted views
         Iterator<Map.Entry<String, String>> iter = valueMap.entrySet().iterator();
-        while(iter.hasNext()){
-            Map.Entry<String,String> entry = iter.next();
+        while (iter.hasNext()) {
+            Map.Entry<String, String> entry = iter.next();
             String value = entry.getValue();
-            if(value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0")|| value.equals("0.0 F") || value.trim().equals("0") || value.equals("null") ) {
-                //   Log.i(TAG, "REMOVING DEFAULT VALUES value: " + value);
+            if (value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0") || value.equals("0.0 F") || value.trim().equals("0") || value.equals("null")) {
                 iter.remove();
+            } else {
+                Log.d(TAG, "NOT DELETED: key: " + entry + " val: " + value);
             }
         }
+
+
+        Log.d(TAG, "********* Severe ********");
+        Iterator<Map.Entry<String, String>> severeIter = severeAttrMap.entrySet().iterator();
+        while (severeIter.hasNext()) {
+            Map.Entry<String, String> entry = severeIter.next();
+            String value = entry.getValue();
+            if (value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0") || value.equals("0.0 F") || value.trim().equals("0") || value.equals("null")) {
+//                Log.d(TAG, "key: " + entry +" value: " + value);
+                severeIter.remove();
+            } else {
+                Log.d(TAG, "NOT DELETED: key: " + entry + " val: " + value);
+
+            }
+        }
+
+
+        Log.d(TAG, "********* Winter ********");
+        Iterator<Map.Entry<String, String>> winterIter = winterAttrMap.entrySet().iterator();
+        while (winterIter.hasNext()) {
+            Map.Entry<String, String> entry = winterIter.next();
+            String value = entry.getValue();
+
+            if (value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0") || value.equals("0.0 F") || value.trim().equals("0") || value.equals("null")) {
+//                Log.d(TAG, "key: " + entry +" value: " + value);
+                winterIter.remove();
+            } else {
+                Log.d(TAG, "NOT DELETED: key: " + entry + " val: " + value);
+
+            }
+        }
+
+
+        Log.d(TAG, "********* Rain ********");
+        Iterator<Map.Entry<String, String>> rainIter = rainAttrMap.entrySet().iterator();
+        while (rainIter.hasNext()) {
+            Map.Entry<String, String> entry = rainIter.next();
+            String value = entry.getValue();
+            if (value.equals("|") || value.trim().equals("9999") || value.trim().equals("") || value.trim().equals("false") || value.trim().equals("9999.0") || value.equals("0.0") || value.equals("0.0 F") || value.trim().equals("0") || value.equals("null")) {
+//                Log.d(TAG, "key: " + entry +" value: " + value);
+                rainIter.remove();
+            } else {
+                Log.d(TAG, "NOT DELETED: key: " + entry + " val: " + value);
+            }
+        }
+
+        Log.d(TAG, "********* Coastal ********");
+        Iterator<Map.Entry<String, String>> coastalIter = coastalAttrMap.entrySet().iterator();
+        while (coastalIter.hasNext()) {
+            Map.Entry<String, String> entry = coastalIter.next();
+            String value = entry.getValue();
+            if (value.equals("|") || value.trim().equals("9999") || value.equals("") || value.equals("false") || value.trim().equals("9999.0") || value.equals("0.0") || value.equals("0.0 F") || value.trim().equals("0") || value.equals("null")) {
+//                Log.d(TAG, "key: " + entry +" value: " + value);
+                coastalIter.remove();
+            } else {
+                Log.d(TAG, "NOT DELETED: key: " + entry + " val: " + value);
+            }
+        }
+
 
         //  Set image based on type of report
         iconImageView = (ImageView) findViewById(R.id.view_report_image_view);
@@ -416,8 +515,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         ///////////////////////////////////////////////////////////////////////////////
         //                          General Report Details                          //
         /////////////////////////////////////////////////////////////////////////////
-       // LinearLayout ll = (LinearLayout)findViewById(R.id.view_report_attribute_list);
-        TableLayout tLayout = (TableLayout)findViewById(R.id.view_report_activity_tablelayout);
+        // LinearLayout ll = (LinearLayout)findViewById(R.id.view_report_attribute_list);
+        TableLayout tLayout = (TableLayout) findViewById(R.id.view_report_activity_tablelayout);
         valueMap.remove("NumberOfImages");
         valueMap.remove("NumberOfVideos");
         valueMap.remove("Date Submitted Epoch");
@@ -428,12 +527,55 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
 
-        int counter = 0;
-        for(String key:valueMap.keySet()){
-            createAttributeTableRow(key, valueMap.get(key));
-            tLayout.addView(createAttributeTableRow(key, valueMap.get(key)));
-            counter++;
+        if (valueMap.size() > 0) {
+            tLayout.addView(createAttributeTitleRow("General Details"));
+            int counter = 0;
+            for (String key : valueMap.keySet()) {
+                createAttributeTableRow(key, valueMap.get(key));
+                tLayout.addView(createAttributeTableRow(key, valueMap.get(key)));
+                counter++;
+            }
         }
+        if (severeAttrMap.size() > 0) {
+            tLayout.addView(createAttributeTitleRow("Severe Attributes"));
+            int counter2 = 0;
+            for (String key : severeAttrMap.keySet()) {
+                createAttributeTableRow(key, severeAttrMap.get(key));
+                tLayout.addView(createAttributeTableRow(key, severeAttrMap.get(key)));
+                counter2++;
+            }
+        }
+
+        if (winterAttrMap.size() > 0) {
+            tLayout.addView(createAttributeTitleRow("Winter Attributes"));
+            int counter3 = 0;
+            for (String key : winterAttrMap.keySet()) {
+                createAttributeTableRow(key, winterAttrMap.get(key));
+                tLayout.addView(createAttributeTableRow(key, winterAttrMap.get(key)));
+                counter3++;
+            }
+        }
+
+        if (rainAttrMap.size() > 0) {
+            tLayout.addView(createAttributeTitleRow("Rain Attributes"));
+            int counter4 = 0;
+            for (String key : rainAttrMap.keySet()) {
+                createAttributeTableRow(key, rainAttrMap.get(key));
+                tLayout.addView(createAttributeTableRow(key, rainAttrMap.get(key)));
+                counter4++;
+            }
+        }
+
+        if (coastalAttrMap.size() > 0) {
+            tLayout.addView(createAttributeTitleRow("Coastal Attributes"));
+            int counter5 = 0;
+            for (String key : coastalAttrMap.keySet()) {
+                createAttributeTableRow(key, coastalAttrMap.get(key));
+                tLayout.addView(createAttributeTableRow(key, coastalAttrMap.get(key)));
+                counter5++;
+            }
+        }
+
         username = (TextView) findViewById(R.id.view_report_activity_reporter);
         username.setText(getString(R.string.submited_by) + map.getUsername());
 
@@ -450,7 +592,6 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
             comments.setText(map.getComments());
         else
             ((ViewGroup) comments.getParent()).removeView(comments);
-
 
         eventType = (TextView) findViewById(R.id.view_report_activity_weather_event);
         eventType.setText(map.getWeatherEvent());
@@ -496,69 +637,69 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         storagePermitted(this);
         Log.d(TAG, "Epoch:" + map.getDateOfEvent() + " NumberPhotos: " + map.getNumberOfImages());
         if (numberOfPhotos > 0) {
-//            Log.i(TAG, "NUMBERPHOTOS: " + numberOfPhotos);
-            for(int i=0; i < numberOfPhotos;i++) {
+            for (int i = 0; i < numberOfPhotos; i++) {
 
                 StringBuilder urlSB = new StringBuilder();
-                urlSB.append("https://s3.amazonaws.com/skywarntestbucket/"+ String.format("%.0f",map.getDateSubmittedEpoch()) +"_"+ map.getUsername() +"_"+i+".jpg");
-                Log.d(TAG, "S3 URL: "+ urlSB);
+                urlSB.append("https://s3.amazonaws.com/skywarntestbucket/" + String.format("%.0f", map.getDateSubmittedEpoch()) + "_" + map.getUsername() + "_" + i + ".jpg");
+                Log.d(TAG, "S3 URL: " + urlSB);
                 ImageView iv = createImageView();
                 Ion.with(iv)
                         .resize(reportImageWidth, reportImageHeight)
                         .placeholder(R.drawable.sunny)
                         .error(R.drawable.snow_icon)
                         .load(urlSB.toString());
-
 //                BitmapUtility.scaleImage(mContext, iv);
-
                 horizontalLinearLayout.addView(iv);
                 urlSB.setLength(0);
             }
         }
         fragTransaction.commit();
-//        try {
-////            launchdownloadPhotoTask();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
 
 //      Todo: CHANGE URL TO DYNAMICALLY CREATED ONE
-        if(numberOfVideos>0){
-            for(int i=0; i < numberOfVideos;i++) {
+        if (numberOfVideos > 0) {
+            for (int i = 0; i < numberOfVideos; i++) {
                 StringBuilder url = new StringBuilder();
-               // url.append("https://s3.amazonaws.com/skywarntestbucket/" + map.getDateSubmittedEpoch()+"_" + map.getUsername() + "_" + i +".mp4");
-                https://s3.amazonaws.com/skywarntestbucket/SampleVideo_1280x720_1mb.mp4
+
+//                 url.append("https://s3.amazonaws.com/skywarntestbucket/" +  String.format("%.0f" ,map.getDateSubmittedEpoch())+"_" + map.getUsername() + "_" + i +".mp4");
+                url.append("https://s3.amazonaws.com/skywarntestbucket/1493426650833_oasker_0.mp4");
+                Log.d(TAG, "video URL: " + url);
+                Log.d(TAG, " real URL: https://s3.amazonaws.com/skywarntestbucket/1493426650833_oasker_0.mp4");
                 AddVideosToUI(url.toString());
+
 //                Set length of string builder to zero so it doesnt append over previous url
                 url.setLength(0);
             }
         }
     }
 
-    public void AddVideosToUI(String videoURL){
+    public void AddVideosToUI(String videoURL) {
         Log.d(TAG, "VIDEO TEST");
 //                For videos
         try {
             Bitmap videoThumbnail = retriveVideoFrameFromVideo(videoURL);
-            FrameLayout frameLayout = new FrameLayout(this);
-
+//            FrameLayout frameLayout = new FrameLayout(this);
+//            videoThumbnail
 //          Create play icon for over video thumbnail
-            Bitmap playIcon = BitmapFactory.decodeResource(this.getResources(),
-                    R.drawable.mr_ic_play_dark);
-            playIcon = Bitmap.createScaledBitmap(playIcon,50,50,false);
+//            Bitmap playIcon = BitmapFactory.decodeResource(this.getResources(),
+//                    R.drawable.mr_ic_play_dark);
+//            playIcon = Bitmap.createScaledBitmap(playIcon, 50, 50, false);
 
-            //frameLayout.addView(createVideoThumbnailView(videoThumbnail,videoURL));
+//            frameLayout.addView(createVideoThumbnailView(videoThumbnail,videoURL));
 
-            frameLayout.addView(createVideoThumbnailView(playIcon,videoURL));
-//            horizontalLinearLayout.addView(createVideoThumbnailView(videoThumbnail,videoURL));
-            horizontalLinearLayout.addView(frameLayout);
+//            frameLayout.addView(createImageView(playIcon));
+//            Bitmap videoThumbnail = ThumbnailUtils.createVideoThumbnail(videoURL,MediaStore.Images.Thumbnails.MINI_KIND);
+
+
+            horizontalLinearLayout.addView(createVideoThumbnailView(videoThumbnail, videoURL));
+
+
+//            horizontalLinearLayout.addView(frameLayout);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
     }
+
     private TableRow createAttributeTableRow(String labelString, String value){
         TableRow tr = new TableRow(this);
         tr.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -567,33 +708,40 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         label.setText(labelString);
         label.setTextColor(Color.BLACK);
         label.setTextSize(16);
-        label.setPadding(3,3,3,3);
+        label.setPadding(10, 10, 10, 10);
 
         TextView val = new TextView(this);
-        val.setText(valueMap.get(labelString));
-        val.setPadding(3,3,3,3);
+        val.setText(value);
         val.setTextColor(Color.BLACK);
         val.setTextSize(16);
+        val.setPadding(10, 10, 10, 10);
+
         tr.addView(label);
         tr.addView(val);
 
         return tr;
     }
 
-    private void initGUI(SkywarnWSDBMapper Map) {
-        map = Map;
+    private TableRow createAttributeTitleRow(String title) {
+        TableRow tr = new TableRow(this);
+        tr.setBackgroundResource(R.color.backgroundColor);
+        tr.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        TextView label = new TextView(this);
+
+        label.setText(title);
+        label.setTextColor(Color.BLACK);
+        label.setTextSize(16);
+        label.setPadding(10, 10, 10, 10);
+        label.setTextColor(Color.WHITE);
+        label.setBackgroundResource(R.color.backgroundColor);
+        tr.addView(label);
+
+        return tr;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult()");
-        if (resultCode == RESULT_OK) {
-            Log.d(TAG, "OnActivityResult");
-            data.getExtras();
-        }
-        if (resultCode == RESULT_CANCELED) {
-            Log.d(TAG, "Result_CANCELED");
-        }
+    private void initGUI(SkywarnWSDBMapper Map) {
+        map = Map;
     }
 
 //    public void launchdownloadPhotoTask() throws ExecutionException, InterruptedException {
@@ -618,6 +766,18 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
 //            photoTask.get();
 //        }
 //    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult()");
+        if (resultCode == RESULT_OK) {
+            Log.d(TAG, "OnActivityResult");
+            data.getExtras();
+        }
+        if (resultCode == RESULT_CANCELED) {
+            Log.d(TAG, "Result_CANCELED");
+        }
+    }
 
     public void launchMapActivity() {
         Intent i = new Intent(this, MapsActivity.class);
@@ -659,24 +819,26 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         });
         return IV;
     }
+
     public ImageView createVideoThumbnailView(Bitmap b, final String url) {
         Log.d(TAG, "createImageView()");
         final Bitmap tempBitmap = b;
         ImageView IV = new ImageView(getApplicationContext());
         IV.setId(0);
         IV.requestLayout();
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth, reportImageHeight);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportVideoThumbnailWidth, reportVideoThumbnailHeight);
         IV.setLayoutParams(layoutParams);
-        IV.setPadding(15, 15, 15, 15);
-        IV.setImageBitmap(b);
-        IV.setOnTouchListener(new View.OnTouchListener(){
+//        IV.setPadding(15, 15, 15, 15);
+        IV.setImageResource(R.drawable.cloud);
+//        IV.setImageBitmap(b);
+        IV.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Log.d(TAG, "VideoView onClick()");
                 Intent fullScreenVideoIntent = new Intent(ViewReportActivity.this, ViewVideoFullScreenActivity.class);
                 Bundle b = new Bundle();
-                fullScreenVideoIntent.putExtra("videoURL",url);
+                fullScreenVideoIntent.putExtra("videoURL", url);
                 startActivity(fullScreenVideoIntent);
 
                 return false;
@@ -684,6 +846,8 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
         });
         return IV;
     }
+
+
     //Create imageview with either bitmap or resourceID
     public ImageView createImageView() {
         Log.d(TAG, "createImageView()");
@@ -720,43 +884,16 @@ public class ViewReportActivity extends Activity implements UriCallback,BooleanC
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG,"onPause()");
+        Log.d(TAG, "onPause()");
 
     }
 
     public interface bitmapCallback {
         void onFinishedString(String s);
     }
-
-//    Generates thumbnail from video received from url
-    public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable
-    {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever mediaMetadataRetriever = null;
-        try
-        {
-            mediaMetadataRetriever = new MediaMetadataRetriever();
-
-            if (Build.VERSION.SDK_INT >= 14 & videoPath!=null)
-                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
-            else
-                mediaMetadataRetriever.setDataSource(videoPath);
-            //   mediaMetadataRetriever.setDataSource(videoPath);
-            bitmap = mediaMetadataRetriever.getFrameAtTime();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Throwable("Exception in retriveVideoFrameFromVideo(String videoPath)" + e.getMessage());
-
-        } finally {
-            if (mediaMetadataRetriever != null) {
-                mediaMetadataRetriever.release();
-            }
-        }
-        return bitmap;
-    }
 }
 
-//////
+
 class downloadPhotoTask extends AsyncTask<Void,Void,Bitmap> {
      private static final String TAG = "download";
      String filename;

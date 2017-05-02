@@ -19,10 +19,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.oliverasker.skywarnmarkii.Callbacks.UserAttributesCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
+import com.example.oliverasker.skywarnmarkii.Fragments.ChatFragments.ChatMessageFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.QueryReportsAttributesFragments.QueryReportAttributesFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.UserInfoHomeFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.ViewReportsFromSingleDayFragment;
@@ -48,21 +48,23 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tabbed_user_home);
         Log.d(TAG, "onCreate");
+
         //Setup toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbars);
         setSupportActionBar(myToolbar);
-        //mViewPager=new ViewPager(this);
-//         Create the adapter that will return a fragment for each of the three
-//         primary sections of the activity.
+
+
+//      Create the adapter that will return a fragment for each of the three
+//      primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
+//      Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setCurrentItem(0);
 
 
-//        Setup top and bottom tab layout
+//      Setup top and bottom tab layout
         bottomTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         bottomTabLayout.setupWithViewPager(mViewPager);
         bottomTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -84,43 +86,40 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
             public void onTabReselected(TabLayout.Tab tab) {
                 switch(tab.getPosition()){
                     case 3:
-                        launchMultipleOrSingleReportDialog();
+//                        launchMultipleOrSingleReportDialog();
                         break;
                 }
             }
         });
 
 
-        bottomTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        bottomTabLayout.setupWithViewPager(mViewPager);
-        bottomTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch(tab.getPosition()){
-                    case 3:
-                        launchMultipleOrSingleReportDialog();
-                        break;
-                }
-            }
+//        bottomTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        bottomTabLayout.setupWithViewPager(mViewPager);
+//        bottomTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                switch (tab.getPosition()) {
+//                    case 3:
+//                        launchMultipleOrSingleReportDialog();
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//                switch (tab.getPosition()) {
+//                    case 3:
+////                        launchMultipleOrSingleReportDialog();
+//                        break;
+//                }
+//            }
+//        });
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                switch(tab.getPosition()){
-                    case 3:
-                        launchMultipleOrSingleReportDialog();
-                        break;
-                }
-            }
-        });
-
-
-        
-        
 
 //        newReportButton = (ImageButton) findViewById(R.id.open_write_new_report_button);
 //        newReportButton.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +140,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 //                        .setAction("Action", null).show();
 //            }
 //        });
+//        Get User attribtes task
         GetUserCognitoAttributesTask attributesTask = new GetUserCognitoAttributesTask(TabbedUserHomeActivity.this);
         attributesTask.initUserPool(this);
         attributesTask.setCognitoUser(UserInformationModel.getInstance().getUserID());
@@ -150,12 +150,11 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
     public void launchMultipleOrSingleReportDialog(){
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to logout?")
+        builder.setMessage("Submit Single or Multiple Reports?")
                 .setPositiveButton("Single Report", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d(TAG, "Launch Single report submit activity");
-                       // launchLoginActivity();
                     launchSubmitReportActivity();
                     }
                 })
@@ -169,7 +168,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(TAG, "Cancel Logout button in actionbar pressed");
+                        Log.d(TAG, "Cancel Submit reports button pressed");
                     }
                 });
         android.support.v7.app.AlertDialog dialog = builder.create();
@@ -203,10 +202,10 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if(menu.equals(R.menu.tabbed_user_home_activity_single_or_multiple_report_submit_menu)){
-            getMenuInflater().inflate(R.menu.tabbed_user_home_activity_single_or_multiple_report_submit_menu,menu);
-        }
-        if(menu.equals(R.menu.menu_tabbed_user_home_activity2))
+//        if(menu.equals(R.menu.tabbed_user_home_activity_single_or_multiple_report_submit_menu)){
+//            getMenuInflater().inflate(R.menu.tabbed_user_home_activity_single_or_multiple_report_submit_menu,menu);
+//        }
+//        if(menu.equals(R.menu.menu_tabbed_user_home_activity2))
             getMenuInflater().inflate(R.menu.menu_tabbed_user_home_activity2, menu);
         return true;
     }
@@ -220,7 +219,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
         switch(item.getItemId()) {
             case R.id.action_settings:
-                Toast.makeText(this, "User Settings Functionality is Still under Development", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "User Settings Functionality is Still under Development", Toast.LENGTH_LONG).show();
+                launchSettingsActivity();
                 return true;
             case R.id.submit_report:
                 launchSubmitReportActivity();
@@ -250,8 +250,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         return super.onOptionsItemSelected(item);
     }
 
-
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -260,6 +258,9 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
+
+    //    Callbacks
     @Override
     public void onProcessFinished(Map<String, String> vals) {
         Log.d(TAG, "onProcessFinished(Map<String, String>)");
@@ -269,27 +270,33 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
     }
 
-
-
+    //  Methods that launch new activities
     public void launchConfirmUserActivity(){
         Intent i = new Intent(this,ConfirmNewUserActivity.class);
         startActivity(i);
     }
+
     public void launchLoginActivity(){
         UserInformationModel.getInstance().clearAllUserInformation();
 
         Intent i = new Intent(this, LoginActivity.class);
         startActivity(i);
     }
+
     public void launchSubmitReportActivity(){
         Intent i = new Intent(this, SubmitReportActivity.class);
         startActivity(i);
     }
+
     public void launchSubmitMultipleReportsActivtiy(){
         Intent i = new Intent(this, SubmitMultipleReportsInfoActivity.class);
         startActivity(i);
     }
 
+    public void launchSettingsActivity() {
+        Intent i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
+    }
 
     public static class PlaceholderFragment extends Fragment {
 
@@ -328,6 +335,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         }
 
 
+        //        Todo: Find new way to launch submit report
+//
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
@@ -336,36 +345,28 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
             switch (position){
                 case 0:
                     Log.d(TAG, "::::::::::::::::::::::::::UserInfoHomeFragment");
-                    mostRecentSelectedFragment = new UserInfoHomeFragment();
-                    return mostRecentSelectedFragment;
-//                    return new UserInfoHomeFragment();
+                    return new UserInfoHomeFragment();
 
                 //Query Report
                 case 1:
                     Log.d(TAG, "::::::::::::::::::::::::::Query Report frag");
-                    mostRecentSelectedFragment = new QueryReportAttributesFragment();
-//                    mostRecentSelectedFragment.;
-//                    mostRecentSelectedFragment
-                    return mostRecentSelectedFragment;
-                    //return new QueryReportAttributesFragment();
+                    return new QueryReportAttributesFragment();
 
                 //Relevant reports
                 case 2:
                     Log.d(TAG, "::::::::::::::::::::::::::Relevant report frag");
+                    ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     Intent i = new Intent();
                     Bundle b = i.getExtras();
-                    ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     viewRep.setArguments(b);
-                    mostRecentSelectedFragment = viewRep;
                     return  viewRep;
-//                case 3:
-//                    Log.d(TAG, "Relevant report frag");
-//                    //Intent i = new Intent();
-//                    //Bundle b = i.getExtras();
-//                    ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
-//
-//                    viewRep.setArguments(b);
-//                    return  viewRep;
+
+
+                case 4:
+                    Log.d(TAG, "Chat Frag Selected");
+                    ChatMessageFragment chatFrag = new ChatMessageFragment();
+                    return chatFrag;
+
 
                 default:
                     Log.d(TAG, "Default: UsereInfoHomeFragment");
@@ -376,7 +377,7 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return 4;
+            return 5;
         }
 
         @Override
@@ -390,6 +391,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
                     return "Relevant Reports";
                 case 3:
                     return "Submit";
+                case 4:
+                    return "Chat";
             }
             return null;
         }

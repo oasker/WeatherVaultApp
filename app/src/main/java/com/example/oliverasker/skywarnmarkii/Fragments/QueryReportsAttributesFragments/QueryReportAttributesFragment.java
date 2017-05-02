@@ -53,7 +53,7 @@ import java.util.Map;
  * Use the {@link QueryReportAttributesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class QueryReportAttributesFragment extends Fragment implements ICallback, StringCallback, QueryReportAttributesFragmentDialogCallback,DateCallBack {
+public class QueryReportAttributesFragment extends Fragment implements ICallback, StringCallback, QueryReportAttributesFragmentDialogCallback, DateCallBack {
     private static final String TAG = "QryRprtAttrFragment";
     QueryReportAttributesDateRangeFragment dateRangeFragment;
     private Map masterMap;
@@ -87,18 +87,18 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     private QueryReportAttributesMatchItemFragment matchItem;
     private QueryReportAttributeRangeItemFragment rangeItem;
 
-//    Date stuff
+    //    Date stuff
     private boolean isDateRange;
     private boolean isSingleDay = true;
 
-//    Date Range variables
+    //    Date Range variables
     private Calendar startCal;
     private Calendar endCal;
 
     private Date startDate;
     private Date endDate;
 
-//    Single Day stuff
+    //    Single Day stuff
     private Date singleDate;
 
 
@@ -115,11 +115,11 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
      * @return A new instance of fragment QueryReportAttributesFragment.
      */
     public static QueryReportAttributesFragment newInstance(Context context) {
-        QueryReportAttributesFragment fragment = new QueryReportAttributesFragment();
+        QueryReportAttributesFragment queryReportFrag = new QueryReportAttributesFragment();
 
         Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        queryReportFrag.setArguments(args);
+        return queryReportFrag;
     }
 
     @Override
@@ -140,7 +140,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         final View v = inflater.inflate(R.layout.fragment_query_report_attributes2, container, false);
 
         resultArrayList = new ArrayList<>();
-
+        mContext = getActivity().getApplicationContext();
 
 
 //         Begin query button
@@ -152,44 +152,42 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //                Log.d(TAG, "BEFOREstartCal: " + CalendarToString(startCal) + " endDate: " + CalendarToString(endDate));
 
 //                if(dateRangeFragment != null ) {
-                if(isDateRange ) {
-                    startCal= dateRangeFragment.getStartDate();
-                    endCal=dateRangeFragment.getEndDate();
+                if (isDateRange) {
+                    startCal = dateRangeFragment.getStartDate();
+                    endCal = dateRangeFragment.getEndDate();
 
                     startDate = startCal.getTime();
                     endDate = endCal.getTime();
 
 
                     Log.d(TAG, "startDate vs EndDate: ");
-                    long differenceInDays= DateUtility.getNumberDaysBetweenTwoCalendars(startCal,endCal);
+                    long differenceInDays = DateUtility.getNumberDaysBetweenTwoCalendars(startCal, endCal);
 
                     Log.d(TAG, "startDate - endDate = " + differenceInDays + " days");
-                    do{
-                        Log.d(TAG, "startDate: "  + startDate + " endDate: " +  endDate);
+                    do {
+                        Log.d(TAG, "startDate: " + startDate + " endDate: " + endDate);
 
                         testDate = DateUtility.DateToString(startDate);
-                        if (DateUtility.DateToString(startDate).equals(DateUtility.DateToString(endDate))){
+                        if (DateUtility.DateToString(startDate).equals(DateUtility.DateToString(endDate))) {
                             launchQueryReportAttributesTask(testDate, true);
                             Log.d(TAG, "startDate == endDate");
                             break;
-                        }
-
-                        else{
+                        } else {
 //                            Log.d(TAG, "startDate: " + DateUtility.CalendarToString(tempStartCal) + " enddate2: " + DateUtility.CalendarToString(endCal));
 //                            Log.d(TAG, "startDate = endDate?: " + (startDate == endDate));
                             launchQueryReportAttributesTask(testDate, false);
                             Log.d(TAG, "startDate != endDate");
                         }
-                        startDate=DateUtility.AddOneDayToDate(startDate);
+                        startDate = DateUtility.AddOneDayToDate(startDate);
                         Log.d(TAG, "looping through reports, testdate: " + testDate);
                     }
-                    while (4>3);
+                    while (4 > 3);
                 }
 
-                if(isSingleDay & singleDayFragment!=null){
+                if (isSingleDay & singleDayFragment != null) {
                     singleDayFragment.setCallBack(QueryReportAttributesFragment.this);
-                    singleDate =singleDayFragment.getDateToQuery();
-                    launchQueryReportAttributesTask(DateUtility.DateToString(singleDate),true);
+                    singleDate = singleDayFragment.getDateToQuery();
+                    launchQueryReportAttributesTask(DateUtility.DateToString(singleDate), true);
 
 //                    launchQueryReportAttributesTask(singleDayFragment.getDateToQueryString(),true);
                 }
@@ -326,7 +324,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
+//        mContext = context;
     }
 
     @Override
@@ -335,7 +333,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 
     }
 
-//  Callback for report query.
+    //  Callback for report query.
 //  Adds reports to list
     @Override
     public void processFinish(ArrayList<SkywarnWSDBMapper> result) {
@@ -372,7 +370,6 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //        });
 //        result = null;
     }
-
 
 
     @Override
@@ -542,7 +539,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         b.putSerializable("queryResultsArray", results);
         i.putExtras(b);
         startActivity(i);
-        results=null;
+        results = null;
     }
 
     //Todo: query attributes should have two tasks, one for date range, one for single day
@@ -551,7 +548,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         queryTask.setContext(mContext);
         queryTask.setDelegate(this);
 
-        if(isLastDate)
+        if (isLastDate)
             queryTask.setLastQuery(true);
 
         masterMap = new HashMap();
@@ -561,12 +558,12 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //            masterMap.put("City", locationFrag.getCity());
         }
 
-        if (!locationFrag.getState().trim().equals("")){
+        if (!locationFrag.getState().trim().equals("")) {
             matchAttributesToQuery.put("State", locationFrag.getState());
 //            masterMap.put("State", locationFrag.getState());
-         }
+        }
 
-        if (!locationFrag.getZip().trim().equals("")){
+        if (!locationFrag.getZip().trim().equals("")) {
             matchAttributesToQuery.put("ZipCode", locationFrag.getZip());
 //            masterMap.put("ZipCode", locationFrag.getZip());
         }
@@ -642,8 +639,8 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
             queryTask.setQueryConditionMap(masterMap);
         }
 
-            queryTask.setDate(testDate);
-            queryTask.setQueryConditionMap(masterMap);
+        queryTask.setDate(testDate);
+        queryTask.setQueryConditionMap(masterMap);
             queryTask.execute();
 //
 //            masterMap.clear();
@@ -651,7 +648,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 //            matchAttributesToQuery.clear();
         }
 
-//    Creates Map of attribute namesin dynamodb and AttributeValues
+    //    Creates Map of attribute namesin dynamodb and AttributeValues
     public Map generateRangeDynamoDBQueryConditionMap(String[] attributeNames, List<float[][]> attributeValsToQuery, Map queryConditionMap) {
         Log.d(TAG, "generateRangeDynamoDBQueryConditionMap");
 
@@ -705,6 +702,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         }
         return false;
     }
+
     private boolean isRangeAttribute(String s) {
         List<String> rangeAttrList = Arrays.asList(getResources().getStringArray(R.array.RangeAttributes));
         if (rangeAttrList.contains(s)) {
@@ -715,7 +713,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
 //        rangeAttributesToQuery.clear();
 //        matchAttributesToQuery.clear();
@@ -731,7 +729,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         super.onResume();
         resultArrayList = new ArrayList<>();
         masterMap = new HashMap();
-        matchAttributesToQuery=new HashMap<>();
+        matchAttributesToQuery = new HashMap<>();
         rangeAttributesToQuery = new HashMap<>();
     }
 
@@ -740,6 +738,7 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
         Log.d(TAG, "startDateChanged()");
         startDate = startCal.getTime();
     }
+
     @Override
     public void endDateChanged(Calendar endCal) {
         Log.d(TAG, "endDateChanged()");
@@ -748,18 +747,16 @@ public class QueryReportAttributesFragment extends Fragment implements ICallback
 
     @Override
     public void setSingleDateToQuery(Calendar singleDateCalendar) {
-        singleDate=singleDateCalendar.getTime();
+        singleDate = singleDateCalendar.getTime();
+    }
+
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
     }
 
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-
-
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
     }
 }

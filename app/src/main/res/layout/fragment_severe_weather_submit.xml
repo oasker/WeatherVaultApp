@@ -16,17 +16,21 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <!-- SEVERE WEATHER TYPE -->
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:padding="3dp">
+        <!-- SEVERE WEATHER TYPE -->
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/severe_type_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/severe_weather_type"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
@@ -36,8 +40,8 @@
                 android:id="@+id/severe_weather_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overlapAnchor="false"
-                />
+                android:layout_weight="1"
+                android:overlapAnchor="false" />
 
         </TableRow>
 
@@ -45,22 +49,110 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/hail_size_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:text="@string/hail_size"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/hail_size_field_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:inputType="number|numberDecimal"
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tornado_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:text="@string/tornado"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/tornado_field_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:inputType="text"
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/barometer_label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:text="@string/barometer"
+                android:textAlignment="viewStart"
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/barometer_field_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:inputType="number|numberDecimal"
+                android:textColor="@android:color/background_dark"
+                android:textSize="16sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/wind_speed_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/windspeed"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/wind_speed_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
@@ -69,22 +161,26 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/wind_gust_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/wind_gust"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/wind_gust_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:inputType="number|numberDecimal"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
@@ -101,6 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/wind_direction"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
@@ -111,89 +208,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:minWidth="200dp"
-                android:overlapAnchor="false"
+                android:minWidth="160dp"
                 android:padding="8dp" />
 
         </TableRow>
 
         <!-- HAIL SIZE -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/hail_size_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:layout_margin="5dp"
-                android:text="@string/hail_size"
-                android:textAlignment="viewStart"
-                android:textColor="@android:color/background_dark"
-                android:textSize="16sp" />
-            <EditText
-                android:id="@+id/hail_size_field_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_margin="5dp"
-                android:inputType="number|numberDecimal"
-                android:textColor="@android:color/background_dark"
-                android:textSize="16sp" />
-        </TableRow>
 
 
         <!-- TORNADO -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/tornado_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:layout_margin="5dp"
-                android:text="@string/tornado"
-                android:textAlignment="viewStart"
-                android:textColor="@android:color/background_dark"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/tornado_field_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_margin="5dp"
-                android:inputType="text"
-                android:textColor="@android:color/background_dark"
-                android:textSize="16sp" />
-        </TableRow>
 
         <!-- BAROMETER   -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TextView
-                android:id="@+id/barometer_label_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:layout_margin="5dp"
-                android:text="@string/barometer"
-                android:textAlignment="viewStart"
-                android:textColor="@android:color/background_dark"
-                android:textSize="16sp" />
-            <EditText
-                android:id="@+id/barometer_field_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_margin="5dp"
-                android:inputType="number|numberDecimal"
-                android:textColor="@android:color/background_dark"
-                android:textSize="16sp" />
-        </TableRow>
 
         <!-- Severe Weather Type -->
 
@@ -209,12 +236,14 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/wind_damage_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/wind_damage"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
@@ -226,6 +255,7 @@
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:inputType="text"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
@@ -235,24 +265,30 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
-                android:id="@+id/lightning_damage_label_tv"
+                android:id="@+id/textView34"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/lightning_damage"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/lightning_damage_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:inputType="text"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
+
         </TableRow>
 
         <!-- DAMAGE COMMENTS-->
@@ -266,25 +302,28 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/damage_comments_label_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:text="@string/damage_comments"
                 android:textAlignment="viewStart"
                 android:textColor="@android:color/background_dark"
                 android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/damage_comments_field_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_column="2"
                 android:layout_margin="5dp"
+                android:layout_weight="1"
                 android:textColor="@android:color/background_dark"
-                android:textSize="16sp"
-                />
+                android:textSize="16sp" />
         </TableRow>
     </TableLayout>
 </LinearLayout>

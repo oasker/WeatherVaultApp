@@ -44,9 +44,9 @@ import java.util.Map;
  * Created by oliverasker on 3/29/17.
  */
 public class RateReportTask extends AsyncTask<Void,Void,Void> {
+    private static final String TAG = "RateReportTask";
     //Variables for S3 calls
     private Context mContext;
-    private static final String TAG = "RateReportTask";
     private String reportName;
     private String filePath;
     private String url;
@@ -61,6 +61,31 @@ public class RateReportTask extends AsyncTask<Void,Void,Void> {
     private AmazonDynamoDBClient ddb;
     private String reportPrimaryKey;
     private String rangeKey;
+
+    public static void updateItem(AmazonDynamoDBClient client, String tableName, String primaryKey, String rangeKey, String val) {
+
+        Log.d(TAG, "primaryKey: " + primaryKey + " rangeKey: " + rangeKey + " val: " + val);
+        java.util.Map<String, AttributeValue> key = new HashMap<String, AttributeValue>();
+        key.put("DateSubmittedString", new AttributeValue().withS(primaryKey));
+        key.put("DateSubmittedEpoch", new AttributeValue().withN(rangeKey));
+
+        Map<String, AttributeValueUpdate> attributeUpdates = new HashMap<String, AttributeValueUpdate>();
+
+        AttributeValueUpdate update = new AttributeValueUpdate()
+                .withAction(AttributeAction.PUT)
+                .withValue(new AttributeValue().withN(val));
+
+        attributeUpdates.put("NetVote", update);
+//        attributeUpdates.put(upOrDownVote, update);
+//        attributeUpdates.put("NetVote", update);
+
+        UpdateItemRequest updateItemRequest = new UpdateItemRequest()
+                .withTableName(tableName)
+                .withKey(key)
+                .withAttributeUpdates(attributeUpdates);
+        client.updateItem(updateItemRequest);
+
+    }
 
     @Override
     protected void onPreExecute() {
@@ -88,7 +113,7 @@ public class RateReportTask extends AsyncTask<Void,Void,Void> {
         try {
             u = new URL(url);
             HttpURLConnection c = (HttpURLConnection) u.openConnection();
-            Log.d(TAG, "url.openConnection() Response Code: "+ c.getResponseCode());
+            Log.d(TAG, "url.openConnection() Response Code: " + c.getResponseCode());
             c.setRequestMethod("GET");
             c.connect();
             InputStream inputStream = c.getInputStream();
@@ -165,7 +190,7 @@ public class RateReportTask extends AsyncTask<Void,Void,Void> {
         if (vote == "-U") {
             reportRating++;
         }
-        updateItem(ddb, Constants.TEST_TABLE_NAME, reportPrimaryKey, rangeKey, String.valueOf(reportRating));
+        updateItem(ddb, Constants.REPORTS_TABLE_NAME, reportPrimaryKey, rangeKey, String.valueOf(reportRating));
 
     return null;
     }
@@ -209,6 +234,7 @@ public class RateReportTask extends AsyncTask<Void,Void,Void> {
             e.printStackTrace();
         }
     }
+
     private void uploadRatingTextFile(String uploadFileName, String keyName){
         Log.d(TAG, "uploadRatingTextFile() uploadFileName: " + uploadFileName);
 
@@ -260,31 +286,6 @@ public class RateReportTask extends AsyncTask<Void,Void,Void> {
                     " for some reason.");
             // ... error handling based on exception details
         }
-    }
-
-    public static void updateItem(AmazonDynamoDBClient client, String tableName, String primaryKey, String rangeKey, String val) {
-
-        Log.d(TAG,  "primaryKey: " + primaryKey + " rangeKey: " + rangeKey + " val: " + val);
-        java.util.Map<String, AttributeValue> key = new HashMap<String, AttributeValue>();
-        key.put("DateSubmittedString", new AttributeValue().withS(primaryKey));
-        key.put("DateSubmittedEpoch", new AttributeValue().withN(rangeKey));
-
-        Map<String, AttributeValueUpdate> attributeUpdates = new HashMap<String, AttributeValueUpdate>();
-
-        AttributeValueUpdate update = new AttributeValueUpdate()
-                .withAction(AttributeAction.PUT)
-                .withValue(new AttributeValue().withN(val));
-
-        attributeUpdates.put("NetVote", update);
-//        attributeUpdates.put(upOrDownVote, update);
-//        attributeUpdates.put("NetVote", update);
-
-        UpdateItemRequest updateItemRequest = new UpdateItemRequest()
-                .withTableName(tableName)
-                .withKey(key)
-                .withAttributeUpdates(attributeUpdates);
-        client.updateItem(updateItemRequest);
-
     }
 
     //////////////////////////////////////////

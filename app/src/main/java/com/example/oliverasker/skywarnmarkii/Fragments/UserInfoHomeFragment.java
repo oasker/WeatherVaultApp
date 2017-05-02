@@ -22,7 +22,6 @@ import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
-import com.example.oliverasker.skywarnmarkii.Utility.BitmapUtility;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 import com.koushikdutta.ion.Ion;
 
@@ -44,8 +43,8 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     private Button viewUserInfoButton;
 
     private ImageView profileImage;
-    private int profileImageViewWidth=300;
-    private int profileImageViewHeight= 300;
+    private int profileImageViewWidth = 150;
+    private int profileImageViewHeight = 150;
 
     private Context mContext;
 
@@ -54,6 +53,8 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
         Log.d(TAG, "onCreateView");
         View v = inflater.inflate(R.layout.fragment_user_info_home,container, false);
+
+        mContext = getActivity().getApplicationContext();
 
         profileImage = (ImageView)v.findViewById(R.id.user_profile_picture_imageview);
 
@@ -219,7 +220,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext= context;
+//        mContext = context;
     }
 
     //
@@ -228,7 +229,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         // String filename = "oasker.jpg";
         String filename = UserInformationModel.getInstance().getUsername()+".jpg";
 
-        String externalStorage = mContext.getCacheDir().toString()+"/";
+        String externalStorage = mContext.getCacheDir().toString() + "/";
         final String filePath = externalStorage+filename;
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 mContext,
@@ -275,12 +276,15 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
 //        }
         //profileImage=BitmapUtility.scaleBitmap(profileImage, 400,400);
         Ion.with(profileImage)
-                .resize(profileImageViewWidth,profileImageViewHeight)
+//                .resize(profileImageViewWidth,profileImageViewHeight)
+
+//                .resize(300,300)
                 //.smartSize(true)
-                .placeholder(R.drawable.sunny)
+                .placeholder(R.drawable.default_user_photo)
                 .error(R.drawable.snow_icon)
+//                .load("https://s3.amazonaws.com/skywarntestbucket/oasker.png");
                 .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
-        BitmapUtility.scaleImage(mContext,profileImage);
+//        BitmapUtility.scaleImage(mContext, profileImage);
     }
 
 }

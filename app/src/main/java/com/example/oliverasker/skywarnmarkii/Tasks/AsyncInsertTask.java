@@ -51,8 +51,8 @@ public class AsyncInsertTask extends AsyncTask<String[], Void, Void> implements 
 
                 Log.d(TAG, "_____________________________________________");
 
-               // PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", report);
-//                PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", params[0]);
+                // PutItemRequest putItemRequest = new PutItemRequest(Constants.REPORTS_TABLE_NAME, report);
+//                PutItemRequest putItemRequest = new PutItemRequest(Constants.REPORTS_TABLE_NAME, params[0]);
 //                PutItemResult putItemResult = ddb.putItem(putItemRequest);
 
                 //DynamoDBManager.insertRecord(report);

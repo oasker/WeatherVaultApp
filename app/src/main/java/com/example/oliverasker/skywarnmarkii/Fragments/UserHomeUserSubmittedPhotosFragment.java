@@ -3,7 +3,6 @@ package com.example.oliverasker.skywarnmarkii.Fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,17 +33,16 @@ import java.util.ArrayList;
 * Created by oliverasker on 2/19/17.
 */
 
-public class UserHomeUserSubmittedPhotosFragment extends Fragment implements BitmapCallback, StringCallback,ViewReportActivity.bitmapCallback {
+public class UserHomeUserSubmittedPhotosFragment extends Fragment implements BitmapCallback, StringCallback, ViewReportActivity.bitmapCallback {
     private static final String TAG = "PersnlPhotosFrag";
     private String username = UserInformationModel.getInstance().getUsername();
     private ArrayList<SubmittedPhotoModel> photoModelList = new ArrayList<>();
     private Context mContext;
     private LinearLayout photoLinearLayout;
-    private int imageViewWidth = 250;
-    private int imageViewHeight = 250;
+    private int imageViewWidth = 400;
+    private int imageViewHeight = 400;
 
-    //FOR TESTING
-    private ImageView imageView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup Container, Bundle savedInstance) {
@@ -53,16 +51,13 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
        // container = Container;
         photoLinearLayout = (LinearLayout) v.findViewById(R.id.photoLinearLayout);
         photoModelList = new ArrayList<>();
-
-        mContext = getContext();
+        mContext = getActivity().getApplicationContext();
 
         //ToDo:change filename to current user, not placeholder
         GetUserSubmittedPhotoNamesTask task2 = new GetUserSubmittedPhotoNamesTask();
         task2.setmContext(mContext);
         task2.setCallback(this);
         task2.execute();
-
-
 //        imageView = (ImageView) v.findViewById(R.id.test_image_view);
 //        BitmapUtility.resizeImageView(imageViewWidth,imageViewHeight,imageView);
 //        Ion.with(imageView)
@@ -73,10 +68,10 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         return v;
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context;
     }
 
     @Override
@@ -92,7 +87,7 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         Log.d(TAG, "processFinished(Bitmap)");
         //Log.d(TAG, "processFinished() bitmapSize: "+ result.getByteCount());
         //File f = new File("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
-        Bitmap bitmap = BitmapFactory.decodeFile("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
+//        Bitmap bitmap = BitmapFactory.decodeFile("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
         ImageView iV = new ImageView(mContext);
         ImageView iV2 = new ImageView(mContext);
         if (result != null) {
@@ -105,7 +100,7 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
 
     @Override
     public void processFinish(Bitmap result, String path) {
-        Log.d(TAG, "processFinished(Bitmap)");
+        Log.d(TAG, "processFinished(Bitmap, String)");
         Log.d(TAG, "processFinsihed(Bitmap) path: " + path);
         //Log.d(TAG, "processFinished() bitmapSize: "+ result.getByteCount());
         //Bitmap bitmap = BitmapFactory.decodeFile("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
@@ -139,11 +134,9 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     //  which adds them to the UI using ion API
     @Override
     public void onProcessComplete(ArrayList<String> s) {
-        Log.d(TAG, "onProcessComplete(ArrayList<String>");
+        Log.d(TAG, "onProcessComplete(ArrayList<String> s)");
         s.remove(UserInformationModel.getInstance().getUsername()+".jpg");
         for (String url : s) {
-            //Log.d(TAG, url);
-//            imageView = (ImageView) v.findViewById(R.id.test_image_view);
             ImageView v = new ImageView(mContext);
 
             TextView tv = new TextView(mContext);
@@ -162,7 +155,7 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
                     .load("https://s3.amazonaws.com/skywarntestbucket/"+url);
             Log.d(TAG,"https://s3.amazonaws.com/skywarntestbucket/"+url );
             ll.addView(v);
-            if(url.contains("_")) {
+            if (url.contains("_") & url.contains(".jpg")) {
                 String text = url.split("_")[0];
                 text=Utility.epochToDateTimeString(Long.parseLong(text)/1000);
                 tv.setText(text.toString());

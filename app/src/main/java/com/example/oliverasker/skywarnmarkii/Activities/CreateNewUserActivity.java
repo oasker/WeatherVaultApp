@@ -216,11 +216,11 @@ public class CreateNewUserActivity extends AppCompatActivity {
             String errorCode2 = data.getStringExtra("errorCode");
             Log.d(TAG, "onActivityResult() RESULT_CANCELLED: ErrorCode: "+ errorCode2);
 
-            //Username is already taken
-            //if(data.getStringExtra("errorCode").toString() == Constants.SIGN_UP_ERROR_USER_ALREADY_EXISTS) {
+//            Username is already taken
+            if (data.getStringExtra("errorCode").toString() == Constants.SIGN_UP_ERROR_USER_ALREADY_EXISTS) {
                 Toast.makeText(this, "That username is taken, please enter a different one.", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "ASDOFJAOSDFJ");
-           // }
+            }
         }
     }
 }

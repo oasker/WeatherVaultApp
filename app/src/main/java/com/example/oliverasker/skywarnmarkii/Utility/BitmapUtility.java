@@ -2,17 +2,23 @@ package com.example.oliverasker.skywarnmarkii.Utility;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.koushikdutta.ion.Ion;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.NoSuchElementException;
 
 /**
@@ -110,7 +116,7 @@ public class BitmapUtility {
         Log.i("Test", "done");
     }
 
-    static private int dpToPx(Context context,int dp) {
+    public static int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float)dp * density);
     }
@@ -149,5 +155,68 @@ public class BitmapUtility {
 
         bm = Bitmap.createScaledBitmap(bm, width, height, true);
         return bm;
+    }
+
+    public static String getRealPathFromURI(Uri uri, Context context) {
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
+    public static Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+
+    public static ImageView createdScaledImageView(Bitmap bitmap, Context context) {
+        int width = 0;
+        int height = 0;
+        ImageView newImageView = new ImageView(context);
+
+        try {
+            width = bitmap.getWidth();
+        } catch (NullPointerException e) {
+            throw new NoSuchElementException("Can't find image");
+        }
+        height = bitmap.getHeight();
+        int bounding = BitmapUtility.dpToPx(context, 250);
+
+        float xScale = ((float) bounding / width);
+        float yScale = ((float) bounding / height);
+        float scale = (xScale <= yScale) ? xScale : yScale;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+
+        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
+        width = scaledBitmap.getWidth();
+        height = scaledBitmap.getHeight();
+
+        BitmapDrawable result = new BitmapDrawable(context.getResources(), scaledBitmap);
+
+        newImageView.setImageDrawable(result);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50));
+        params.setMargins(10, 10, 10, 10);
+        params.width = width;
+        params.height = height;
+        newImageView.setLayoutParams(params);
+
+        newImageView.setImageBitmap(bitmap);
+        // previewPhotoLayout.addView(newImageView,params);
+        return newImageView;
+    }
+
+    public static File createTemporaryFile(String part, String ext) throws Exception {
+        File tempDir = Environment.getExternalStorageDirectory();
+        tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");
+        if (!tempDir.exists()) {
+            tempDir.mkdirs();
+        }
+        return File.createTempFile(part, ext, tempDir);
     }
 }

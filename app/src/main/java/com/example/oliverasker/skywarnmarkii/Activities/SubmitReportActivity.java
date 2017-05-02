@@ -58,6 +58,8 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
     HashMap<String, Boolean> weatherEventsBoolsMap = new HashMap<String, Boolean>();
     HashMap<String, AttributeValue> report;
     StateHolder sH;
+
+    private boolean dateChanged;
     //  Used for determining which fragments are shown in next activity (instance bools initialized to 0 fyi)
     private Boolean severeWeatherBool = false;
     private Boolean winterWeatherBool = false;
@@ -76,7 +78,11 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
     private Button  decrementNumberReportsButton;
     private int numberReportsToSubmit=1;
     private TextView numberReportsToSubmitTV;
+
     private TimePicker timePicker;
+    private int timePickerMinute;
+    private int timePickerHour;
+
     private DatePicker datePicker;
     private SkywarnWSDBMapper reportToSubmit;
     private OnClickListener cbListener = new OnClickListener() {
@@ -109,6 +115,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         }
     };
 
+
     private static long getDateFromDatePicker(DatePicker datePicker) {
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();
@@ -118,10 +125,10 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         return calendar.getTimeInMillis();
     }
 
+
     @Override
     public void onCreate(Bundle b) {
         super.onCreate(b);
-        Intent i = getIntent();
         setContentView(R.layout.activity_submit_report);
 
         //Setup toolbar
@@ -129,8 +136,6 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         setSupportActionBar(myToolbar);
         report = new HashMap();
         reportToSubmit = new SkywarnWSDBMapper();
-
-
 
         //  Bools are used to determine what fragments to show for user input
         weatherEventsBoolsMap.put("severeBool", false);
@@ -148,12 +153,27 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         currentTemperatureInput = (EditText)findViewById(R.id.submit_report_activity_temperature_field_input);
         commentsInput = (EditText)findViewById(R.id.submit_report_activity_comments);
 
-        numberReportsToSubmitTV = (TextView)findViewById(R.id.number_of_reports_TV);
-        numberReportsToSubmitTV.setText(String.valueOf(numberReportsToSubmit));
-
-        //  Time related Widgets
+//          Time related Widgets
         datePicker = (DatePicker) findViewById(R.id.submit_report_date_picker);
+
+
+//        Init timepicker mins and secs to current time so if the time picker time is never chagned we know its the current time
+        timePickerMinute = Calendar.getInstance().get(Calendar.MINUTE);
+        timePickerHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
+        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                timePickerMinute = minute;
+                timePickerHour = hourOfDay;
+//                    Calendar c = Calendar.getInstance();
+//                    c.set(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth(), hourOfDay, minute);
+//                    report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(c.getTimeInMillis())));
+//                    Log.d(TAG, "DATE OF EVENT/: " + String.valueOf(c.getTimeInMillis()));
+//                    dateChanged = true;
+                Log.d(TAG, "mins: " + minute + " hour: " + hourOfDay);
+            }
+        });
 
         // CheckBoxes determining which type of event is being reported
         severeWeatherCB = (CheckBox) findViewById(R.id.submit_activity_severe_weather_checkbox);
@@ -168,42 +188,11 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         coastalFloodCB = (CheckBox) findViewById(R.id.submit_activity_coastal_flooding_checkbox);
         coastalFloodCB.setOnClickListener(cbListener);
 
-
-        //Todo: Add multiple report submission option
-        //Numberof reports button
-        decrementNumberReportsButton = (Button) findViewById(R.id.decrement_number_reports_button);
-        decrementNumberReportsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "decrementPhotos onClick()");
-
-                if(numberReportsToSubmit >1){
-                    numberReportsToSubmit--;
-                    numberReportsToSubmitTV.setText(String.valueOf(numberReportsToSubmit));
-                }
-            }
-        });
-
-        incrementNumberReportsButton = (Button) findViewById(R.id.increment_number_reports_button);
-        incrementNumberReportsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "incrementPhotos onClick()");
-                numberReportsToSubmit++;
-                numberReportsToSubmitTV.setText(String.valueOf(numberReportsToSubmit));
-
-            }
-        });
-
-
-
-
-
-
         proceedButton = (Button) findViewById(R.id.submit_activity_button_to_next_screen);
         proceedButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "proceedButton onClick()");
             if(!streetInput.getText().toString().equals(""))
                 report.put("Street", new AttributeValue().withS(streetInput.getText().toString()));
             if(!zipInput.getText().toString().equals(""))
@@ -213,11 +202,15 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
             if(!townInput.getText().toString().equals(""))
                 report.put("City", new AttributeValue().withS(townInput.getText().toString()));
 
+                Calendar c = Calendar.getInstance();
+                c.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), timePickerHour, timePickerMinute);
+                report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(c.getTimeInMillis() / 1000)));
+
+                Log.d(TAG, "Calendar and Time: " + Utility.epochToDateTimeString(c.getTimeInMillis() / 1000));
             Log.d(TAG,"OnProceedButtonCLicked()");
             LaunchSubmitReportDetails();
             }
         });
-
     }
 
     //Todo (P2) validate userinput when submitting reports
@@ -262,8 +255,6 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         report.put("Longitude", new AttributeValue().withN(lng));
         report.put("County", new AttributeValue().withS(county));
 
-        report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(getDateFromDatePicker(datePicker))));
-        Log.d(TAG, "DATEOFEVENT: " + String.valueOf(getDateFromDatePicker(datePicker)));
 
         //Enter user details retreived from cognito
         report.put("Username", new AttributeValue().withS(UserInformationModel.getInstance().getUsername()));
@@ -292,9 +283,12 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         else
             report.put("CallSign", new AttributeValue().withS("|"));
 
-        // DateOfEvent Stuff
-        long epoch = getDateFromDatePicker(datePicker);
-        report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(epoch/1000)));
+
+        if (!dateChanged) {
+            // DateOfEvent Stuff
+            long epoch = getDateFromDatePicker(datePicker);
+//            report.put("DateOfEvent", new AttributeValue().withN(String.valueOf(epoch / 1000)));
+        }
 
 
         //  Convert report to arrays to save memory(...?)
@@ -346,10 +340,10 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
 class GetReportCountyTask extends AsyncTask<Void, Void, String> {
    private final String TAG = "getCounty";
     // public static String getCountyFromAddress(Context mContext, Resources res, String address, JsonCallback jsonCB) {
-    Context mContext;
-    Resources res;
-    StringCallback callback;
-    String state;
+    private Context mContext;
+    private Resources res;
+    private StringCallback callback;
+    private String state;
     private String zip;
     private String town;
     private String street;

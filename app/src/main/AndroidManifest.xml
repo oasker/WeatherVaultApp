@@ -37,7 +37,7 @@
         <!-- <provider -->
         <!-- android:name="android.support.v4.content.FileProvider" -->
         <!-- android:authorities="com.example.oliverasker.skywarnmarkii" -->
-        <!--android:authorities="${applicationId}.provider"-->
+        <!-- android:authorities="${applicationId}.provider" -->
         <!-- android:exported="false" -->
         <!-- android:grantUriPermissions="true"> -->
         <!-- <meta-data -->
@@ -66,14 +66,18 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.QueryLauncherActivity" />
-        <activity android:name=".Activities.LoginActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SubmitReportActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.SubmitReportDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.ViewReportActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activities.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SubmitReportActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SubmitReportDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.ViewReportActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activities.ConfirmSubmitReportActivity" />
         <activity android:name=".Activities.SearchDBActivity" />
         <activity android:name=".Activities.DownloadSelectionActivity" />
@@ -83,6 +87,7 @@
         <activity android:name=".Activities.ConfirmNewUserActivity" />
         <activity android:name=".Activities.ResetPasswordActivity" />
         <activity android:name=".Activities.ResetPasswordEnterUsernameActivity" />
+
 
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -95,9 +100,9 @@
         <activity
             android:name=".Activities.TabbedUserHomeActivity"
             android:label="@string/title_activity_tabbed_user_home2"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="adjustPan" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -116,17 +121,22 @@
         <activity
             android:name=".Activities.SubmitMultipleReportsActivity"
             android:label="@string/title_activity_submit_multiple_reports"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Activities.SubmitMultipleReportsInfoActivity"
             android:label="@string/title_activity_submit_multiple_reports_info"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".Activities.VideoCameraTest" />
         <activity android:name=".Activities.ViewQueryResultsActivity" />
-        <activity android:name=".Activities.ViewVideoFullScreenActivity"
-            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".Activities.ViewVideoFullScreenActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

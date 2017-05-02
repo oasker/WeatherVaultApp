@@ -75,7 +75,8 @@ public class MapsActivity extends FragmentActivity implements
 
                 //Todo: (USED FOR TESTING) FINISH REMOVE BELOW ITERATION
                 for (SkywarnWSDBMapper s : receivedData) {
-                    Log.d(TAG, "receivedReports?: lat: " + s.getLatitude() + " long: " + s.getLatitude());
+                    if (s != null)
+                        Log.d(TAG, "receivedReports?: lat: " + s.getLatitude() + " long: " + s.getLatitude());
                 }
 
                 reportsWithValidCoords = removeReportsWithInvalidCoords(receivedData);
@@ -96,7 +97,6 @@ public class MapsActivity extends FragmentActivity implements
                             break;
                         default:
                             resource = R.drawable.sunny;
-
                     }
                     LatLng ll = new LatLng(report.getLatitude(), report.getLongitude());
                     // Read more: http://www.androidhub4you2.com/2015/06/android-maximum-zoom-in-google-map.html#ixzz4WXzS6wh6

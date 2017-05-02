@@ -46,6 +46,7 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
 //        testReport.setDateSubmittedEpoch((long) 3442311);
 //        testReport.setDateSubmittedString("2/12/9000");
 //        data.add(testReport);
+        mContext = getActivity().getApplicationContext();
 
 
         mapViewButton = (Button)v.findViewById(R.id.toggle_map_list_view);
@@ -57,14 +58,14 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
         });
 
         getUserReportsTask = new GetAllUserReportsTask();
-        getUserReportsTask.setContext(getActivity());
+        getUserReportsTask.setContext(mContext);
         getUserReportsTask.delegate = this;
         getUserReportsTask.execute();
 
         listView = null;
         listView = (ListView)v.findViewById(R.id.weather_list_view);
         SkywarnWSDBMapper[]reportArray = data.toArray(new SkywarnWSDBMapper[data.size()]);
-        SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getContext(), reportArray);
+        SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(mContext, reportArray);
         return v;
     }
 
@@ -72,14 +73,14 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getUserReportsTask = new GetAllUserReportsTask();
-        getUserReportsTask.setContext(getContext());
+        getUserReportsTask.setContext(mContext);
         getUserReportsTask.delegate = this;
        // getUserReportsTask.execute();
 
     }
 
     public void launchMapActivity(){
-        Intent i = new Intent(getContext(), MapsActivity.class);
+        Intent i = new Intent(mContext, MapsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("reportList", data);
         i.putExtras(bundle);
@@ -87,7 +88,7 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
     }
 
     public void launchViewReportActivity(SkywarnWSDBMapper clickedReport){
-        Intent intent = new Intent(getContext(), ViewReportActivity.class);
+        Intent intent = new Intent(mContext, ViewReportActivity.class);
         intent.putExtra("selectedReport", clickedReport);
         startActivity(intent);
     }
@@ -105,7 +106,7 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
             Log.d(TAG,"processFinished(): "+ String.valueOf(result.get(i).getDateSubmittedEpoch()));
         }
 
-        SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(getActivity(), data);
+        SkywarnDBAdapter skywarnAdapter = new SkywarnDBAdapter(mContext, data);
 
         //for(int i=0; i< data.length; i++)
         listView.setAdapter(skywarnAdapter);
@@ -118,7 +119,6 @@ public class WeatherListViewFragment extends Fragment implements ICallback {
                 launchViewReportActivity(itemValue);
             }
         });
-        result = null;
     }
 
     @Override

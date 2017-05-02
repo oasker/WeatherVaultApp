@@ -19,12 +19,12 @@ public class MainActivity extends AppCompatActivity {
         //Setup client manager
         clientManager = new AmazonClientManager(this);
 
-        Intent intent = new Intent(this, LoginActivity.class);
-//        Intent intent = new Intent(this, TabbedUserHomeActivity.class);
-       // Intent intent = new Intent(this, QueryLauncherActivity.class);
+//        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, TabbedUserHomeActivity.class);
+//        Intent intent = new Intent(this, QueryLauncherActivity.class);
 //        Intent intent =new Intent(this, LaunchCameraActivity.class);
-        //Intent intent = new Intent(this,SubmitReportActivity.class);
-        //   Intent intent = new Intent(this, VideoCameraTest.class);
+//        Intent intent = new Intent(this,SubmitReportActivity.class);
+//        Intent intent = new Intent(this, VideoCameraTest.class);
 //        Intent intent = new Intent(this, SubmitMultipleReportsActivity.class);
         startActivity(intent);
     }

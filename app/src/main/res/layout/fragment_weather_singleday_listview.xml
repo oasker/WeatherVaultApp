@@ -1,87 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal">
 
-        <!--<ToggleButton-->
-            <!--android:id="@+id/relevant_reports_"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:elevation="0dp"-->
-            <!--android:text="Relevant Reports" />-->
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/deincrement_day_by_one_button"
-            android:background="@drawable/cast_ic_notification_skip_prev"
-            style="@style/Widget.AppCompat.Button.Small"
-            android:backgroundTint="@color/backgroundColor"
-            android:padding="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="0.02" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/date_of_reports_being_submittedTV"
-            android:layout_weight="0.52"
-            android:textColor="@android:color/background_dark"
-            android:textAlignment="center"
-            android:textSize="20sp" />
-
-        <Button
-            android:layout_width="56dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/increment_date_by_one_button"
-            android:backgroundTint="@color/colorPrimary"
-            android:background="@drawable/cast_ic_notification_skip_next"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:padding="5dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:background="@color/common_google_signin_btn_text_dark_disabled">
-
-        <TextView
-            android:text="@string/switch_to_map_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView25"
-            android:textSize="18sp"
             android:layout_margin="5dp"
             android:padding="5dp"
-            android:layout_weight="1"
+            android:text="@string/search_by"
             android:textAlignment="center"
-            android:textColor="@color/cast_expanded_controller_background_color" />
+            android:textColor="@color/cast_expanded_controller_background_color"
+            android:textSize="16sp" />
 
-        <ToggleButton
+        <Spinner
+            android:id="@+id/relevant_reports_query_type_spinner"
+            style="@style/Widget.AppCompat.Spinner.DropDown.ActionBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/toggle_map_list_view"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@color/wallet_dim_foreground_disabled_holo_dark"
+            android:entries="@array/relevent_reports_search_types"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:minWidth="150dp"
+            android:padding="7dp"
+            android:pointerIcon="arrow"
+            android:requiresFadingEdge="horizontal"
+            tools:pointerIcon="context_menu" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/date_day_select_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:padding="2dp">
+
+        <ImageButton
+            android:id="@+id/deincrement_date_by_one_button"
+            style="@android:style/Widget.DeviceDefault.Button.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:srcCompat="@drawable/ic_navigate_before_black_48dp" />
+
+        <TextView
+            android:id="@+id/date_of_reports_being_submittedTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.52"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_dark"
+            android:textSize="22sp" />
+
+        <ImageButton
+            android:id="@+id/increment_date_by_one_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.02"
+            android:background="@color/cardview_light_background"
+            android:contentDescription=""
+            app:srcCompat="@drawable/ic_navigate_next_black_48dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:background="@color/common_google_signin_btn_text_dark_disabled"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/common_google_signin_btn_text_dark_disabled" />
+            android:text="@string/switch_to_map_view"
+            android:textAlignment="center"
+            android:textColor="@color/cast_expanded_controller_background_color"
+            android:textSize="14sp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_map_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/cast_expanded_controller_ad_label_background_color"
+            android:scrollbarStyle="outsideInset"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -92,4 +112,5 @@
         android:layout_margin="10dp">
     </ListView>
 
+    <!--<a href="https://icons8.com/web-app/5900/Right">Free Right icon source</a>-->
 </LinearLayout>

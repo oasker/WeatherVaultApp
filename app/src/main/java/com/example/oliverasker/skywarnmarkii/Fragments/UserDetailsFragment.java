@@ -1,5 +1,6 @@
 package com.example.oliverasker.skywarnmarkii.Fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -37,8 +38,10 @@ public class UserDetailsFragment extends Fragment {
     private int page;
     private int padding = 5;
     private ImageView profileImageView;
+    private Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstsance ){
+        mContext = getActivity().getApplicationContext();
         View v = inflater.inflate(R.layout.fragment_user_info_home,container,false);
         profileImageView =(ImageView) v.findViewById(R.id.user_profile_picture_imageview);
         downloadPhoto();
@@ -54,10 +57,10 @@ public class UserDetailsFragment extends Fragment {
         String filename = UserInformationModel.getInstance().getUsername()+".png";
 //        String externalStorage= Environment.getExternalStorageDirectory().toString()+"/";
 
-        String externalStorage = getContext().getCacheDir().toString()+"/";
+        String externalStorage = mContext.getCacheDir().toString() + "/";
         final String filePath = externalStorage+filename;
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                getContext(),
+                mContext,
                 Constants.IDENTITY_POOL_ID, // Identity Pool ID
                 Regions.US_EAST_1           // Region
         );
@@ -65,7 +68,7 @@ public class UserDetailsFragment extends Fragment {
         AmazonS3 s3Client = new AmazonS3Client(credentialsProvider);
         try {
             File file =new File(filePath);
-            TransferUtility transferUtility = new TransferUtility(s3Client, getContext());
+            TransferUtility transferUtility = new TransferUtility(s3Client, mContext);
             TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
 
             Log.d(TAG, "file.getPath(): " + file.getPath() );

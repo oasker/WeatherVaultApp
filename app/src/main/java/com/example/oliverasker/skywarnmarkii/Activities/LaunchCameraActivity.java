@@ -2,15 +2,13 @@ package com.example.oliverasker.skywarnmarkii.Activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,7 +17,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -48,19 +45,16 @@ import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
 import com.example.oliverasker.skywarnmarkii.Models.MyImageModel;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
+import com.example.oliverasker.skywarnmarkii.Utility.BitmapUtility;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
@@ -73,25 +67,18 @@ import static java.lang.String.valueOf;
 //add photos to sd card
 //Command Line: adb push yourfile.xxx /sdcard/yourfile.xxx
 public class LaunchCameraActivity extends AppCompatActivity {
-    static final int REQUEST_TAKE_PHOTO = 1;
-    static final int REQUEST_VIDEO_CAPTURE = 2;
     static final int SELECT_PICTURE = 3;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int DOWNLOAD_SELECTION_REQUEST_CODE = 1;
     //Request codes
     private static final int MY_PERMISSIONS_REQUEST_STORE_PHOTOS = 1;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static int pictureCount;
     private static int fragmentCount;
     private static String selectedImagePath;
     private final String TAG = "LaunchCameraActivity";
-//    File video_file;
-//    private static final File EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard");
-//    private static final String CACHE_STORAGE_DIRECTORY;
-//    File storageFile;
-//    Uri photoURI;
-//    Uri videoURI;
 
-//    ArrayList<Uri> bitMapPathList;
+
+    //    ArrayList<Uri> bitMapPathList;
     //  Report keys and values
     public AttributeValue[] attributeValArray;
     public String[] keyArray;
@@ -110,7 +97,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
     private Button takeNewPhotoButton;
     private Button continueNoPhotosButton;
     private Button addPhotostoReportButton;
-    private Button takeNewVideoButton;
     private VideoView mVideoView;
     private Uri mCapturedImageURI;
     private LinearLayout previewPhotoLayout;
@@ -173,13 +159,13 @@ public class LaunchCameraActivity extends AppCompatActivity {
         epoch = i.getLongExtra("epoch", -1);
         dateSubmittedString = i.getStringExtra("DateSubmittedString");
         Object[] tempObj = (Object[]) i.getSerializableExtra("attributeValArray");
-        attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
-
+        if (tempObj != null) {
+            attributeValArray = Arrays.copyOf(tempObj, tempObj.length, AttributeValue[].class);
+        }
         keyArray = i.getStringArrayExtra("keyArray");
         for (int j = 0; j < keyArray.length; j++) {
             Log.d(TAG, " onCreate(): key: " + keyArray[j] + " val: " + attributeValArray[j]);
         }
-        //ToDo:UNCOMMENT TO ALLOW REPORTS TO BE SUBMITTED \/*******************************************
 
 
         // Log.d(TAG, "epoch: "+epoch + " datesubmittedString: " + dateSubmittedString);
@@ -250,11 +236,11 @@ public class LaunchCameraActivity extends AppCompatActivity {
             }
         });
 
-        takeNewVideoButton = (Button) findViewById(R.id.take_new_video_button);
-        takeNewVideoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "takeVideoButton onClick()");
+//        takeNewVideoButton = (Button) findViewById(R.id.take_new_video_button);
+//        takeNewVideoButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.i(TAG, "takeVideoButton onClick()");
                 //launchCaptureNewVideo();
                 //launchVideoCamera(v);
 
@@ -291,10 +277,10 @@ public class LaunchCameraActivity extends AppCompatActivity {
 //                if(takeVideoIntent.resolveActivity(getPackageManager()) !=null){
 //                    startActivityForResult(takeVideoIntent,REQUEST_VIDEO_CAPTURE);
 //                }
-                if (isStoragePermissionGranted())
-                    dispatchTakeVideoIntent();
-            }
-        });
+//                if (isStoragePermissionGranted())
+//                    dispatchTakeVideoIntent();
+//            }
+//        });
         // takeNewVideoButton.setEnabled(false);
 
         if (mediaControls == null) {
@@ -310,10 +296,16 @@ public class LaunchCameraActivity extends AppCompatActivity {
         transferUtility = Utility.getTransferUtility(this);
     }
 
-    public void launchCaptureNewVideo() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+    public void grabImage(ImageView imageView, Uri mImageUri) {
+        this.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = this.getContentResolver();
+        Bitmap bitmap;
+        try {
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            imageView.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Failed to load", e);
         }
     }
 
@@ -322,59 +314,44 @@ public class LaunchCameraActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         fragmentCount++;
 
-        if (resultCode == RESULT_OK && requestCode == REQUEST_TAKE_PHOTO) {
+//        if(data!=null && data.getExtras() !=null){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                Log.d(TAG, "onActivityResult() REQUEST_IMAGE_CAPTURE");
+//                String[] projection = {MediaStore.Images.Media.DATA};
+//                Cursor cursor =
+//                        managedQuery(mCapturedImageURI, projection, null,
+//                                null, null);
+//                int column_index_data = cursor.getColumnIndexOrThrow(
+//                        MediaStore.Images.Media.DATA);
+//                cursor.moveToFirst();
+//                String picturePath = cursor.getString(column_index_data);
+//                MyImageModel image = new MyImageModel();
+//                image.setTitle("Test");
+//                image.setDescription(
+//                        "test take a photo and add it to list view");
+//                image.setDatetime(System.currentTimeMillis());
+//                image.setPath(picturePath);
+//                images.add(image);
 
-//            Log.d(TAG, "requestCode == REQUEST_TAKE_PHOTO: resultCode: " + resultCode);
-//           // Log.i(TAG, "photo saved to: " + photoURI.getPath());
-//
-//            try {
-//                String path = getPath(photoURI);
-//                //getU
-//               // beginUpload(path);
-//                // beginUpload(mCurrentPhotoPath);
-//               // Log.d(TAG, "OnACtivityReslt new Photo : mCurrentPhotoPath: " + mCurrentPhotoPath);
-////                Log.d(TAG, "OnACtivityReslt new Photo : photoURI.getPath: " + photoURI.getPath());
-//                Log.d(TAG, "OnACtivityReslt new Photo : photoURI.getPath: " +storageFile.getPath());
-//
-//                photoPaths.add(mCurrentPhotoPath);
-//
-//                Bitmap newBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
-//                previewPhotoLayout.addView(createdScaledImageView(newBitmap));
-//                createdScaledImageView(newBitmap);
-//            } catch (URISyntaxException e) {
-//                Log.d(TAG, "URISyntaxException", e);
-//            } catch (IOException e) {
-//                Log.d(TAG, "IOException", e);
-//            }
+                Bundle extras = data.getExtras();
+                Bitmap b = (Bitmap) extras.get("data");
 
+                Uri photoURI = BitmapUtility.getImageUri(this, b);
+                File finalFile = new File(BitmapUtility.getRealPathFromURI(photoURI, this));
 
-//            Bitmap b = (Bitmap)data.getExtras().get("data");
-//            Uri tempUri = getImageUri(getApplicationContext(),b);
-//            File finalFile = new File(getRealPathFromURI(tempUri));
-//
-//            photoPaths.add( tempUri.getPath());
-////           // Bitmap newBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
-//            previewPhotoLayout.addView(createdScaledImageView(b));
-
-            if (requestCode == REQUEST_IMAGE_CAPTURE &&
-                    resultCode == RESULT_OK) {
-                String[] projection = {MediaStore.Images.Media.DATA};
-                Cursor cursor =
-                        managedQuery(mCapturedImageURI, projection, null,
-                                null, null);
-                int column_index_data = cursor.getColumnIndexOrThrow(
-                        MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                String picturePath = cursor.getString(column_index_data);
                 MyImageModel image = new MyImageModel();
                 image.setTitle("Test");
                 image.setDescription(
                         "test take a photo and add it to list view");
                 image.setDatetime(System.currentTimeMillis());
-                image.setPath(picturePath);
+                image.setPath(finalFile.getPath());
                 images.add(image);
+                ImageView existingImageIV = BitmapUtility.createdScaledImageView(b, this);
+                previewPhotoLayout.addView(existingImageIV);
             }
         }
+
 
         //Existing Photo
         //if(resultCode ==Activity.RESULT_OK && requestCode == SELECT_PICTURE){
@@ -384,9 +361,9 @@ public class LaunchCameraActivity extends AppCompatActivity {
                 try {
                     existingBitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                     //bitMapPathList.add(data.getData());
-                    Uri uri = getImageUri(this, existingBitmap);
+                    Uri uri = BitmapUtility.getImageUri(this, existingBitmap);
                     Log.d(TAG, "URI: " + uri);
-                    String path = getRealPathFromURI(uri);
+                    String path = BitmapUtility.getRealPathFromURI(uri, this);
                     Log.d(TAG, "path: " + path);
                     //beginUpload(path);
                     // photoPaths.add(path);
@@ -401,121 +378,29 @@ public class LaunchCameraActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            // Uri pickedImage = data.getData();
-
-            createdScaledImageView(existingBitmap);
-            ImageView existingImageIV = createdScaledImageView(existingBitmap);
+//            BitmapUtility.createdScaledImageView(existingBitmap);
+            ImageView existingImageIV = BitmapUtility.createdScaledImageView(existingBitmap, this);
             previewPhotoLayout.addView(existingImageIV);
         }
-
-        if (requestCode == REQUEST_VIDEO_CAPTURE) {//&& resultCode == RESULT_OK) {
-            Log.d(TAG, "resultCode(): " + resultCode);
-//                Uri videoUri = data.getData();
-//                Uri videoUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName()+".provider", getFilePath() );
-            // Uri videoUri = FileProvider.getUriForFile(getApplicationContext(),"com.example.oliverasker.skywarnmarkii.provider", getFilePath() );
-
-            ContentValues values = new ContentValues(2);
-            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-            // values.put(MediaStore.Video.Media.DATA, f.getAbsolutePath());
-
-            // Add a new record (identified by uri) without the video, but with the values just set.
-            Uri videoUri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-            mVideoView.setVideoURI(videoUri);
-            Toast.makeText(getApplicationContext(), "video REQUEST_VIDEO_CAPTURE", Toast.LENGTH_SHORT).show();
-//                // mVideoView.setVideoURI(videoUri);
-//                mVideoView.setVideoURI(data.getData());
-//                mVideoView.requestFocus();
-//                mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//                    public void onPrepared(MediaPlayer mediaPlayer) {
-//                        // close the progress bar and play the video
-//                        //progressDialog.dismiss();
-//                        //if we have a position on savedInstanceState, the video playback should start from here
-//                        mVideoView.seekTo(position);
-//                        if (position == 0) {
-//                            mVideoView.start();
-//                        } else {
-//                            //if we come from a resumed activity, video playback will be paused
-//                            //mVideoView.pause();
-//                        }
-//                    }
-//                });
-//           // }}
-            }
     }
 
-    private void dispatchTakeVideoIntent() {
-        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        // File videoFile = getFilePath();
-        // Uri video_uri = Uri.fromFile(videoFile);
-        //  Uri video_uri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName()+".provider", getFilePath() );
 
-//        String fileName = "testVideo.mp4";
-//        ContentValues values = new ContentValues();
-//        values.put(MediaStore.Images.Media.TITLE, fileName);
-//        mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+    //Launch Camera to take new photo to upload
+    private void launchCamera(View view) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            String fileName = "temp.jpg";
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, fileName);
+            mCapturedImageURI = getContentResolver()
+                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
+//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
 
-        ContentValues values = new ContentValues(2);
-        values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
-        // values.put(MediaStore.Video.Media.DATA, f.getAbsolutePath());
-
-        // Add a new record (identified by uri) without the video, but with the values just set.
-        Uri uri = getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
-
-
-        takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,1);
-        // if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-        startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-        //}
     }
 
-    private File getFilePath() {
-//        String folderPath = getExternalCacheDir().getPath();
-//        File folder = new File(folderPath+ "/skywarn_videos");
-//        if(!folder.exists()){
-//            folder.mkdir();
-//        }
-//        String fileName = "VIDEOTEST_APRIL.jpg";
-//        File videoFile=new File(folder,fileName);
-//        return videoFile;
-
-        File imagePath = new File(getApplicationContext().getFilesDir(), "images");
-        if (!imagePath.exists())
-            imagePath.mkdir();
-
-        File newFile = new File(imagePath, "default_image.jpg");
-        if (!newFile.exists())
-            newFile.mkdir();
-        Uri contentUri = FileProvider.getUriForFile(getApplicationContext(), "com.example.oliverasker.skywarnmarkii.provider", newFile);
-        return newFile;
-    }
-
-//    private File createImageFile() throws IOException {
-//
-//
-//        // Create an image file name
-////        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-////       // String imageFileName = "JPEG_" + timeStamp +"_" ;
-//        String imageFileName = epoch+"_"+UserInformationModel.getInstance().getUsername()+".jpg";
-////        File storageDir = EXTERNAL_STORAGE_DIRECTORY;
-//        //File storageDir = CACHE_STORAGE_DIRECTORY;
-//        File storageDir = getCacheDir();
-//        if(!storageDir.exists()){
-//          storageDir.mkdir();
-//        }
-////        Log.d(TAG, "External Storage Directory " + EXTERNAL_STORAGE_DIRECTORY);
-//        Log.d(TAG, "storageDir(): " + storageDir.getPath());
-//
-//        // File storageDir = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Weather/");
-//        //File storageDir = Environment.getExternalStorageDirectory();
-//
-//        File image = new File(storageDir, imageFileName);
-//        mCurrentPhotoPath = image.getAbsolutePath();
-//        Log.d(TAG, "createImageFile(): mCurrentPhotoPath = " + mCurrentPhotoPath);
-//        return image;
-//    }
 
     private void beginUpload(String filePath) {
         Log.d(TAG, "beginUpload()");
@@ -537,104 +422,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    //Launch Camera to take new photo to upload
-    private void launchCamera(View view) {
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            File photoFile = null;
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//            // Continue only if the File was successfully created
-////            if (photoFile != null) {
-////                Uri photoURI = FileProvider.getUriForFile(this,
-////                        "com.example.oliverasker.skywarnmarkii.provider",
-////                        photoFile);
-//
-//            try {
-//                storageFile = new File("storage/sdcard/testJPG.jpg");
-//                if(!storageFile.exists())
-//                    storageFile.mkdir();
-//
-//                FileInputStream fis = new FileInputStream("storage/sdcard/testJPG.jpg");
-//                byte[] image= new byte[fis.available()];
-//                fis.read(image);
-//
-//                ContentValues  values = new ContentValues();
-//                values.put("a",image);
-//                fis.close();
-//
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            String fileName = "temp.jpg";
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.TITLE, fileName);
-            mCapturedImageURI = getContentResolver()
-                    .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-
-//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//        if (intent.resolveActivity(getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            Uri photoFile = null;
-////            try {
-//            //photoFile = createImageFile();
-//            File cacheDir = new File(getCacheDir(), "skywarn_data_4_4");
-//
-//            if (!cacheDir.exists())
-//                cacheDir.mkdir();
-//
-//            try {
-//                photoURI = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", createImageFile());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-////            } catch (IOException ex) {
-////                Log.d(TAG,"launchCamera(): Error creating ImageFile " + ex);
-//
-//            // Continue only if the File was successfully created
-//           // if (photoFile != null) {
-////                photoURI = FileProvider.getUriForFile(this,
-////                        "com.example.oliverasker.skywarnmarkii",
-////                        photoFile);
-//                //photoURI = Uri.fromFile(photoFile);
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(intent, REQUEST_TAKE_PHOTO);
-        // }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -649,16 +436,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        /*
-        // Clear transfer listeners to prevent memory leak, or
-        // else this activity won't be garbage collected.
-        if (observers != null && !observers.isEmpty()) {
-            for (TransferObserver observer : observers) {
-                observer.cleanTransferListener();
-            }
-        }
-        */
     }
 
     @SuppressLint("NewApi")
@@ -732,95 +509,11 @@ public class LaunchCameraActivity extends AppCompatActivity {
 
             }
         });
-        linearLayout.addView(createdScaledImageView(bitmap));
+        linearLayout.addView(BitmapUtility.createdScaledImageView(bitmap, this));
         tableRow.addView(linearLayout);
         return tableRow;
     }
 
-    private ImageView createdScaledImageView(Bitmap bitmap) {
-        int width = 0;
-        int height = 0;
-        ImageView newImageView = new ImageView(this);
-
-        try {
-            width = bitmap.getWidth();
-        } catch (NullPointerException e) {
-            throw new NoSuchElementException("Can't find image");
-        }
-        height = bitmap.getHeight();
-        int bounding = dpToPx(250);
-
-        float xScale = ((float) bounding / width);
-        float yScale = ((float) bounding / height);
-        float scale = (xScale <= yScale) ? xScale : yScale;
-
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-        width = scaledBitmap.getWidth();
-        height = scaledBitmap.getHeight();
-
-        BitmapDrawable result = new BitmapDrawable(getApplicationContext().getResources(), scaledBitmap);
-
-        newImageView.setImageDrawable(result);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 50));
-        params.setMargins(10, 10, 10, 10);
-        params.width = width;
-        params.height = height;
-        newImageView.setLayoutParams(params);
-
-        newImageView.setImageBitmap(bitmap);
-        // previewPhotoLayout.addView(newImageView,params);
-        return newImageView;
-    }
-
-    private int dpToPx(int dp) {
-        float density = getApplicationContext().getResources().getDisplayMetrics().density;
-        return Math.round((float) dp * density);
-    }
-
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-
-
-        //Todo: Existing photo error rkii E/MediaStore: Failed to insert image rob error (Permissions?)
-        //java.lang.SecurityException: Permission Denial: writing com.android.providers.media.MediaProvider uri content://media/external/images/media from pid=29258, uid=10087 requires android.permission.WRITE_EXTERNAL_STORAGE, or grantUriPermission()
-//        at android.os.Parcel.readException(Parcel.java:1620)
-//        at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:183)
-//        at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:135)
-//        at android.content.ContentProviderProxy.insert(ContentProviderNative.java:476)
-//        at android.content.ContentResolver.insert(ContentResolver.java:1284)
-//        at android.provider.MediaStore$Images$Media.insertImage(MediaStore.java:986)
-//        at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.getImageUri(LaunchCameraActivity.java:819)
-//        at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.onActivityResult(LaunchCameraActivity.java:347)
-
-        //Todo: userreports newest to oldest
-
-        //Todo: take photo error
-        /* Permission Denial: writing com.android.providers.media.MediaProvider uri content://media/external/images/media from pid=32634, uid=10087 requires android.permission.WRITE_EXTERNAL_STORAGE, or grantUriPermission()
-                                                                                           at android.os.Parcel.readException(Parcel.java:1620)
-                                                                                           at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:183)
-                                                                                           at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:135)
-                                                                                           at android.content.ContentProviderProxy.insert(ContentProviderNative.java:476)
-                                                                                           at android.content.ContentResolver.insert(ContentResolver.java:1284)
-                                                                                           at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.launchCamera(LaunchCameraActivity.java:570)
-                                                                                           at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity.access$000(LaunchCameraActivity.java:74)
-                                                                                           at com.example.oliverasker.skywarnmarkii.Activites.LaunchCameraActivity$1.onClick(LaunchCameraActivity.java:167)
-        */
-
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
 
     private boolean hasCamera() {
         return getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
@@ -858,7 +551,7 @@ public class LaunchCameraActivity extends AppCompatActivity {
                 } else {
                     Log.d(TAG, "onRequestPermissionResult(): Permission Denied By User");
                     takeNewPhotoButton.setEnabled(false);
-                    takeNewVideoButton.setEnabled(false);
+//                    takeNewVideoButton.setEnabled(false);
                     addExistingPhotostoReportButton.setEnabled(false);
                 }
                 return;
@@ -874,39 +567,12 @@ public class LaunchCameraActivity extends AppCompatActivity {
         void setImage(Bitmap b);
     }
 
-//    public void grantPhotoStoragePermission() {
-//        // Here, thisActivity is the current activity
-//        if (ContextCompat.checkSelfPermission(LaunchCameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            Log.d(TAG, "Permission to Store Photos Not Granted");
-//            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(LaunchCameraActivity.this,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                Log.d(TAG, "grantPhotoStoragePermission() should we show explanation?");
-//
-//                // Show an explanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//            } else {
-//            }
-//            // No explanation needed, we can request the permission.
-//            Log.d(TAG, "No Explanation Needed, Request Permissions");
-//            ActivityCompat.requestPermissions(LaunchCameraActivity.this,
-//                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-//                    MY_PERMISSIONS_REQUEST_STORE_PHOTOS);
-//
-//            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-//            // app-defined int constant. The callback method gets the
-//            // result of the request.
-//        }
-//    }
 
     private class UploadListener implements TransferListener {
         //Updates UI when notified
         @Override
         public void onStateChanged(int id, TransferState state) {
             Log.d(TAG, "onStateChanged: " + id + state);
-
         }
 
         @Override
@@ -919,7 +585,6 @@ public class LaunchCameraActivity extends AppCompatActivity {
         public void onError(int id, Exception ex) {
             Log.d(TAG, "Error during upload: " + ex);
         }
-        //
     }
 
 //
@@ -946,7 +611,7 @@ class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallb
             attributeValueMap.put(keyArray[i], attributeValArray[i]);
         }
         try {
-            PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", attributeValueMap);
+            PutItemRequest putItemRequest = new PutItemRequest(Constants.REPORTS_TABLE_NAME, attributeValueMap);
             PutItemResult putItemResult = ddb.putItem(putItemRequest);
         }catch (DynamoDBMappingException dynamoDBMappingException){
             Log.e(TAG, dynamoDBMappingException.toString());

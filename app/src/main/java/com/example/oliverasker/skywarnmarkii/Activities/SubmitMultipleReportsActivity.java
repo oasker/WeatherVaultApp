@@ -121,7 +121,6 @@ public class SubmitMultipleReportsActivity extends ActionBarActivity {
         winterFrag.setmContext(this);
 
         severeFrag = new SevereWeatherSubmitReportFragment();
-        severeFrag.setmContext(getApplicationContext());
 
         coastalFloodingFrag = new CoastalFloodingSubmitReportFragment();
         coastalFloodingFrag.setmContext(this);

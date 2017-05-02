@@ -17,6 +17,8 @@ import com.example.oliverasker.skywarnmarkii.R;
  * attributes.
  */
 
+//Todo: get this working!
+//    https://developer.android.com/guide/topics/ui/controls/pickers.html#DatePickerFragment
 
 public class QueryReportAttributesSelectWeatherTypeDialog extends DialogFragment {
     private static final String TAG = "QryRptAtrWtherTypDialog";
@@ -59,6 +61,7 @@ public class QueryReportAttributesSelectWeatherTypeDialog extends DialogFragment
                     }
                 });
         return builder.create();
+//            return new DatePickerDialog(getActivity(), this, yea)
     }
 
 

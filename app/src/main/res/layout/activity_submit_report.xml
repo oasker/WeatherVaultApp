@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/toolbar_rev2"></include>
 
@@ -14,9 +14,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="1"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="1">
 
             <TextView
                 android:id="@+id/submit_activity_title_text"
@@ -43,15 +43,15 @@
                 android:textSize="24sp" />
 
             <EditText
+                android:id="@+id/submit_activity_street_text_field"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:ems="10"
-                android:id="@+id/submit_activity_street_text_field"
+                android:layout_margin="5dp"
                 android:layout_marginTop="42dp"
+                android:ems="10"
                 android:hint="@string/address"
-                style="@style/Widget.AppCompat.AutoCompleteTextView"
-                android:layout_margin="5dp" />
+                android:inputType="text" />
 
             <EditText
                 android:id="@+id/submit_activity_town_text_field"
@@ -73,15 +73,15 @@
                 android:inputType="textPersonName" />
 
             <EditText
+                android:id="@+id/submit_activity_zip_text_field"
+                style="@style/Widget.AppCompat.AutoCompleteTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPostalAddress"
-                android:ems="10"
-                android:id="@+id/submit_activity_zip_text_field"
-                android:hint="@string/zip"
-                style="@style/Widget.AppCompat.AutoCompleteTextView"
+                android:layout_margin="5dp"
                 android:layout_marginTop="21dp"
-                android:layout_margin="5dp" />
+                android:ems="10"
+                android:hint="@string/zip"
+                android:inputType="textPostalAddress" />
 
             <TextView
                 android:id="@+id/submit_activity_date_label"
@@ -98,29 +98,29 @@
                 tools:ignore="ObsoleteLayoutParam" />
 
             <DatePicker
+                android:id="@+id/submit_report_date_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/submit_report_date_picker"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
                 android:foregroundGravity="center_vertical" />
 
             <TextView
-                android:text="@string/time"
+                android:id="@+id/time_text_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/time_text_label"
+                android:layout_margin="5dp"
+                android:text="@string/time"
                 android:textAlignment="center"
-                android:textSize="24sp"
                 android:textColor="@android:color/background_dark"
-                android:layout_margin="5dp" />
+                android:textSize="24sp" />
 
             <TimePicker
+                android:id="@+id/timePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/timePicker"
                 android:background="@android:color/transparent" />
 
             <TextView
@@ -135,48 +135,48 @@
                 android:textSize="24sp" />
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <CheckBox
-                    android:text="@string/severe_weather"
+                    android:id="@+id/submit_activity_severe_weather_checkbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/submit_activity_severe_weather_checkbox"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/severe_weather"
                     android:textAlignment="textStart"
                     android:textSize="18sp"
                    />
 
                 <CheckBox
-                    android:text="@string/rainfall_flooding"
+                    android:id="@+id/submit_activity_rainfall_flooding_checkbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/submit_activity_rainfall_flooding_checkbox"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/rainfall_flooding"
                     android:textSize="18sp"
                    />
 
                 <CheckBox
-                    android:text="@string/coastal_flooding"
+                    android:id="@+id/submit_activity_coastal_flooding_checkbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/submit_activity_coastal_flooding_checkbox"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/coastal_flooding"
                     android:textSize="18sp"
                     />
 
                 <CheckBox
-                    android:text="@string/winter"
+                    android:id="@+id/submit_activity_winter_checkbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/submit_activity_winter_checkbox"
-                    android:layout_weight="1"
                     android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/winter"
                     android:textSize="18sp"
                     />
 
@@ -211,51 +211,13 @@
                     android:hint="@string/comments"
                     android:inputType="textPersonName" />
 
-                <TextView
-                    android:id="@+id/textView34"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:gravity="center_horizontal|fill_horizontal"
-                    android:padding="5dp"
-                    android:text="@string/number_of_reports_to_submit"
-                    android:textAlignment="center"
-                    android:textColor="@color/cast_expanded_controller_background_color"
-                    android:textSize="24sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/increment_number_reports_button"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/plus_sign" />
-
-                <TextView
-                    android:id="@+id/number_of_reports_TV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:textColor="@color/cast_expanded_controller_background_color"
-                    android:textSize="18sp" />
-
-                <Button
-                    android:id="@+id/decrement_number_reports_button"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/minus_sign" />
             </LinearLayout>
 
             <Button
-                android:text="@string/next"
+                android:id="@+id/submit_activity_button_to_next_screen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/submit_activity_button_to_next_screen"
+                android:text="@string/next"
                 />
 
         </LinearLayout>
