@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Fragments;
+package com.example.oliverasker.skywarnmarkii.Fragments.UserHomeFragments;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -12,18 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.oliverasker.skywarnmarkii.Callbacks.BitmapCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.UserAttributesCallback;
-import com.example.oliverasker.skywarnmarkii.Constants;
+import com.example.oliverasker.skywarnmarkii.Fragments.WeatherListViewFragment;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
-import com.koushikdutta.ion.Ion;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,8 +38,7 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     private Button viewUserInfoButton;
 
     private ImageView profileImage;
-    private int profileImageViewWidth = 150;
-    private int profileImageViewHeight = 150;
+
 
     private Context mContext;
 
@@ -82,16 +76,6 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         viewUserPhotosButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // showUserPhotosFragment();
-//                GetUserSubmittedPhotosTask task = new GetUserSubmittedPhotosTask();
-//                task.setmContext(getContext());
-//                task.setBitmapCallback(UserInfoHomeFragment.this);
-//
-//                File cache = getContext().getCacheDir();
-//                File appDir= new File(cache+"/bingo.jpg");
-//                task.setFile(appDir);
-//                task.setFilePath(cache+"/bingo.jpg");
-//                task.execute();
                 showUserPhotosFragment();
 
             }
@@ -116,7 +100,6 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         b.putSerializable("attrMap", (Serializable) attrMap);
         showUserInfoFragment.setArguments(b);
         android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-//        ft.replace(R.id.user_info_frag_container, showUserInfoFragment);
         ft.replace(R.id.user_info_frag_container, showUserInfoFragment);
         ft.commit();
     }
@@ -132,15 +115,9 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
         ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
         ft.commit();
     }
-
-
     private void showUserPhotosFragment(){
         Log.i(TAG, "showUserPhotosFragment");
         Fragment showUserPhotoFragment = new UserHomeUserSubmittedPhotosFragment();
-
-        Bundle b = new Bundle();
-        //b.putSerializable("bitmapArrayList",bitmapArrayList);
-        //showUserPhotoFragment.setArguments(b);
 
         android.app.FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.user_info_frag_container, showUserPhotoFragment);
@@ -161,7 +138,6 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
 
     @Override
     public void processFinish(ArrayList<Bitmap> result) {
-
         showUserPhotosFragment(result);
     }
 
@@ -187,15 +163,11 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
 
     @Override
     public void onProcessFinished( String[] vals) {
-        //showUserInfoFragment(mapVals);
-        //showUserInfoFragment(vals);
-        //Log.i(TAG, "onProcessFinished() : return size"+ mapVals.size());
         Log.d(TAG, "onProceessFinised(): " + vals[0]);
     }
 
     @Override
     public void onProcessFinished(Map<String,String> vals) {
-        //showUserInfoFragment(mapVals);
         if(vals!=null) {
 
             Log.d(TAG, "***********  onProcessFinished(Map<STring,String>): user attributes   ***********");
@@ -220,71 +192,17 @@ public class UserInfoHomeFragment extends Fragment implements BitmapCallback, Us
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        mContext = context;
     }
 
     //
     public void downloadPhoto(){
         Log.d(TAG, "downloadPhoto()");
-        // String filename = "oasker.jpg";
-        String filename = UserInformationModel.getInstance().getUsername()+".jpg";
-
-        String externalStorage = mContext.getCacheDir().toString() + "/";
-        final String filePath = externalStorage+filename;
-        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                mContext,
-                Constants.IDENTITY_POOL_ID, // Identity Pool ID
-                Regions.US_EAST_1           // Region
-        );
-
-        AmazonS3 s3Client = new AmazonS3Client(credentialsProvider);
-//        try {
-//            File file =new File(filePath);
-//            TransferUtility transferUtility = new TransferUtility(s3Client, getContext());
-//            TransferObserver transferObserver = transferUtility.download(Constants.BUCKET_NAME, filename, file);
-//
-//            Log.d(TAG, "file.getPath(): " + file.getPath() );
-//
-//            transferObserver.setTransferListener(new TransferListener(){
-//                @Override
-//                public void onStateChanged(int id, TransferState state) {
-//                    Log.d(TAG, "onStateChanged: + state: "+ state.toString());
-//                    if(state == TransferState.COMPLETED){
-//                        Bitmap b = BitmapFactory.decodeFile(filePath);
-//                        //     horizontalLinearLayout.addView(createImageView(b));
-//                        profileImage.setImageBitmap(b);
-//                    }
-//                }
-//                @Override
-//                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-//                    int percentage = (int) ((bytesCurrent+1) /(bytesTotal+1) * 100);
-//                    Log.d(TAG, "onStateChanged(); bytesTotal: " +bytesTotal +" bytesCurrent: "+ bytesCurrent) ;
-//                }
-//                @Override
-//                public void onError(int id, Exception ex) {
-//                    Log.e(TAG, "onError",ex);
-//                }
-//            });
-//
-//        } catch (AmazonClientException ace) {
-//            Log.d(TAG, "Caught an AmazonClientException, which means" +
-//                    " the client encountered " +
-//                    "an internal error while trying to " +
-//                    "communicate with S3, " +
-//                    "such as not being able to access the network.");
-//            Log.d(TAG, "Error Message: " + ace.getMessage());
-//        }
-        //profileImage=BitmapUtility.scaleBitmap(profileImage, 400,400);
-        Ion.with(profileImage)
-//                .resize(profileImageViewWidth,profileImageViewHeight)
-
-//                .resize(300,300)
-                //.smartSize(true)
-                .placeholder(R.drawable.default_user_photo)
-                .error(R.drawable.snow_icon)
-//                .load("https://s3.amazonaws.com/skywarntestbucket/oasker.png");
-                .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
-//        BitmapUtility.scaleImage(mContext, profileImage);
+//        Ion.with(profileImage)
+//                .resize(500,500)
+//                .placeholder(R.drawable.default_user_photo)
+//                .error(R.drawable.snow_icon)
+//                .load("https://s3.amazonaws.com/skywarntestbucket/"+UserInformationModel.getInstance().getUsername()+".jpg");
+        Log.d(TAG, " filename: https://s3.amazonaws.com/skywarntestbucket/" + UserInformationModel.getInstance().getUsername() + ".jpg");
+        profileImage.setImageResource(R.drawable.temp_profile);
     }
-
 }

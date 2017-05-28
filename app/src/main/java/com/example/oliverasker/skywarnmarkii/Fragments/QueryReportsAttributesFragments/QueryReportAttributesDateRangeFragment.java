@@ -102,7 +102,7 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity().getApplicationContext();
+        mContext = getActivity();
 
         startDate = Calendar.getInstance();
         startDate.add(Calendar.DAY_OF_MONTH, -1);
@@ -137,11 +137,7 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                 mDay = c.get(Calendar.DAY_OF_MONTH);
 //            }
 
-//                Set datepicker start date
-//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                Log.d(TAG, "SDK_INT >= VERSION_CODES.N" + android.os.Build.VERSION.SDK_INT + " >=" + android.os.Build.VERSION_CODES.N);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -165,9 +161,6 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                         }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMaxDate(endDateEpoch);
                 datePickerDialog.show();
-
-                Log.d(TAG, "SDK_INT < VERSION_CODES.N" + android.os.Build.VERSION.SDK_INT + " >=" + android.os.Build.VERSION_CODES.N);
-
             }
         });
 
@@ -184,7 +177,7 @@ public class QueryReportAttributesDateRangeFragment extends Fragment {
                 }
 //                Set datepicker start date
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

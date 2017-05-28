@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
@@ -35,6 +36,7 @@ import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
 import com.example.oliverasker.skywarnmarkii.Utility.BitmapUtility;
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
+import com.koushikdutta.ion.Ion;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +72,8 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
     private EditText lastNameInput;
     private EditText phoneInput;
 
+    private boolean photoNeedsToBeUpdated;
+
 
     //    Spinner and selected value
     private Spinner affitiationSpinner;
@@ -87,11 +91,16 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
     @Override
     public void onSuccess() {
         Log.d(TAG, "callback onSuccess()");
+        Toast.makeText(this, "Attributes successfully updated", Toast.LENGTH_SHORT).show();
+        Intent homeIntent = new Intent(this, TabbedUserHomeActivity.class);
+        startActivity(homeIntent);
     }
 
     @Override
     public void onFailure() {
         Log.d(TAG, "callback onFailure()");
+        Toast.makeText(this, "Failed to update Attributes. Please try again later.", Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -101,7 +110,6 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
         setContentView(R.layout.activity_settings_layout);
 
         imageModelArrayList = new ArrayList<MyImageModel>();
-
 
 //        Setup Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -153,6 +161,7 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
             public void onClick(View v) {
                 Log.d(TAG, "changeProfilePictureButton onClick()");
                 launchUpdateUserPhotoDialog();
+                photoNeedsToBeUpdated = true;
             }
         });
 
@@ -168,10 +177,21 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
                 updateTask.setUserID(UserInformationModel.getInstance().getUserID());
                 updateTask.setAttributesToUpdate(getAttributeToUpdate());
                 updateTask.setCognitoUser(UserInformationModel.getInstance().getCognitoUser());
+                updateTask.setCallback(SettingsActivity.this);
                 updateTask.execute();
 
 //                Upload user photo to S3
-                beginUpload(path);
+                if (photoNeedsToBeUpdated) {
+
+                    Log.d(TAG, "ION KEY SET SIZE: " + Ion.getDefault(SettingsActivity.this).getCache().keySet().size());
+                    for (String s : Ion.getDefault(SettingsActivity.this).getCache().keySet())
+                        Log.d(TAG, "ION KEYSET: " + s);
+//                    Ion.getDefault(SettingsActivity.this).getBitmapCache().clear();
+//                    Ion.getDefault(SettingsActivity.this).getCache().clear();
+//                    Ion.getDefault(SettingsActivity.this).getBitmapCache().remove(UserInformationModel.getInstance().getUsername()+".jpg");
+//                    Log.d(TAG, "photo cached? " + Ion.getDefault(SettingsActivity.this).getBitmapCache().get(UserInformationModel.getInstance().getUsername()+".jpg"));
+                    beginUpload(path);
+                }
             }
         });
 
@@ -285,15 +305,6 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
                 Log.d(TAG, " netural button  TAKE NEW PHOTO clicked");
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//                    String fileName = "temp.jpg";
-//                    ContentValues values = new ContentValues();
-//                    values.put(MediaStore.Images.Media.TITLE, fileName);
-//                    mCapturedImageURI = getContentResolver()
-//                            .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-//                    startActivityForResult(takePictureIntent, TAKE_NEW_IMAGE_REQUEST);
-//                }
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, TAKE_NEW_IMAGE_REQUEST);
             }
@@ -352,6 +363,8 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
         private String userID;
         private CognitoUser cognitoUser;
 
+        private UpdateUserAttributesCallback callback;
+
         @Override
         protected void onPreExecute() {
             Log.d(TAG, "onPreExecute()");
@@ -368,14 +381,15 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
 
                 @Override
                 public void onSuccess(List<CognitoUserCodeDeliveryDetails> attributesVerificationList) {
-                    Log.d(TAG, "onSuccess");
-
+                    Log.d(TAG, "onSuccess() Updated User Cognito Attributes");
+                    callback.onSuccess();
                 }
 
                 @Override
                 public void onFailure(Exception exception) {
                     // Change failed, probe exception for details
                     Log.e(TAG, "onFailure", exception);
+                    callback.onFailure();
                 }
             };
 
@@ -395,10 +409,6 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
             }
 
 
-            //        userAttributes.addAttribute("custom:Affiliation", "test AFfiliation 11");
-            //        Log.d(TAG, "userAttributes=null? "+(userAttributes==null) + " handler==null? " + (handler==null));
-            //        Log.d(TAG,"user == null? " + (cognitoUser == null));
-
             try {
                 cognitoUser.updateAttributesInBackground(userAttributes, handler);
             } catch (NullPointerException exc) {
@@ -406,7 +416,6 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
             }
 
             UpdateUserAttributesResult result = new UpdateUserAttributesResult();
-            //        Log.d(TAG, "RESULT: " + result.getCodeDeliveryDetailsList().toString());
             return null;
         }
 
@@ -437,6 +446,10 @@ public class SettingsActivity extends AppCompatActivity implements UpdateUserAtt
 
         public void setCognitoUser(CognitoUser cognitoUser) {
             this.cognitoUser = cognitoUser;
+        }
+
+        public void setCallback(UpdateUserAttributesCallback callback) {
+            this.callback = callback;
         }
     }
 }

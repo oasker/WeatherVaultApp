@@ -650,4 +650,5 @@
     <string name="pathos_lorem_dolor_ipsum_rian_coment_comment_long_saying_things_for_whatever_long_comment_commet_string_commentsf">Pathos lorem dolor ipsum rian coment comment long saying things for whatever long comment commet @string/commentsf</string>
     <string name="message_that_is_being_made_up_bs_text_just_for_example_nice">Message that is being made up bs text just for example nice</string>
     <string name="sent_4_45_pm_5_01_2017">Sent: 4:45 PM 5/01/2017</string>
+    <string name="title_activity_view_photo_full_screen">ViewPhotoFullScreenActivity</string>
 </resources>

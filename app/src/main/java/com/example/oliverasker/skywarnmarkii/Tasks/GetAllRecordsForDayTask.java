@@ -87,7 +87,7 @@ public class GetAllRecordsForDayTask extends AsyncTask<Void,Void,Void> {
         keyCondition.put("DateSubmittedEpoch", rangeKeyCondition);
 
         QueryRequest queryRequest = new QueryRequest()
-                .withTableName(Constants.REPORTS_TABLE_NAME)
+                .withTableName("SkywarnWSDB_rev4")
                 .withKeyConditions(keyCondition);
         queryRequest.setScanIndexForward(false);
 

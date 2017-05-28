@@ -111,7 +111,7 @@ public class QueryReportAttributesSingleDayFragment extends Fragment {
                     mDay = c.get(Calendar.DAY_OF_MONTH);
                 }
 //                Set datepicker start date
-                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
                             new DatePickerDialog.OnDateSetListener() {
                                 @Override
                                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

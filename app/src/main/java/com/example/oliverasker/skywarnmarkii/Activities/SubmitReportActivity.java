@@ -268,6 +268,11 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         report.put("NetVote", new AttributeValue().withN(String.valueOf(0)));
         report.put("DownVote", new AttributeValue().withN(String.valueOf(0)));
 
+        if (!commentsInput.getText().toString().trim().equals(""))
+            report.put("Comments", new AttributeValue().withS(commentsInput.getText().toString()));
+        else
+            report.put("Comments", new AttributeValue().withS("|"));
+
         if (!UserInformationModel.getInstance().getAffiliation().equals("")) {
             report.put("Affilliation", new AttributeValue().withS(UserInformationModel.getInstance().getAffiliation()));
         } else
@@ -284,6 +289,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
             report.put("CallSign", new AttributeValue().withS("|"));
 
 
+
         if (!dateChanged) {
             // DateOfEvent Stuff
             long epoch = getDateFromDatePicker(datePicker);
@@ -291,6 +297,21 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         }
 
 
+//        if(!winterWeatherBool & !severeWeatherBool & !rainAndFloodBool & !coastalFloodingBool ) {
+//            String[] keyArray = Utility.AttributeHashMapKeyToArray(report);
+//            AttributeValue[] attrArray = Utility.AttributeHashMapValuesToArray(report);
+//
+//            Bundle b = new Bundle();
+//            Intent intent = new Intent(this, LaunchCameraActivity.class);
+//
+//            intent.putExtra("keyArray", keyArray);
+//            intent.putExtra("attrArray", attrArray);
+//
+//            intent.putExtras(b);
+//            intent.putExtra("weatherEventBoolsMap", weatherEventsBoolsMap);
+//            startActivity(intent);
+//        }
+//        else{
         //  Convert report to arrays to save memory(...?)
         String[] keyArray = Utility.AttributeHashMapKeyToArray(report);
         AttributeValue[] attrArray = Utility.AttributeHashMapValuesToArray(report);
@@ -304,6 +325,7 @@ public class SubmitReportActivity extends AppCompatActivity implements StringCal
         intent.putExtras(b);
         intent.putExtra("weatherEventBoolsMap", weatherEventsBoolsMap);
         startActivity(intent);
+//        }
         //Todo: Implement checks for user input for submitting reports, ensure all required fields are entered
 //            } else
 //                Toast.makeText(this, "Please enter all required fields", Toast.LENGTH_LONG);

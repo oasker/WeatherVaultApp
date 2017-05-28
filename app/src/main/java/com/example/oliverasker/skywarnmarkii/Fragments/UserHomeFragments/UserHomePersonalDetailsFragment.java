@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii.Fragments;
+package com.example.oliverasker.skywarnmarkii.Fragments.UserHomeFragments;
 
 import android.app.Fragment;
 import android.content.Context;

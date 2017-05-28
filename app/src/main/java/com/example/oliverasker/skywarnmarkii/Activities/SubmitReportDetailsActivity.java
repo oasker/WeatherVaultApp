@@ -139,34 +139,50 @@ public class SubmitReportDetailsActivity extends AppCompatActivity{
         //generalInfoFrag= new GeneralSubmitReportFragment();
 
         isWinterEvent = (eventBools.containsKey("winterBool") && eventBools.get("winterBool"));
-        isSevereEvent = (eventBools.get("severeBool")  && eventBools.get("severeBool"));
+        isSevereEvent = (eventBools.containsKey("severeBool") && eventBools.get("severeBool"));
         isCoastalEvent = (eventBools.containsKey("coastalFloodBool") && eventBools.get("coastalFloodBool"));
-        isRainEvent = (eventBools.get("rainFloodBool") && eventBools.get("rainFloodBool"));
+        isRainEvent = (eventBools.containsKey("rainFloodBool") && eventBools.get("rainFloodBool"));
 
-       // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
+
+        // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
 
         if(isWinterEvent | isSevereEvent | isCoastalEvent | isRainEvent){
-        if(isWinterEvent) {
-            fragTransaction.add(R.id.first_container, winterFrag, "winterFrag");
-        }
+            if (isWinterEvent) {
+                fragTransaction.add(R.id.first_container, winterFrag, "winterFrag");
+            }
 
-        if(isCoastalEvent) {
-            fragTransaction.add(R.id.second_container, coastalFloodingFrag, "coastalFloodFrag");
-        }
+            if (isCoastalEvent) {
+                fragTransaction.add(R.id.second_container, coastalFloodingFrag, "coastalFloodFrag");
+            }
 
-        if(isSevereEvent) {
-            fragTransaction.add(R.id.third_container, severeFrag, "severeFrag");
-        }
+            if (isSevereEvent) {
+                fragTransaction.add(R.id.third_container, severeFrag, "severeFrag");
+            }
 
-        if(isRainEvent) {
-            fragTransaction.add(R.id.fourth_container, rainFrag, "rainFrag");
-        }
-           // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
+            if (isRainEvent) {
+                fragTransaction.add(R.id.fourth_container, rainFrag, "rainFrag");
+            }
+            // fragTransaction.add(R.id.general_info_container, generalInfoFrag," generalInfoFrag");
             fragTransaction.commit();
         }
-        if(!isWinterEvent && !isSevereEvent && !isCoastalEvent && !isRainEvent){
-
-        }
+////        If just a general event continue to photos
+//        else{
+//            Intent intent = new Intent(this, LaunchCameraActivity.class);
+//
+//
+//            long epoch = System.currentTimeMillis();
+//            DecimalFormat decimalFormat= new DecimalFormat("0.0");
+//
+//
+////            Todo
+//            String epochString = decimalFormat.format(epoch);
+//            intent.putExtra("DateSubmittedString", dateSubmittedString);
+//            intent.putExtra("epoch",epoch);
+//
+//            intent.putExtra("keyArray", keyArray);
+//            intent.putExtra("attributeValArray", attributeValArray);
+//            startActivity(intent);
+//        }
    }
 
     public boolean checkIfEditTextFieldEmpty(ArrayList<EditText> editTextList){
@@ -409,7 +425,6 @@ class AsyncInsertTask2 extends AsyncTask<String[], Void, Void> implements ICallb
         }
         try {
              PutItemRequest putItemRequest = new PutItemRequest("SkywarnWSDB_rev4", attributeValueMap);
-            //PutItemRequest putItemRequest = new PutItemRequest(Constants.REPORTS_TABLE_NAME, report);
             PutItemResult putItemResult = ddb.putItem(putItemRequest);
         }catch (DynamoDBMappingException dynamoDBMappingException){
             Log.e(TAG, dynamoDBMappingException.toString());

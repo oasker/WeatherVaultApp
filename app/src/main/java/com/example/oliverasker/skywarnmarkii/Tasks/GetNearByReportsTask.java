@@ -81,7 +81,7 @@ public class GetNearByReportsTask extends AsyncTask<Void, Void, Void> {
 //          Create QueryRequest that retreives all reports a user has submitted.
 //          ProfilePageSorter is secdondary Index that groups reports by user who submitted them
         QueryRequest queryRequest = new QueryRequest()
-                .withTableName(Constants.REPORTS_TABLE_NAME)
+                .withTableName("SkywarnWSDB_rev4")
                 .withKeyConditions(keyCondition)
                 .withIndexName("CountyIndex");
         queryRequest.setScanIndexForward(false);

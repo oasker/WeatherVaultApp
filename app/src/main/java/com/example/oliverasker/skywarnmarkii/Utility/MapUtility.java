@@ -1,4 +1,4 @@
-package com.example.oliverasker.skywarnmarkii;
+package com.example.oliverasker.skywarnmarkii.Utility;
 
 import android.content.Context;
 import android.location.Address;

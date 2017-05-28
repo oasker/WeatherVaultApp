@@ -42,23 +42,83 @@ public class UserInformationModel {
     private static String idToken;
     private static CognitoUserSession cognitoUserSession;
     private static CognitoUser cognitoUser;
+    private static boolean isNewUser;
+    private static UserInformationModel userInformationModel = new UserInformationModel();
     public AmazonDynamoDBClient amazonDynamoDBClient;
     private boolean userIsVerified;
-
-
     //For passwordReset
     private String newPassword;
-
     private String pwResetCode;
-
-    private static boolean isNewUser;
-
-    private static UserInformationModel userInformationModel = new UserInformationModel();
+    private String ratedReportsTextFileContents;
 
     private UserInformationModel(){}
 
     public static UserInformationModel getInstance(){
         return userInformationModel;
+    }
+
+    public static boolean isNewUser() {
+        return isNewUser;
+    }
+
+    public static void setIsNewUser(boolean isNewUser) {
+        UserInformationModel.isNewUser = isNewUser;
+    }
+
+    public static String getFirstName() {
+        return firstName;
+    }
+
+    public static void setFirstName(String firstName) {
+        UserInformationModel.firstName = firstName;
+    }
+
+    public static String getLastName() {
+        return lastName;
+    }
+
+    public static void setLastName(String lastName) {
+        UserInformationModel.lastName = lastName;
+    }
+
+    public static CognitoCachingCredentialsProvider getCredentialsProvider() {
+        return credentialsProvider;
+    }
+
+    public static void setCredentialsProvider(CognitoCachingCredentialsProvider credentialsProvider) {
+        UserInformationModel.credentialsProvider = credentialsProvider;
+    }
+
+    public static String getIdToken() {
+        return idToken;
+    }
+
+    public static void setIdToken(String idToken) {
+        UserInformationModel.idToken = idToken;
+    }
+
+    public static CognitoUserSession getCognitoUserSession() {
+        return cognitoUserSession;
+    }
+
+    public static void setCognitoUserSession(CognitoUserSession cognitoUserSession) {
+        UserInformationModel.cognitoUserSession = cognitoUserSession;
+    }
+
+    public static int getNumberOfImages() {
+        return numberOfImages;
+    }
+
+    public static void setNumberOfImages(int numberOfImages) {
+        UserInformationModel.numberOfImages = numberOfImages;
+    }
+
+    public static int getNumberOfVideos() {
+        return numberOfVideos;
+    }
+
+    public static void setNumberOfVideos(int numberOfVideos) {
+        UserInformationModel.numberOfVideos = numberOfVideos;
     }
 
     //Set Attributes if User is a certified spotter
@@ -77,13 +137,7 @@ public class UserInformationModel {
         password = Password;
     }
 
-
-
-
-
-    ///////////////////////////////////////////////////
-    ////        setters/getters                   ////
-    ///////////////////////////////////////////////////
+    //    setters/getters
     public String getAffiliation() {
         return affiliation;
     }
@@ -156,15 +210,6 @@ public class UserInformationModel {
         cognitoUser = user;
     }
 
-    public static boolean isNewUser() {
-        return isNewUser;
-    }
-
-    public static void setIsNewUser(boolean isNewUser) {
-        UserInformationModel.isNewUser = isNewUser;
-    }
-
-
     public String getNewPassword() {
         return newPassword;
     }
@@ -181,55 +226,12 @@ public class UserInformationModel {
         this.pwResetCode = pwResetCode;
     }
 
-
-    public static String getFirstName() {
-        return firstName;
-    }
-
-    public static void setFirstName(String firstName) {
-        UserInformationModel.firstName = firstName;
-    }
-
-    public static String getLastName() {
-        return lastName;
-    }
-
-    public static void setLastName(String lastName) {
-        UserInformationModel.lastName = lastName;
-    }
-
-
-
-    public static CognitoCachingCredentialsProvider getCredentialsProvider() {
-        return credentialsProvider;
-    }
-
-    public static void setCredentialsProvider(CognitoCachingCredentialsProvider credentialsProvider) {
-        UserInformationModel.credentialsProvider = credentialsProvider;
-    }
-
-    public static String getIdToken() {
-        return idToken;
-    }
-
-    public static void setIdToken(String idToken) {
-        UserInformationModel.idToken = idToken;
-    }
-
-    public static CognitoUserSession getCognitoUserSession() {
-        return cognitoUserSession;
-    }
-
-    public static void setCognitoUserSession(CognitoUserSession cognitoUserSession) {
-        UserInformationModel.cognitoUserSession = cognitoUserSession;
+    public AmazonDynamoDBClient getAmazonDynamoDBClient() {
+        return amazonDynamoDBClient;
     }
 
     public void setAmazonDynamoDBClient(AmazonDynamoDBClient amazonDynamoDBClient) {
         this.amazonDynamoDBClient = amazonDynamoDBClient;
-    }
-
-    public AmazonDynamoDBClient getAmazonDynamoDBClient() {
-        return amazonDynamoDBClient;
     }
 
     public void setCredentialProviderLogins(Map<String,String> logins){
@@ -264,19 +266,11 @@ public class UserInformationModel {
         this.userIsVerified = userIsVerified;
     }
 
-    public static int getNumberOfImages() {
-        return numberOfImages;
+    public String getRatedReportsTextFileContents() {
+        return ratedReportsTextFileContents;
     }
 
-    public static void setNumberOfImages(int numberOfImages) {
-        UserInformationModel.numberOfImages = numberOfImages;
-    }
-
-    public static int getNumberOfVideos() {
-        return numberOfVideos;
-    }
-
-    public static void setNumberOfVideos(int numberOfVideos) {
-        UserInformationModel.numberOfVideos = numberOfVideos;
+    public void setRatedReportsTextFileContents(String ratedReportsTextFileContents) {
+        this.ratedReportsTextFileContents = ratedReportsTextFileContents;
     }
 }

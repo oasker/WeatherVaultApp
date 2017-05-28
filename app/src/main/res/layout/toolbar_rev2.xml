@@ -1,15 +1,16 @@
-<android.support.v7.widget.Toolbar android:id="@+id/my_toolbars"
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/my_toolbars"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="fill_horizontal"
     android:background="@color/toolBarColor"
     android:elevation="10dp"
-    app:title="@string/app_title"
-    app:titleTextColor="@color/textColor"
-    android:weightSum="1"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="10dp"
     android:gravity="center_horizontal"
-    android:layout_gravity="fill_horizontal">
+    android:padding="10dp"
+    android:theme="@style/AppTheme"
+    android:weightSum="1"
+    app:title="@string/app_title"
+    app:titleTextColor="@color/textColor">
 
 </android.support.v7.widget.Toolbar>

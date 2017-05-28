@@ -20,23 +20,24 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.oliverasker.skywarnmarkii.Callbacks.GetReportsRatedByUserTaskCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.UserAttributesCallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
-import com.example.oliverasker.skywarnmarkii.Fragments.ChatFragments.ChatMessageFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.ChatFragments.ChatMessageParent;
 import com.example.oliverasker.skywarnmarkii.Fragments.QueryReportsAttributesFragments.QueryReportAttributesFragment;
-import com.example.oliverasker.skywarnmarkii.Fragments.UserInfoHomeFragment;
+import com.example.oliverasker.skywarnmarkii.Fragments.UserHomeFragments.UserInfoHomeFragment;
 import com.example.oliverasker.skywarnmarkii.Fragments.ViewReportsFromSingleDayFragment;
 import com.example.oliverasker.skywarnmarkii.Models.UserInformationModel;
 import com.example.oliverasker.skywarnmarkii.R;
+import com.example.oliverasker.skywarnmarkii.Tasks.GetReportsRatedByUserTask;
 import com.example.oliverasker.skywarnmarkii.Tasks.GetUserCognitoAttributesTask;
 
 import java.util.Map;
 
 
-
-public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, UserAttributesCallback {
+public class TabbedUserHomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, UserAttributesCallback, GetReportsRatedByUserTaskCallback {
     private static final String TAG= "TabbedUserHomeActivity";
-    Fragment mostRecentSelectedFragment;
+    private Fragment mostRecentSelectedFragment;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private TabLayout topTabLayout;
@@ -46,16 +47,18 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tabbed_user_home);
+//        setContentView(R.layout.activity_tabbed_user_home);
+        setContentView(R.layout.activity_user_home_test);
+
         Log.d(TAG, "onCreate");
 
-        //Setup toolbar
+//      Setup toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbars);
         setSupportActionBar(myToolbar);
 
 
-//      Create the adapter that will return a fragment for each of the three
-//      primary sections of the activity.
+//      Create the adapter that will manage the fragments for each of the
+//      primary sections of the user home
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
 
 //      Set up the ViewPager with the sections adapter.
@@ -79,7 +82,6 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
@@ -141,38 +143,21 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 //            }
 //        });
 //        Get User attribtes task
+
+//      Start task that retreives the users attributes from Cognito
         GetUserCognitoAttributesTask attributesTask = new GetUserCognitoAttributesTask(TabbedUserHomeActivity.this);
         attributesTask.initUserPool(this);
         attributesTask.setCognitoUser(UserInformationModel.getInstance().getUserID());
         attributesTask.execute();
-    }
 
-
-    public void launchMultipleOrSingleReportDialog(){
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setMessage("Submit Single or Multiple Reports?")
-                .setPositiveButton("Single Report", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(TAG, "Launch Single report submit activity");
-                    launchSubmitReportActivity();
-                    }
-                })
-                .setNeutralButton("Multiple Reports", new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i){
-                        Log.d(TAG, "Launch Multiple reports activity");
-                        launchSubmitMultipleReportsActivtiy();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.d(TAG, "Cancel Submit reports button pressed");
-                    }
-                });
-        android.support.v7.app.AlertDialog dialog = builder.create();
-        dialog.show();
+//      Start task that retreives text file from S3 that holds all the reports
+//      The user has rated.
+        GetReportsRatedByUserTask getRatedReportsTask = new GetReportsRatedByUserTask();
+        getRatedReportsTask.setmContext(this);
+        getRatedReportsTask.setFilePath(getCacheDir() + "/");
+        getRatedReportsTask.setUsername(UserInformationModel.getInstance().getUsername());
+        getRatedReportsTask.setCallback(this);
+        getRatedReportsTask.execute();
     }
 
     @Override
@@ -198,7 +183,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         }
     }
 
-    ////////////////     Menu Setup Methods     //////////////////
+
+    //  Menu Setup Methods
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -260,7 +246,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
     }
 
 
-    //    Callbacks
+    //  Callback Methods
+//  Callbacks for UserAttributesCallback
     @Override
     public void onProcessFinished(Map<String, String> vals) {
         Log.d(TAG, "onProcessFinished(Map<String, String>)");
@@ -270,6 +257,41 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
     }
 
+    //   Callback for GetReportRatedByUserTask
+    @Override
+    public void setRatedReportString(String ratedReportString) {
+        Log.d(TAG, "setRatedReportString() ratedReportString: " + ratedReportString);
+        UserInformationModel.getInstance().setRatedReportsTextFileContents(ratedReportString);
+    }
+
+
+    //  Methods that launch activities or dialog
+    public void launchMultipleOrSingleReportDialog() {
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setMessage("Submit Single or Multiple Reports?")
+                .setPositiveButton("Single Report", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "Launch Single report submit activity");
+                        launchSubmitReportActivity();
+                    }
+                })
+                .setNeutralButton("Multiple Reports", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "Launch Multiple reports activity");
+                        launchSubmitMultipleReportsActivtiy();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "Cancel Submit reports button pressed");
+                    }
+                });
+        android.support.v7.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     //  Methods that launch new activities
     public void launchConfirmUserActivity(){
         Intent i = new Intent(this,ConfirmNewUserActivity.class);
@@ -298,6 +320,8 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         startActivity(i);
     }
 
+
+    //
     public static class PlaceholderFragment extends Fragment {
 
 //      The fragment argument representing the section number for this
@@ -344,17 +368,17 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
             mostRecentSelectedFragment = null;//new UserInfoHomeFragment();
             switch (position){
                 case 0:
-                    Log.d(TAG, "::::::::::::::::::::::::::UserInfoHomeFragment");
+                    Log.d(TAG, "UserInfoHomeFragment");
                     return new UserInfoHomeFragment();
 
                 //Query Report
                 case 1:
-                    Log.d(TAG, "::::::::::::::::::::::::::Query Report frag");
+                    Log.d(TAG, "QueryReportAttributesFragment");
                     return new QueryReportAttributesFragment();
 
                 //Relevant reports
                 case 2:
-                    Log.d(TAG, "::::::::::::::::::::::::::Relevant report frag");
+                    Log.d(TAG, "ViewReportsFromSingleDayFragment");
                     ViewReportsFromSingleDayFragment viewRep = new ViewReportsFromSingleDayFragment();
                     Intent i = new Intent();
                     Bundle b = i.getExtras();
@@ -364,8 +388,10 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
 
                 case 4:
                     Log.d(TAG, "Chat Frag Selected");
-                    ChatMessageFragment chatFrag = new ChatMessageFragment();
-                    return chatFrag;
+//                    ChatMessageFragment chatFrag = new ChatMessageFragment();
+//                    return chatFrag;
+                    ChatMessageParent chatParent = new ChatMessageParent();
+                    return chatParent;
 
 
                 default:
@@ -384,11 +410,11 @@ public class TabbedUserHomeActivity extends AppCompatActivity implements Adapter
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "User Profile";
+                    return "User";
                 case 1:
                     return "Search";
                 case 2:
-                    return "Relevant Reports";
+                    return "Reports";
                 case 3:
                     return "Submit";
                 case 4:

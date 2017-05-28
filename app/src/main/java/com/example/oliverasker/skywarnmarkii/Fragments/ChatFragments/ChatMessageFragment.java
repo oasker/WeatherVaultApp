@@ -12,22 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMappingException;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
-import com.amazonaws.services.dynamodbv2.model.PutItemResult;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
-import com.example.oliverasker.skywarnmarkii.Activities.MainActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.ChatDBCallback;
-import com.example.oliverasker.skywarnmarkii.Callbacks.ICallback;
 import com.example.oliverasker.skywarnmarkii.Constants;
 import com.example.oliverasker.skywarnmarkii.Fragments.ChatFragments.dummy.DummyContent;
 import com.example.oliverasker.skywarnmarkii.Mappers.SkywarnWSDBMapper;
@@ -37,9 +31,10 @@ import com.example.oliverasker.skywarnmarkii.RecyclerViewDecoration.DividerItemD
 import com.example.oliverasker.skywarnmarkii.Utility.Utility;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -53,15 +48,20 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private double mostRecentDate = 0;
+    private ArrayList<ChatMessageModel> masterMessageList;
+    private String username;
+    private String message;
+    private String dateSent;
+    private Context mContext;
+
 
     private MyChatMessageRecyclerViewAdapter adapter;
 
     private RecyclerView recyclerView;
 
-
     public ChatMessageFragment() {
     }
-
 
     public static ChatMessageFragment newInstance(int columnCount) {
         ChatMessageFragment fragment = new ChatMessageFragment();
@@ -74,15 +74,16 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        masterMessageList = new ArrayList<>();
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
+        updateDisplay();
+        mContext = getActivity().getApplicationContext();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chatmessage_list, container, false);
 
 
@@ -101,37 +102,21 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
             recyclerView = (RecyclerView) view.findViewById(R.id.list);
             ((RecyclerView) view).addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL));
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                LinearLayoutManager manager = new LinearLayoutManager(context);
+                manager.setStackFromEnd(true);
+                recyclerView.setLayoutManager(manager);
+
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-//            ChatInsertTask chatInsertTask = new ChatInsertTask();
-
 //          Todo: Add row of custom items here
             Log.d(TAG, "setting adapter: size: " + test.size());
-            adapter = new MyChatMessageRecyclerViewAdapter(test, mListener);
-//            recyclerView.setAdapter(adapter);
-
-
-            ChatInsertTask chatInsertTask = new ChatInsertTask();
-            chatInsertTask.setComment("What did i miss?");
-            chatInsertTask.setMessageAuthor("Birdperson");
-            chatInsertTask.setState("MA");
-            chatInsertTask.setMessageDate(Calendar.getInstance().getTimeInMillis());
-//            chatInsertTask.execute();
-
-            GetRecentChatMessagesTask getMessagesTask = new GetRecentChatMessagesTask();
-            getMessagesTask.setState("MA");
-            getMessagesTask.setmContext(getActivity().getApplicationContext());
-            getMessagesTask.setCallback(this);
-            getMessagesTask.setMostRecentReportDate(0);
-//            getMessagesTask.setCurrentUsersUsername();
-            getMessagesTask.execute();
+            adapter = new MyChatMessageRecyclerViewAdapter(masterMessageList, mListener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -151,9 +136,42 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
 
     @Override
     public void chatDBCallbackComplete(ArrayList<ChatMessageModel> messages) {
+        Log.d(TAG, "chatDBCallback called");
+        if (messages.size() > 0) {
+            if (messages.get(messages.size() - 1).dateMessageSent < messages.get(0).dateMessageSent)
+                mostRecentDate = messages.get(0).dateMessageSent;
+            else
+                mostRecentDate = messages.get(messages.size() - 1).dateMessageSent;
+            Log.d(TAG, "mostRecentDate: " + mostRecentDate);
+        }
         Log.d(TAG, "onProcessFinish(ArrayList<SkywarnWSDBMapper> result)  size: " + messages.size());
-        adapter = new MyChatMessageRecyclerViewAdapter(messages, mListener);
-        recyclerView.setAdapter(adapter);
+
+        masterMessageList.addAll(messages);
+        Log.d(TAG, "messageList size: " + masterMessageList.size());
+
+//        adapter = new MyChatMessageRecyclerViewAdapter(masterMessageList, mListener);
+        adapter.notifyItemChanged(masterMessageList.size());
+
+//        recyclerView.setAdapter(adapter);
+    }
+
+    private void updateDisplay() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                Log.d(TAG, "run() timer is dopeee");
+                GetRecentChatMessagesTask getMessagesTask = new GetRecentChatMessagesTask();
+                getMessagesTask.setState("MA");
+                getMessagesTask.setmContext(mContext);
+                getMessagesTask.setCallback(ChatMessageFragment.this);
+                getMessagesTask.setMostRecentReportDate(mostRecentDate);
+//            getMessagesTask.setCurrentUsersUsername();
+                getMessagesTask.execute();
+            }
+
+        }, 0, 5000);//Update text every second
     }
 
     /**
@@ -171,82 +189,9 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
         void onListFragmentInteraction(DummyContent.ChatMessage item);
     }
 
-
-    //      INSERT To CHATDB TASK
-    class ChatInsertTask extends AsyncTask<String[], Void, Void> {
-
-        private static final String TAG = "ChatInsertTask";
-        AmazonDynamoDBClient ddb = MainActivity.clientManager.ddb();
-
-        ICallback callback;
-        String state;
-        String messageAuthor;
-        String comment;
-        long messageDate;
-
-
-        public ChatInsertTask() {
-//            attributeVals = new AttributeValue[attributeVals.length];
-        }
-
-        @Override
-        protected Void doInBackground(String[]... params) {
-
-            Log.i(TAG, "ChatInsertTask doInBackground() ");
-            Map<String, AttributeValue> attributeValueMap = new HashMap<>();
-
-
-            Log.d(TAG, "Author: " + messageAuthor + " message: " + comment + " messageDate: " + messageDate);
-
-            attributeValueMap.put("State", new AttributeValue().withS(state));
-            attributeValueMap.put("MessageDate", new AttributeValue().withN(String.valueOf(messageDate)));
-            attributeValueMap.put("Username", new AttributeValue().withS(messageAuthor));
-            attributeValueMap.put("Comment", new AttributeValue().withS(comment));
-
-            try {
-                PutItemRequest putItemRequest = new PutItemRequest("ChatDB", attributeValueMap);
-                PutItemResult putItemResult = ddb.putItem(putItemRequest);
-            } catch (DynamoDBMappingException dynamoDBMappingException) {
-                Log.e(TAG, dynamoDBMappingException.toString());
-            } catch (com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMappingException dynamoDBMappingException) {
-                Log.e(TAG, dynamoDBMappingException.toString());
-            } catch (AmazonServiceException ex) {
-                MainActivity.clientManager.wipeCredentialsonAuthError(ex);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            Log.d(TAG, "onPostExecute()");
-            //delegate.processFinish();
-        }
-
-        public void setState(String state) {
-            this.state = state;
-        }
-
-        public void setMessageAuthor(String messageAuthor) {
-            this.messageAuthor = messageAuthor;
-        }
-
-        public void setComment(String comment) {
-            this.comment = comment;
-        }
-
-        public void setMessageDate(long messageDate) {
-            this.messageDate = messageDate;
-        }
-
-        public void setCallback(ICallback callback) {
-            this.callback = callback;
-        }
-    }
-
-
     //    READ FROM CHATDB TASK
     public class GetRecentChatMessagesTask extends AsyncTask<Void, Void, Void> {
-        private static final String TAG = "GetAllRecordsForDayTask";
+        private static final String TAG = "GetRecentChatMsgTask";
         ArrayList<SkywarnWSDBMapper> reportList = new ArrayList<>();
         Context mContext;
         private ChatDBCallback callback = null;
@@ -254,6 +199,9 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
         private String state;
         private ArrayList<ChatMessageModel> messageList = new ArrayList<>();
         private String currentUsersUsername;
+        private String message;
+        private double messageDate;
+        private String username;
 
         private double mostRecentReportDate;
 
@@ -296,26 +244,37 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
             QueryRequest queryRequest = new QueryRequest()
                     .withTableName("ChatDB")
                     .withKeyConditions(keyCondition);
-            queryRequest.setScanIndexForward(false);
 
             QueryResult queryResult = ddb.query(queryRequest);
 
             boolean isCurrentUsersMessage;
             for (Map item : queryResult.getItems()) {
-                String username = Utility.parseDynamoDBResultValuesToString(item.get("Username").toString());
+                if (item.containsKey("Username")) {
+                    username = Utility.parseDynamoDBResultValuesToString(item.get("Username").toString());
+                }
+                if (item.containsKey("Comment"))
+                    message = Utility.parseDynamoDBResultValuesToString(item.get("Comment").toString());
+                if (item.containsKey("MessageDate"))
+                    messageDate = Utility.parseDynamoDBResultValuesToLong(item.get("MessageDate").toString());
 
+                if (item.containsKey("State"))
+                    state = Utility.parseDynamoDBResultValuesToString(item.get("State").toString());
 //                if(currentUsersUsername.equals(username))
 //                    isCurrentUsersMessage = true;
 //                else
 //                    isCurrentUsersMessage = false;
 
-                ChatMessageModel chatModel = new ChatMessageModel(Utility.parseDynamoDBResultValuesToString(item.get("State").toString()),
-                        Utility.parseDynamoDBResultValuesToString(item.get("Comment").toString()),
+                Log.d(TAG, "******INCOMING CHAT******");
+                Log.d(TAG, "username: " + username + " message: " + message + " state: " + state);
+                ChatMessageModel chatModel = new ChatMessageModel(
+                        state,
+                        message,
                         username,
-                        Utility.parseDynamoDBResultValuesToLong(item.get("MessageDate").toString()),
+                        messageDate,
                         true
                 );
                 messageList.add(chatModel);
+                Log.d(TAG, "messageList.size() " + messageList.size());
             }
             return null;
         }
@@ -328,12 +287,12 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Log.d(TAG, "onPostExecute()");
             callback.chatDBCallbackComplete(messageList);
             callback = null;
         }
 
 
-        //
         public void setmContext(Context mContext) {
             this.mContext = mContext;
         }
@@ -358,5 +317,4 @@ public class ChatMessageFragment extends Fragment implements ChatDBCallback {
             this.currentUsersUsername = currentUsersUsername;
         }
     }
-
 }

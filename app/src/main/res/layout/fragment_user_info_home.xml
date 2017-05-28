@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:orientation="vertical">
+
+    <!-- <a href="https://icons8.com/web-app/18918/Form">Form icon credits</a>-->
+    <!-- http://bg.siteorigin.com/ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/user_home_background"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/user_profile_picture_imageview"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:adjustViewBounds="true"
+            android:contentDescription=""
+            android:foregroundGravity="center_vertical"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/friends_icon"
+            tools:ignore="RtlHardcoded" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <Button
+            android:id="@+id/view_user_info_button"
+            style="@style/Base.DialogWindowTitle.AppCompat"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_margin="30dp"
+            android:background="@android:drawable/ic_menu_info_details" />
+
+        <Button
+            android:id="@+id/view_user_reports_button"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/report_icon"
+            android:padding="30dp" />
+
+        <Button
+            android:id="@+id/view_user_photos_button"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_margin="30dp"
+            android:background="@android:drawable/ic_menu_camera"
+            android:padding="0dp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/user_info_frag_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+    </FrameLayout>
+
+</LinearLayout>

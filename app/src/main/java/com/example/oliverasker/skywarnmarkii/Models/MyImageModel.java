@@ -9,10 +9,10 @@ import java.util.Calendar;
  */
 
 public class MyImageModel {
+    protected SimpleDateFormat df = new SimpleDateFormat("MMMM d, yy  h:mm");
     private String title, description, path;
     private Calendar datetime;
     private long datetimeLong;
-    protected SimpleDateFormat df = new SimpleDateFormat("MMMM d, yy  h:mm");
 
     /**
      * Gets title.
@@ -21,12 +21,9 @@ public class MyImageModel {
      */
     public String getTitle() { return title; }
 
-    /**
-     * Gets datetime.
-     *
-     * @return Value of datetime.
-     */
-    public Calendar getDatetime() { return datetime; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     /**
      * Sets new datetimeLong.
@@ -41,34 +38,6 @@ public class MyImageModel {
     }
 
     /**
-     * Sets new datetime.
-     *
-     * @param datetime New value of datetime.
-     */
-    public void setDatetime(Calendar datetime) { this.datetime = datetime; }
-
-    /**
-     * Gets description.
-     *
-     * @return Value of description.
-     */
-    public String getDescription() { return description; }
-
-    /**
-     * Sets new title.
-     *
-     * @param title New value of title.
-     */
-    public void setTitle(String title) { this.title = title; }
-
-    /**
-     * Gets datetimeLong.
-     *
-     * @return Value of datetimeLong.
-     */
-    public long getDatetimeLong() { return datetimeLong; }
-
-    /**
      * Sets new description.
      *
      * @param description New value of description.
@@ -78,18 +47,22 @@ public class MyImageModel {
     }
 
     /**
-     * Sets new path.
-     *
-     * @param path New value of path.
-     */
-    public void setPath(String path) { this.path = path; }
-
-    /**
      * Gets path.
      *
      * @return Value of path.
      */
-    public String getPath() { return path; }
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * Sets new path.
+     *
+     * @param path New value of path.
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     @Override public String toString() {
         return "Title:" + title + "   " + df.format(datetime.getTime()) +

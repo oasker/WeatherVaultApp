@@ -10,7 +10,7 @@ public class Constants {
     public static final String IDENTITY_POOL_ID ="us-east-1:75c2afbc-dfba-4e27-bdc0-0d7e65027111";
 
     //    DB for reports
-    public static final String REPORTS_TABLE_NAME = Constants.REPORTS_TABLE_NAME;
+    public static final String REPORTS_TABLE_NAME = "SkywarnWSDB_rev4";
 
     //   DB for Chat
     public static final String CHATDB_TABLE_NAME = "ChatDB";
@@ -101,4 +101,8 @@ public class Constants {
     public static final int SELECT_WEATHER_TYPE_DIALOG = 0;
     public static final int SELECT_ATTRIBUTES_TO_QUERY_DIALOG = 1;
 
+
+    //    ViewReportActivity Constants
+    public static final int VIEW_REPORT_ACTIVITY_IMAGE_WIDTH = 250;
+    public static final int VIEW_REPORT_ACTIVITY_IMAGE_HEIGHT = 250;
 }

@@ -94,7 +94,7 @@ public class Utility {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             //System.out.println("AttrMap contains: "+pair.getKey() + " = " + pair.getValue());
-            Log.d(TAG, "AttrMap contains: " + pair.getKey() + " = " + pair.getValue());
+//            Log.d(TAG, "AttrMap contains: " + pair.getKey() + " = " + pair.getValue());
             // it.remove(); // avoids a ConcurrentModificationException
         }
     }
@@ -118,7 +118,7 @@ public class Utility {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
         Date date = new Date();
         String dateTime = sdf.format(d*1000);
-        Log.d(TAG, "dateTime: " + dateTime);
+//        Log.d(TAG, "dateTime: " + dateTime);
         String AMPMString = "";
         int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
@@ -137,7 +137,7 @@ public class Utility {
         StringBuilder s = new StringBuilder(month + "/" + day + "/" + year + " at: " + hour + ":" + minutes + " " + AMPMString);
 //        Log.d(TAG, "Year 1: " + year + " Year2: ");
        // Log.d(TAG, " epochToDateTimeString():    Input: " + epoch + " Result: " + s);
-        Log.d(TAG, "old converted Date: " + s + " new convertedDate: " + dateTime);
+//        Log.d(TAG, "old converted Date: " + s + " new convertedDate: " + dateTime);
        // return s.toString();
         return dateTime;
     }

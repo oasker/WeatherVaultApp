@@ -5,10 +5,12 @@
     android:id="@+id/list"
     android:name="com.example.oliverasker.skywarnmarkii.Fragments.ChatFragments.ChatMessageFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.example.oliverasker.skywarnmarkii.Fragments.ChatFragments.ChatMessageFragment"
-    tools:listitem="@layout/fragment_chatmessage" />
+    tools:listitem="@layout/fragment_chatmessage">
+
+</android.support.v7.widget.RecyclerView>
 

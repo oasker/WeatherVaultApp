@@ -1,5 +1,6 @@
 package com.example.oliverasker.skywarnmarkii.Activities;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,11 @@ public class ConfirmSubmitReportActivity extends AppCompatActivity{
     public void onCreate(Bundle b){
         super.onCreate(b);
         setContentView(R.layout.activity_confirm_submit_report_layout);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        ft.replace(R.id.confirm_submit_report_container,reviewFrag);
+//        ft.commit();
+
     }
 
     public void launchUserHome(View v){

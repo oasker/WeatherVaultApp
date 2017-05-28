@@ -88,7 +88,6 @@
         <activity android:name=".Activities.ResetPasswordActivity" />
         <activity android:name=".Activities.ResetPasswordEnterUsernameActivity" />
 
-
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -128,7 +127,6 @@
             android:label="@string/title_activity_submit_multiple_reports_info"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".Activities.VideoCameraTest" />
         <activity android:name=".Activities.ViewQueryResultsActivity" />
         <activity
             android:name=".Activities.ViewVideoFullScreenActivity"
@@ -136,6 +134,10 @@
         <activity
             android:name=".Activities.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".Activities.ViewPhotoFullScreenActivity"
+            android:label="@string/title_activity_view_photo_full_screen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

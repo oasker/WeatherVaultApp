@@ -26,6 +26,7 @@
         android:layout_marginRight="5dp"
         android:layout_toEndOf="@+id/overall_rating_row_text"
         android:text="@string/pathos_lorem_dolor_ipsum_rian_coment_comment_long_saying_things_for_whatever_long_comment_commet_string_commentsf"
+        android:textColor="@color/darkTextColor"
         android:textSize="10sp" />
 
     <TextView
@@ -35,6 +36,9 @@
         android:layout_below="@+id/time_row_text"
         android:layout_toEndOf="@+id/overall_rating_row_text"
         android:text="Submitted: 04/27/2017"
+        android:textColor="@color/darkTextColor"
+
+
         android:textSize="12sp" />
 
     <TextView
@@ -46,6 +50,7 @@
         android:layout_below="@+id/image_view"
         android:text="@string/report_rating"
         android:textAlignment="center"
+        android:textColor="@color/darkTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -53,7 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/event_description_row_text"
-        android:layout_toEndOf="@+id/image_view" />
+        android:layout_toEndOf="@+id/image_view"
+        android:textColor="@color/darkTextColor" />
 
     <TextView
         android:id="@+id/event_type_row_label"
@@ -62,6 +68,7 @@
         android:layout_below="@+id/date_row_text"
         android:layout_toEndOf="@+id/image_view"
         android:text="Weather Event: "
+        android:textColor="@color/darkTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -71,6 +78,7 @@
         android:layout_below="@+id/date_row_text"
         android:layout_toEndOf="@+id/event_type_row_label"
         android:text="Rain"
+        android:textColor="@color/darkTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -82,6 +90,7 @@
         android:layout_marginEnd="26dp"
         android:minWidth="50dp"
         android:text="@string/acushnet_ma"
+        android:textColor="@color/darkTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -90,7 +99,8 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/event_type_row_text"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="6dp" />
+        android:layout_marginStart="6dp"
+        android:textColor="@color/darkTextColor" />
 
     <TextView
         android:id="@+id/reporter_username_row_text"
@@ -101,6 +111,7 @@
         android:layout_marginEnd="19dp"
         android:scrollHorizontally="false"
         android:text="@string/username"
+        android:textColor="@color/darkTextColor"
         android:textSize="12sp" />
 
     <TextView
@@ -110,6 +121,7 @@
         android:layout_alignBottom="@+id/time_row_text"
         android:layout_toEndOf="@+id/image_view"
         android:text="@string/date_of_event_04_27_2017"
+        android:textColor="@color/darkTextColor"
         android:textSize="12sp" />
 
 </RelativeLayout>

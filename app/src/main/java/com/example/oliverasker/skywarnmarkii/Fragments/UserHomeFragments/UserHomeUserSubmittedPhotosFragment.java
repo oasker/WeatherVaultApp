@@ -1,7 +1,8 @@
-package com.example.oliverasker.skywarnmarkii.Fragments;
+package com.example.oliverasker.skywarnmarkii.Fragments.UserHomeFragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.oliverasker.skywarnmarkii.Activities.ViewPhotoFullScreenActivity;
 import com.example.oliverasker.skywarnmarkii.Activities.ViewReportActivity;
 import com.example.oliverasker.skywarnmarkii.Callbacks.BitmapCallback;
 import com.example.oliverasker.skywarnmarkii.Callbacks.StringCallback;
@@ -43,7 +45,6 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     private int imageViewHeight = 400;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup Container, Bundle savedInstance) {
         View v = inflater.inflate(R.layout.fragment_user_home_submitted_photos, Container, false);
@@ -58,75 +59,35 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
         task2.setmContext(mContext);
         task2.setCallback(this);
         task2.execute();
-//        imageView = (ImageView) v.findViewById(R.id.test_image_view);
-//        BitmapUtility.resizeImageView(imageViewWidth,imageViewHeight,imageView);
-//        Ion.with(imageView)
-//                .placeholder(R.drawable.sunny)
-//                .error(R.drawable.snow_icon)
-//                .smartSize(true)
-//                .load("https://s3.amazonaws.com/skywarntestbucket/1491436650179_oasker_0.jpg");
         return v;
     }
 
-
+    //    Todo: clean up/rename callbacks for each specific function
+//  UNUSED `///////////////////////////////////////
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
-
     @Override
     public void processFinish(ArrayList<Bitmap> result) {
-        Log.d(TAG, "bitMapcallback processFinished: size: " + result.size());
-        for (Bitmap b : result) {
-            ImageView iV = new ImageView(mContext);
-        }
     }
-
     @Override
     public void processFinish(Bitmap result) {
         Log.d(TAG, "processFinished(Bitmap)");
-        //Log.d(TAG, "processFinished() bitmapSize: "+ result.getByteCount());
-        //File f = new File("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
-//        Bitmap bitmap = BitmapFactory.decodeFile("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
-        ImageView iV = new ImageView(mContext);
-        ImageView iV2 = new ImageView(mContext);
-        if (result != null) {
-            iV.setImageBitmap(result);
-            photoLinearLayout.addView(iV);
-//            iV2.setImageBitmap(bitmap);
-            // photoLinearLayout.addView(iV2);
-        }
     }
-
     @Override
     public void processFinish(Bitmap result, String path) {
         Log.d(TAG, "processFinished(Bitmap, String)");
-        Log.d(TAG, "processFinsihed(Bitmap) path: " + path);
-        //Log.d(TAG, "processFinished() bitmapSize: "+ result.getByteCount());
-        //Bitmap bitmap = BitmapFactory.decodeFile("/data/user/0/com.example.oliverasker.skywarnmarkii/cache/1489603471441_oasker_1.jpg");
-
-//        ImageView iV2 = new ImageView(getContext());
-        ImageView iV = new ImageView(mContext);
-        if (result != null) {
-            iV.setImageBitmap(result);
-            photoLinearLayout.addView(iV);
-            // iV2.setImageBitmap(bitmap);
-            // photoLinearLayout.addView(iV2);
-        }
     }
-
     @Override
     public void processFinish(Bitmap result, ArrayList<String> path) {
-        Log.i(TAG, "processFinished(bitmap, arrayList<string>: size() " + path.size());
-        for (String s : path) {
-            Log.d(TAG, "PATHHH: " + s);
-        }
     }
-
     @Override
     public void processFinish(Uri result) {
         Log.d(TAG, "processFinished(Uri)");
     }
+//    //////////////////////////////////////////////
+
 
 
     // STRING CALLBACKs
@@ -135,11 +96,31 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     @Override
     public void onProcessComplete(ArrayList<String> s) {
         Log.d(TAG, "onProcessComplete(ArrayList<String> s)");
-        s.remove(UserInformationModel.getInstance().getUsername()+".jpg");
+
+        final StringBuilder sb = new StringBuilder();
+
+//        Remove profile photo
+        if (s.contains(UserInformationModel.getInstance().getUsername() + ".jpg"))
+            s.remove(UserInformationModel.getInstance().getUsername() + ".jpg");
+
         for (String url : s) {
+
+            sb.append("https://s3.amazonaws.com/skywarntestbucket/" + url);
+            Log.d(TAG, "sb.toSTring() " + sb.toString() + "  vs  " + url);
             ImageView v = new ImageView(mContext);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent fullScreenImageIntent = new Intent(mContext, ViewPhotoFullScreenActivity.class);
+                    Log.d(TAG, "sb.toSTring2(): " + sb.toString());
+                    fullScreenImageIntent.putExtra("imageURL", sb.toString());
+
+                    startActivity(fullScreenImageIntent);
+                }
+            });
 
             TextView tv = new TextView(mContext);
+            tv.setTextColor(mContext.getResources().getColor(R.color.darkTextColor));
             tv.setPadding(5,5,5,5);
 
             LinearLayout ll = new LinearLayout(mContext);
@@ -153,7 +134,7 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
                     .placeholder(R.drawable.sunny)
                     .error(R.drawable.snow_icon)
                     .load("https://s3.amazonaws.com/skywarntestbucket/"+url);
-            Log.d(TAG,"https://s3.amazonaws.com/skywarntestbucket/"+url );
+//            Log.d(TAG,"https://s3.amazonaws.com/skywarntestbucket/"+url );
             ll.addView(v);
             if (url.contains("_") & url.contains(".jpg")) {
                 String text = url.split("_")[0];
@@ -162,6 +143,9 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
                 ll.addView(tv);
             }
             photoLinearLayout.addView(ll);
+
+//            Clear string builder for next iteration
+            sb.setLength(0);
         }
     }
 
@@ -248,47 +232,10 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
 
     }
 
-    /*
-    public ImageView createImageView(Bitmap b, ViewGroup v) {
-        Log.d(TAG, "createImageView()");
-        final Bitmap tempBitmap = b;
-        ImageView IV = new ImageView(mContext);
-        IV.setId(0);
-        IV.requestLayout();
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(reportImageWidth, reportImageHeight);
-        IV.setLayoutParams(layoutParams);
-        IV.setPadding(15, 15, 15, 15);
-        IV.setImageBitmap(b);
-        IV.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                LayoutInflater inflater = v.getLayoutInflater();
-                View alertLayout = inflater.inflate(R.layout.dialog_view_photo_layout, null);
-                TextView dateTV = (TextView) alertLayout.findViewById(R.id.dialog_dateTV);
-                ImageView imageView = (ImageView) alertLayout.findViewById((R.id.imageView));
-                imageView.setImageBitmap(tempBitmap);
-                builder.setIcon(R.drawable.sunny)
-                        .setMessage("message")
-                        .setTitle("Title");
-                builder.show();
-            }
-
-            //IV.setScaleType(ImageView.ScaleType.FIT_XY);
-            // b = Bitmap.createScaledBitmap(b,IV.getWidth(),IV.getHeight(),false);
-        });
-        return IV;
-    }
-    */
-
     @Override
     public void onPause(){
         super.onPause();
-
     }
-
-
 
     public String getUsername() {
         return username;
@@ -297,7 +244,6 @@ public class UserHomeUserSubmittedPhotosFragment extends Fragment implements Bit
     public void setUsername(String username) {
         this.username = username;
     }
-
 }
 
 
